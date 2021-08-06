@@ -3,6 +3,7 @@
 ## ライブラリ
 - flask
 - opencv-python
+- gym\[atari\]
 
 ## 起動方法
 ```
