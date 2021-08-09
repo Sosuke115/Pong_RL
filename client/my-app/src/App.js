@@ -1,33 +1,10 @@
-import React, { useEffect, useCallback } from "react";
-// import logo from './logo.svg';
+import React from "react";
 import './App.css';
 import Axios from 'axios';
-// import AxiosCookiejarSupport from 'axios-cookiejar-support';
-// axios.defaults.withCredentials = true;
-// import request from 'request';
 
-// const axiosWithCookies = Axios.create({
-//   xsrfHeaderName: 'X-CSRF-Token',
-//   withCredentials: true
-// });
-
-// var cookieJar = request.jar();
-
-// Axiosにプラグイン注入
-// AxiosCookiejarSupport(Axios);
-
-// let axiosWithCookies = Axios.create({
-//     jar: true, // cookiejarを有効化する
-//     withCredentials: true, // 依然として必要
-//  });
-
-// State
-// 常にcomponentDidMountで監視
-// 上か下がkeydownされているか、もしくは何もされていないかを判定
-// リクエストを送り続けnext stateを得て、stateを更新し続ける
-
+// ゲーム画面
+// 常にStateの描画を繰り返す
 class State extends React.Component {
-
   componentDidMount() {
     this.intervalId = this.props.handleUserAction()
   }
@@ -41,11 +18,12 @@ class State extends React.Component {
   }
 }
 
+// ゲームをリセット
 class ResetButton extends React.Component {
   render() {
     return (
       <button onClick={this.props.handleResetButtonClick}>
-        <h1> Reset </h1>
+        <h2> Reset </h2>
       </button>
     );
   }
@@ -67,19 +45,16 @@ class App extends React.Component {
   }
 
   // state.actionを定期的に監視し、対応するリクエストをサーバーに送り、レスポンスからstateを更新し続ける関数
-
-  // TODO reset時にadd listerされるようにする
-  // TODO state.actionを定期的に監視
+  // TODO Reset時にadd listerされるようにする
   handleUserAction() {
     setInterval(()=>{
       if (!this.state.user_id) {
         return;
       }
 
-      // axiosWithCookies
       Axios.post('http://127.0.0.1:5000/step', {
         "user_id": this.state.user_id,
-        "action": "up",
+        "action": this.state.action,
       }).then((res) => {
         this.setState({
           state: res.data.next_state,
@@ -89,58 +64,11 @@ class App extends React.Component {
         console.log(err);
         console.log(err.response);
       });
-    }, 500);
-
-      // console.log("step!");
-      // Axios.post('http://127.0.0.1:5000/step', { 
-      //   withCredentials: true,
-      //   "action": "up",
-      // }).then((res) => {
-      //   this.setState({
-      //     state: res.data.next_state,
-      //   });
-      //   console.log("step!")
-      // })
-
-
-
-      // request(options, function (error, response, body) {
-      //   console.log(response);
-      // })
-    
-
-    //   fetch('http://127.0.0.1:5000/step', {
-    //     method: 'POST',
-    //     dataType: 'json',
-    //     mode: "cors",
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     },
-    //     credentials: 'include',
-    //     // credentials: 'same-origin',
-    //     "action": "up",
-    //   }).then(res => res.json())
-    //     .then((res) => {
-    //     this.setState({
-    //       state: res.data.next_state,
-    //     });
-    //     console.log("step!")
-    //   })
-    // }, 5000);
+    }, 50);
   }
 
   handleResetButtonClick() {
 
-      // axiosWithCookies.get('http://127.0.0.1:5000/reset').then((res) => {
-      //   this.setState({
-      //     state: res.data.state,
-      //   });
-      //   console.log("reset!")
-      // })
-
-      // Axios.get('http://127.0.0.1:5000/reset', { 
-      //   withCredentials: true
-      // }).then((res) => {
       Axios.get('http://127.0.0.1:5000/reset')
         .then((res) => {
           this.setState({
@@ -152,32 +80,6 @@ class App extends React.Component {
         }).catch((err) => {
           console.log(err);
         });
-      // fetch('http://127.0.0.1:5000/reset', {
-      //   method: 'GET',
-      //   dataType: 'json',
-      //   mode: "cors",
-      //   headers: {
-      //     "Content-Type": "application/json"
-      //   },
-      //   credentials: 'include'
-      //   // credentials: 'same-origin',
-      // }).then(res => res.json())
-      //   .then((res) => {
-      //   console.log(res);
-      //   this.setState({
-      //     state: res.state,
-      //   });
-      //   console.log("reset!")
-      // })
-      // var options = {
-      //   url: 'http://127.0.0.1:5000/reset',
-      //   method: 'GET',
-      //   jar: cookieJar,
-      // }
-      // request(options, function (error, response, body) {
-      //   console.log(response);
-      // })
-
   }
 
   handleKeyDown = (event) => {
@@ -201,17 +103,16 @@ class App extends React.Component {
     console.log(this.state.action);
   }
 
+  //TODO 最初から背景画像が欲しい Press Reset的な
+  //TODO Press Up or Down的な文
+　//TODO Layoutと機能は分離？
   render() {
     document.addEventListener("keyup", this.handleKeyUp, false);
     document.addEventListener("keydown", this.handleKeyDown, false);
     return (
         <div>
-          <p>
-          <State state={this.state.state} handleUserAction={this.handleUserAction}/>
-          </p>
-          <p>
-          <ResetButton handleResetButtonClick={this.handleResetButtonClick}/>
-          </p>
+          <p> <State state={this.state.state} handleUserAction={this.handleUserAction}/></p>
+          <p> <ResetButton handleResetButtonClick={this.handleResetButtonClick}/> </p>
         </div>
     );
   }
