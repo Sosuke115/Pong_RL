@@ -1,19 +1,21 @@
-from flask import Flask, request, jsonify, make_response, session
-from flask_cors import CORS, cross_origin
+from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
 import uuid
 import utils
-from datetime import timedelta
-from functools import update_wrapper
-from flask_session import Session
+# from datetime import timedelta
+# from functools import update_wrapper
+# from flask_session import Session
 
 app = Flask(__name__)
 app.secret_key = "abc123"  # necessary to use session
 # SESSION_TYPE = 'filesystem'
 # app.config.from_object(__name__)
 # Session(app)
-CORS(app, support_credentials=True)
+# CORS(app, supports_credentials=True)
 # CORS(app, origins=["http://localhost:3000"], headers=['Content-Type'], expose_headers=['Access-Control-Allow-Origin'], supports_credentials=True)
-# CORS(app)
+# app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(app)
+# CORS(app, resources={r"/*": {"origins": "*"}})
 
 # config = {
 #   'ORIGINS': [
@@ -29,34 +31,35 @@ CORS(app, support_credentials=True)
 # cors = CORS(app, support_credentials=True)
 # app.config['CORS_HEADERS'] = 'Content-Type'
 
-@app.after_request
-def after_request(response):
-  response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
-#   response.headers.add('Access-Control-Allow-Origin', '*')
-  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,Origin,Accept,X-Requested-With')
-  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-  response.headers.add('Access-Control-Allow-Credentials', 'true')
-#   response.headers['Access-Control-Allow-Credentials'] = 'true'
-#   print(response.headers)
-  return response
+# @app.after_request
+# def after_request(response):
+#   response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+# #   response.headers.add('Access-Control-Allow-Origin', '*')
+#   response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,Origin,Accept,X-Requested-With')
+#   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+#   response.headers.add('Access-Control-Allow-Credentials', 'true')
+# #   response.headers['Access-Control-Allow-Credentials'] = 'true'
+# #   print(response.headers)
+#   return response
 
 
 # @cross_origin(supports_credentials=True)
 @app.route("/reset", methods=["GET"])
 def reset():
-    session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=30)
-    session["user_id"] = uuid.uuid4()
+    # session.permanent = True
+    # app.permanent_session_lifetime = timedelta(minutes=30)
+    user_id = str(uuid.uuid4())
 
-    env = utils.get_env(session["user_id"])
-
+    env = utils.get_env(user_id, create=True)
+    print("env (reset)", env, env is None, type(env))
     state = env.reset()
-    print(session)
+    # session["user_id"] = user_id
+    # print(session)
 
     response = make_response(jsonify({
+        "user_id": user_id,
         "state": utils.encode_frame(state),
     }))
-    print(response.headers)
     # response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
     # #   response.headers.add('Access-Control-Allow-Origin', '*')
     # response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,Origin,Accept')
@@ -78,9 +81,19 @@ def step():
     # return make_response(jsonify({
     #     "next_state": None,
     # }))
-    print(session)
-    env = utils.get_env(session["user_id"])
-    action_str = request.form.get("action", "noop")
+    user_id = request.json.get("user_id", None)
+    # user_id = session["user_id"]
+    if user_id is None:
+        return "user_id is necessary", 400
+
+    env = utils.get_env(user_id)
+    print("env", env, env is None, type(env))
+    if not hasattr(env, "step"):
+        return f"invalid user_id {user_id}", 400
+
+    action_str = request.json.get("action", "noop")
+    if action_str not in ["up", "down", "noop"]:
+        return f"invalid action {action_str}", 400
 
     action = utils.interpret_action(action_str)
     next_state, reward, done, _ =  env.step(action)

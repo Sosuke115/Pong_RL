@@ -24,9 +24,13 @@ plt.title("reset")
 plt.show()
 
 
-response = ses.post("http://127.0.0.1:5000/step", data={"action": "up"})
+response = ses.post("http://127.0.0.1:5000/step", json={"user_id": data["user_id"], "action": "up"})
 
 print(response.status_code)
+if response.status_code == 400:
+    print(response.text)
+    exit(0)
+
 data = response.json()
 # print(data)
 frame = decode_frame(data["next_state"])

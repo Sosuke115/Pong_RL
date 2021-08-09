@@ -11,16 +11,19 @@ envs = {}
 lock = Lock()
 
 
-def get_env(user_id):
+def get_env(user_id, create=False):
     with lock:
         now = time.time()
+        env = None
         if user_id in envs:
             env, _ = envs[user_id]
-        else:
+        elif create:
             env = gym.make("PongNoFrameskip-v4")
 
-        envs[user_id] = (env, now)
+        if env is not None:
+            envs[user_id] = (env, now)
 
+        # delete old envs
         to_delete = []
         for user_id in envs:
             if now - envs[user_id][1] > DURATION:
@@ -29,14 +32,16 @@ def get_env(user_id):
         for user_id in to_delete:
             del envs[user_id]
 
+        # TODO: delete this
         print("# envs:", len(envs))
+        # print(envs)
         return env
 
 
 @atexit.register
 def close_envs():
-    for connection in envs.values():
-        connection.close()
+    for env, _ in envs.values():
+        env.close()
 
 
 manager = BaseManager(('', 37845), b'password')

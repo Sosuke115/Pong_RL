@@ -1,15 +1,15 @@
 import React, { useEffect, useCallback } from "react";
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import Axios from 'axios';
-import AxiosCookiejarSupport from 'axios-cookiejar-support';
+// import AxiosCookiejarSupport from 'axios-cookiejar-support';
 // axios.defaults.withCredentials = true;
-import request from 'request';
+// import request from 'request';
 
-const axiosWithCookies = Axios.create({
-  xsrfHeaderName: 'X-CSRF-Token',
-  withCredentials: true
-});
+// const axiosWithCookies = Axios.create({
+//   xsrfHeaderName: 'X-CSRF-Token',
+//   withCredentials: true
+// });
 
 // var cookieJar = request.jar();
 
@@ -54,8 +54,9 @@ class ResetButton extends React.Component {
 class App extends React.Component {
 
   constructor() { 
-      super();
-      this.state = {
+    super();
+    this.state = {
+      user_id: null,
       state: null,
       action: "noop"
     };
@@ -71,16 +72,24 @@ class App extends React.Component {
   // TODO state.actionを定期的に監視
   handleUserAction() {
     setInterval(()=>{
+      if (!this.state.user_id) {
+        return;
+      }
 
-      axiosWithCookies.post('http://127.0.0.1:5000/step', {
+      // axiosWithCookies
+      Axios.post('http://127.0.0.1:5000/step', {
+        "user_id": this.state.user_id,
         "action": "up",
       }).then((res) => {
         this.setState({
           state: res.data.next_state,
         });
-        console.log("step!")
-      })
-    }, 5000);
+        console.log("step!");
+      }).catch((err) => {
+        console.log(err);
+        console.log(err.response);
+      });
+    }, 500);
 
       // console.log("step!");
       // Axios.post('http://127.0.0.1:5000/step', { 
@@ -122,22 +131,27 @@ class App extends React.Component {
 
   handleResetButtonClick() {
 
-      axiosWithCookies.get('http://127.0.0.1:5000/reset').then((res) => {
-        this.setState({
-          state: res.data.state,
-        });
-        console.log("reset!")
-      })
-    
-
-      // Axios.get('http://127.0.0.1:5000/reset', { 
-      //   withCredentials: true
-      // }).then((res) => {
+      // axiosWithCookies.get('http://127.0.0.1:5000/reset').then((res) => {
       //   this.setState({
       //     state: res.data.state,
       //   });
       //   console.log("reset!")
       // })
+
+      // Axios.get('http://127.0.0.1:5000/reset', { 
+      //   withCredentials: true
+      // }).then((res) => {
+      Axios.get('http://127.0.0.1:5000/reset')
+        .then((res) => {
+          this.setState({
+            user_id: res.data.user_id,
+            state: res.data.state,
+          });
+          console.log("reset!");
+          console.log(res.data);
+        }).catch((err) => {
+          console.log(err);
+        });
       // fetch('http://127.0.0.1:5000/reset', {
       //   method: 'GET',
       //   dataType: 'json',
