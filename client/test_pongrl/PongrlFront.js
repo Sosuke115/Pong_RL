@@ -20,7 +20,7 @@ class PongRLEnv {
 
       // How fast the paddles and the ball can move
       paddleSpeed: 1,
-      ballSpeed: 0.8,
+      ballInitSpeed: 0.8,
       ballSpeedIncrease: 1.01,
       ballSpeedMax: 2,
 
@@ -60,7 +60,7 @@ class PongRLEnv {
       width: 0.0375,
       forceX: 0,
       forceY: 0,
-      speed: this.ballSpeed,
+      speed: this.ballInitSpeed,
     };
   }
 
@@ -302,16 +302,14 @@ class PongRLEnv {
 
     if (ballWasHit) {
       // Increase ball speed
-      this.ballSpeed = Math.min(
+      this.ball.speed = Math.min(
         this.ballSpeedMax,
-        this.ballSpeed * this.ballSpeedIncrease
+        this.ball.speed * this.ballSpeedIncrease
       );
-      this.ball.speed = this.ballSpeed;
     }
 
     this.currentFrame += 1;
 
-    // eslint-disable-next-line no-sequences
     return { state: this.getState(), reward: reward, done: done };
   }
 }
