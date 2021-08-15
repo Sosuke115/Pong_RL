@@ -13,14 +13,14 @@ class PongRLEnv {
       live: true,
 
       // How often the game should be updated / redrawn
-      updateFrequency: 40, // = 25 FPS
+      updateFrequency: 10, // = 100 FPS
 
       // Ask controllers every X frames for an updated action:
       controllerFrameInterval: 5, // 25 FPS / 5 = 5 updates per second
 
       // How fast the paddles and the ball can move
       paddleSpeed: 1,
-      ballInitSpeed: 0.8,
+      ballInitSpeed: 1,
       ballSpeedIncrease: 1.01,
       ballSpeedMax: 2,
 
