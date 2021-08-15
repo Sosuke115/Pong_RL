@@ -4,6 +4,7 @@
 // 環境
 class PongRLEnv {
   constructor(options) {
+    //固定値
     options = {
       paddleHeight: 0.25,
       canvasId: "gameCanvas",
@@ -61,19 +62,6 @@ class PongRLEnv {
       forceY: 0,
       speed: this.ballSpeed,
     };
-
-    this.leftPaddle = Object.create(this.leftPaddleInitState);
-    this.rightPaddle = Object.create(this.rightPaddleInitState);
-    this.ball = Object.create(this.ballInitState);
-
-    // Start the ball in a random direction.
-    this.initBallDirection();
-
-    // Keep track of the last two game states
-    this.currentState = this.getState();
-    this.previousState = null;
-    this.currentFrame = 0;
-    this.winner = null;
   }
 
   initBallDirection() {
@@ -254,9 +242,11 @@ class PongRLEnv {
     this.rightPaddle = Object.create(this.rightPaddleInitState);
     this.ball = Object.create(this.ballInitState);
     this.initBallDirection();
+    this.currentState = this.getState();
     this.previousState = null;
     this.currentFrame = 0;
     this.winner = null;
+    return this.getState();
   }
 
   actionInterpret(action_str) {
@@ -403,7 +393,7 @@ function drawTest() {
   const keyController = new KeyController();
   const pongRLEnv = new PongRLEnv();
   const drawState = new DrawState();
-  drawState.draw(pongRLEnv.getState());
+  drawState.draw(pongRLEnv.reset());
   const refreshIntervalId = setInterval(() => {
     // action
     let action = {
@@ -415,8 +405,7 @@ function drawTest() {
     // draw
     drawState.draw(res.state);
     if (res.done) {
-      pongRLEnv.reset();
-      drawState.draw(pongRLEnv.getState());
+      drawState.draw(pongRLEnv.reset());
       // clearInterval(refreshIntervalId);
     }
   }, pongRLEnv.updateFrequency);
