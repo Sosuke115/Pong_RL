@@ -1,8 +1,5 @@
-// 状態を受け取ってフロントを更新していく仮の実装
-// サーバーたてないとimportはできない
-
 // 環境
-class PongRLEnv {
+export class PongRLEnv {
   constructor(options) {
     //固定値
     options = {
@@ -346,69 +343,3 @@ class DrawState {
     });
   }
 }
-
-// キー操作を管理するクラス
-class KeyController {
-  constructor(options) {
-    options = {
-      upKey: 38,
-      downKey: 40,
-      ...(options || {}),
-    };
-
-    Object.assign(this, options);
-
-    this.isUpKeyPressed = false;
-    this.isDownKeyPressed = false;
-
-    // Set up keys:
-    $(document).keydown((event) => {
-      if (event.which === this.upKey) {
-        this.isUpKeyPressed = true;
-      } else if (event.which === this.downKey) {
-        this.isDownKeyPressed = true;
-      }
-    });
-
-    $(document).keyup((event) => {
-      if (event.which === this.upKey) {
-        this.isUpKeyPressed = false;
-      } else if (event.which === this.downKey) {
-        this.isDownKeyPressed = false;
-      }
-    });
-  }
-
-  selectAction() {
-    if (this.isUpKeyPressed) return "up";
-    if (this.isDownKeyPressed) return "down";
-    return "noop";
-  }
-}
-
-// 描画をテストする関数
-function drawTest() {
-  const keyController = new KeyController();
-  const pongRLEnv = new PongRLEnv();
-  const drawState = new DrawState();
-  drawState.draw(pongRLEnv.reset());
-  const refreshIntervalId = setInterval(() => {
-    // action
-    let action = {
-      leftAction: keyController.selectAction(),
-      rightAction: keyController.selectAction(),
-    };
-    // step
-    let res = pongRLEnv.step(action);
-    // draw
-    drawState.draw(res.state);
-    if (res.done) {
-      drawState.draw(pongRLEnv.reset());
-      // clearInterval(refreshIntervalId);
-    }
-  }, pongRLEnv.updateFrequency);
-}
-
-$(document).ready(() => {
-  drawTest();
-});
