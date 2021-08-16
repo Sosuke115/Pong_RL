@@ -37,8 +37,8 @@ class DrawState {
 class KeyController {
   constructor(options) {
     options = {
-      upKey: 38,
-      downKey: 40,
+      upKey: 37,
+      downKey: 39,
       ...(options || {}),
     };
 

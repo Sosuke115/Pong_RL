@@ -3,7 +3,7 @@ export class PongRLEnv {
   constructor(options) {
     //固定値
     options = {
-      paddleHeight: 0.25,
+      paddleWidth: 0.25,
       canvasId: "gameCanvas",
 
       // If false, doesn't draw and goes as fast as possible
@@ -33,28 +33,28 @@ export class PongRLEnv {
 
     // Keep track of the ball and two paddles.
     this.leftPaddleInitState = {
-      x: 0.02,
-      y: 0.5,
-      height: this.paddleHeight,
-      width: 0.0375,
-      forceY: 0,
+      x: 0.5,
+      y: 0.02,
+      height: 0.0375,
+      width: this.paddleWidth,
+      forceX: 0,
       previousAction: null,
       speed: this.paddleSpeed,
     };
     this.rightPaddleInitState = {
-      x: 0.98,
-      y: 0.5,
-      height: this.paddleHeight,
-      width: 0.0375,
-      forceY: 0,
+      x: 0.5,
+      y: 0.98,
+      height: 0.0375,
+      width: this.paddleWidth,
+      forceX: 0,
       previousAction: null,
       speed: this.paddleSpeed,
     };
     this.ballInitState = {
       x: 0.5,
       y: 0.5,
-      height: 0.05,
-      width: 0.0375,
+      height: 0.0375,
+      width: 0.05,
       forceX: 0,
       forceY: 0,
       speed: this.ballInitSpeed,
@@ -62,8 +62,8 @@ export class PongRLEnv {
   }
 
   initBallDirection() {
-    const forceX = 0.5 + Math.random() * 0.25;
-    const forceY = 0.9 + Math.random() * 0.25;
+    const forceX = 0.9 + Math.random() * 0.25;
+    const forceY = 0.5 + Math.random() * 0.25;
     const norm = Math.sqrt(Math.pow(forceX, 2) + Math.pow(forceY, 2));
     this.ball.forceX = ((Math.random() > 0.5 ? 1 : -1) * forceX) / norm;
     this.ball.forceY = ((Math.random() > 0.5 ? 1 : -1) * forceY) / norm;
@@ -100,18 +100,18 @@ export class PongRLEnv {
 
   // Checks if one side one won and returns 'left' or 'right' if so.
   getWinner() {
-    const ballWidth = this.ball.width / 2;
-    const paddleWidth = this.leftPaddle.width / 2;
+    const ballHeight = this.ball.height / 2;
+    const paddleHeight = this.leftPaddle.height / 2;
 
     if (
-      this.ball.forceX < 0 &&
-      this.ball.x - ballWidth < this.leftPaddle.x - paddleWidth
+      this.ball.forceY < 0 &&
+      this.ball.y - ballHeight < this.leftPaddle.y - paddleHeight
     ) {
       return "right";
     }
     if (
-      this.ball.forceX > 0 &&
-      this.ball.x + ballWidth > this.rightPaddle.x + paddleWidth
+      this.ball.forceY > 0 &&
+      this.ball.y + ballHeight > this.rightPaddle.y + paddleHeight
     ) {
       return "left";
     }
@@ -120,39 +120,39 @@ export class PongRLEnv {
   // Move the given object by its force, checking for collisions and potentially
   // updating the force values. If the ball, returns whether it was hit by a paddle.
   moveObject(obj, timeFactor, isBall) {
-    const radiusY = obj.height / 2;
-    const minY = radiusY;
-    const maxY = 1 - radiusY;
+    const radiusX = obj.width / 2;
+    const minX = radiusX;
+    const maxX = 1 - radiusX;
     let wasHit = false;
 
     // If a paddle is already touching the wall, forceY should set to zero:
-    if (!isBall && obj.forceY) {
+    if (!isBall && obj.forceX) {
       if (
-        (obj.y === minY && obj.forceY < 0) ||
-        (obj.y === maxY && obj.forceY > 0)
+        (obj.x === minX && obj.forceX < 0) ||
+        (obj.x === maxX && obj.forceX > 0)
       ) {
-        obj.forceY = 0;
+        obj.forceX = 0;
       }
     }
 
-    if (obj.forceX) {
-      obj.x += obj.forceX * obj.speed * timeFactor;
+    if (obj.forceY) {
+      obj.y += obj.forceY * obj.speed * timeFactor;
 
       // A ball should bounce off paddles
-      const sideToCheck = obj.forceX > 0 ? "right" : "left";
+      const sideToCheck = obj.forceY > 0 ? "right" : "left";
       if (isBall && this.checkCollision(sideToCheck)) {
-        obj.forceX = -obj.forceX;
+        obj.forceY = -obj.forceY;
         wasHit = true;
 
         // Add a spin to it:
         const paddle = this[`${sideToCheck}Paddle`];
-        if (paddle.forceY !== 0) {
-          obj.forceY = (obj.forceY + paddle.forceY) / 2;
+        if (paddle.forceX !== 0) {
+          obj.forceX = (obj.forceX + paddle.forceX) / 2;
           // Make mean spins a little harder:
-          if (Math.abs(obj.forceY) < 0.33) obj.forceY *= 2;
+          if (Math.abs(obj.forceX) < 0.33) obj.forceX *= 2;
           // Re-normalize it:
           const norm = Math.sqrt(
-            Math.pow(obj.forceX, 2) + Math.pow(obj.forceY, 2)
+            Math.pow(obj.forceX, 2) + Math.pow(obj.forceX, 2)
           );
           obj.forceX /= norm;
           obj.forceY /= norm;
@@ -160,17 +160,17 @@ export class PongRLEnv {
       }
     }
 
-    if (obj.forceY) {
-      obj.y += obj.forceY * obj.speed * timeFactor;
+    if (obj.forceX) {
+      obj.x += obj.forceX * obj.speed * timeFactor;
 
       // When hitting a wall, a paddle stops, a ball bounces back:
       if (!isBall) {
-        obj.y = Math.max(minY, Math.min(maxY, obj.y));
+        obj.x = Math.max(minX, Math.min(maxX, obj.x));
       } else if (
-        (obj.forceY < 0 && obj.y < radiusY) ||
-        (obj.forceY > 0 && obj.y > 1 - radiusY)
+        (obj.forceX < 0 && obj.x < radiusX) ||
+        (obj.forceX > 0 && obj.x > 1 - radiusX)
       ) {
-        obj.forceY = -obj.forceY;
+        obj.forceX = -obj.forceX;
       }
     }
 
@@ -183,33 +183,33 @@ export class PongRLEnv {
     const paddle = leftOrRight === "left" ? this.leftPaddle : this.rightPaddle;
     const ball = this.ball;
 
-    const paddleWidth = paddle.width;
-    const paddleHeight = paddle.height + 0.01;
+    const paddleWidth = paddle.width + 0.01;
+    const paddleHeight = paddle.height;
     const ballWidth = ball.width;
     const ballHeight = ball.height;
 
     // First, check on the x dimension if a collision is possible:
     if (
       leftOrRight === "left" &&
-      ball.x - ballWidth / 2 > paddle.x + paddleWidth / 2
+      ball.y - ballHeight / 2 > paddle.y + paddleHeight / 2
     ) {
       // It's too far from the left paddle
       return false;
     }
     if (
       leftOrRight === "right" &&
-      ball.x + ballWidth / 2 < paddle.x - paddleWidth / 2
+      ball.y + ballHeight / 2 < paddle.y - paddleHeight / 2
     ) {
       // It's too far from the right paddle
       return false;
     }
 
     // Now check on the y dimension:
-    if (ball.y - ballHeight / 2 > paddle.y + paddleHeight / 2) {
+    if (ball.x - ballWidth / 2 > paddle.x + paddleWidth / 2) {
       // The top of the ball is below the bottom of the paddle
       return false;
     }
-    if (ball.y + ballHeight / 2 < paddle.y - paddleHeight / 2) {
+    if (ball.x + ballWidth / 2 < paddle.x - paddleWidth / 2) {
       // The bottom of the ball is above the top of the paddle
       return false;
     }
@@ -217,14 +217,14 @@ export class PongRLEnv {
     // Check if its too far behind the paddle
     if (
       leftOrRight === "left" &&
-      ball.x - ballWidth / 2 < paddle.x - paddleWidth / 2
+      ball.y - ballHeight / 2 < paddle.y - paddleHeight / 2
     ) {
       // It's past the left paddle
       return false;
     }
     if (
       leftOrRight === "right" &&
-      ball.x + ballWidth / 2 > paddle.x + paddleWidth / 2
+      ball.y + ballHeight / 2 > paddle.y + paddleHeight / 2
     ) {
       // It's past the right paddle
       return false;
@@ -286,8 +286,8 @@ export class PongRLEnv {
       rightAction = this.actionInterpret(action.rightAction);
     }
 
-    this.leftPaddle.forceY = leftAction;
-    this.rightPaddle.forceY = rightAction;
+    this.leftPaddle.forceX = leftAction;
+    this.rightPaddle.forceX = rightAction;
 
     this.leftPaddle.lastAction = leftAction;
     this.rightPaddle.lastAction = rightAction;
@@ -308,38 +308,5 @@ export class PongRLEnv {
     this.currentFrame += 1;
 
     return { state: this.getState(), reward: reward, done: done };
-  }
-}
-
-//Stateから描画するクラス
-class DrawState {
-  constructor() {
-    this.canvas = document.getElementById("gameCanvas");
-    this.ctx = this.canvas.getContext("2d");
-  }
-
-  // Given an object with coordinates and size, draw it to the canvas
-  drawObject(obj) {
-    const width = obj.width * this.canvas.width;
-    const height = obj.height * this.canvas.height;
-    const x = obj.x * this.canvas.width - width / 2;
-    const y = obj.y * this.canvas.height - height / 2;
-    this.ctx.fillRect(x, y, width, height);
-  }
-
-  // Redraw the game based on the current state
-  async draw(state) {
-    this.ctx.fillStyle = "#e5e5e6";
-    this.ctx.strokeStyle = "#e5e5e6";
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
-
-    this.drawObject(state.ball);
-    this.drawObject(state.leftPaddle);
-    this.drawObject(state.rightPaddle);
-
-    return new Promise((resolve) => {
-      window.requestAnimationFrame(resolve);
-    });
   }
 }
