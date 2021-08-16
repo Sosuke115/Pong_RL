@@ -32,7 +32,7 @@ export class PongRLEnv {
     this.timeFactor = this.updateFrequency / 1000;
 
     // Keep track of the ball and two paddles.
-    this.leftPaddleInitState = {
+    this.rlPaddleInitState = {
       x: 0.5,
       y: 0.02,
       height: 0.0375,
@@ -41,7 +41,7 @@ export class PongRLEnv {
       previousAction: null,
       speed: this.paddleSpeed,
     };
-    this.rightPaddleInitState = {
+    this.humanPaddleInitState = {
       x: 0.5,
       y: 0.98,
       height: 0.0375,
@@ -80,17 +80,17 @@ export class PongRLEnv {
         height: this.ball.height,
         width: this.ball.width,
       },
-      leftPaddle: {
-        x: this.leftPaddle.x,
-        y: this.leftPaddle.y,
-        height: this.leftPaddle.height,
-        width: this.leftPaddle.width,
+      rlPaddle: {
+        x: this.rlPaddle.x,
+        y: this.rlPaddle.y,
+        height: this.rlPaddle.height,
+        width: this.rlPaddle.width,
       },
-      rightPaddle: {
-        x: this.rightPaddle.x,
-        y: this.rightPaddle.y,
-        height: this.rightPaddle.height,
-        width: this.rightPaddle.width,
+      humanPaddle: {
+        x: this.humanPaddle.x,
+        y: this.humanPaddle.y,
+        height: this.humanPaddle.height,
+        width: this.humanPaddle.width,
       },
       winner: this.getWinner(),
       timePassed: this.currentFrame * this.timeFactor,
@@ -98,22 +98,22 @@ export class PongRLEnv {
     return state;
   }
 
-  // Checks if one side one won and returns 'left' or 'right' if so.
+  // Checks if one side one won and returns 'rl' or 'human' if so.
   getWinner() {
     const ballHeight = this.ball.height / 2;
-    const paddleHeight = this.leftPaddle.height / 2;
+    const paddleHeight = this.rlPaddle.height / 2;
 
     if (
       this.ball.forceY < 0 &&
-      this.ball.y - ballHeight < this.leftPaddle.y - paddleHeight
+      this.ball.y - ballHeight < this.rlPaddle.y - paddleHeight
     ) {
-      return "right";
+      return "human";
     }
     if (
       this.ball.forceY > 0 &&
-      this.ball.y + ballHeight > this.rightPaddle.y + paddleHeight
+      this.ball.y + ballHeight > this.humanPaddle.y + paddleHeight
     ) {
-      return "left";
+      return "rl";
     }
   }
 
@@ -139,7 +139,7 @@ export class PongRLEnv {
       obj.y += obj.forceY * obj.speed * timeFactor;
 
       // A ball should bounce off paddles
-      const sideToCheck = obj.forceY > 0 ? "right" : "left";
+      const sideToCheck = obj.forceY > 0 ? "human" : "rl";
       if (isBall && this.checkCollision(sideToCheck)) {
         obj.forceY = -obj.forceY;
         wasHit = true;
@@ -178,9 +178,9 @@ export class PongRLEnv {
   }
 
   // Check if the given side's paddle is colliding with the ball.
-  // Pass 'left' or 'right' (since the logic is slightly different)
-  checkCollision(leftOrRight) {
-    const paddle = leftOrRight === "left" ? this.leftPaddle : this.rightPaddle;
+  // Pass 'rl' or 'human' (since the logic is slightly different)
+  checkCollision(rlOrHuman) {
+    const paddle = rlOrHuman === "rl" ? this.rlPaddle : this.humanPaddle;
     const ball = this.ball;
 
     const paddleWidth = paddle.width + 0.01;
@@ -190,17 +190,17 @@ export class PongRLEnv {
 
     // First, check on the x dimension if a collision is possible:
     if (
-      leftOrRight === "left" &&
+      rlOrHuman === "rl" &&
       ball.y - ballHeight / 2 > paddle.y + paddleHeight / 2
     ) {
-      // It's too far from the left paddle
+      // It's too far from the rl paddle
       return false;
     }
     if (
-      leftOrRight === "right" &&
+      rlOrHuman === "human" &&
       ball.y + ballHeight / 2 < paddle.y - paddleHeight / 2
     ) {
-      // It's too far from the right paddle
+      // It's too far from the human paddle
       return false;
     }
 
@@ -216,17 +216,17 @@ export class PongRLEnv {
 
     // Check if its too far behind the paddle
     if (
-      leftOrRight === "left" &&
+      rlOrHuman === "rl" &&
       ball.y - ballHeight / 2 < paddle.y - paddleHeight / 2
     ) {
-      // It's past the left paddle
+      // It's past the rl paddle
       return false;
     }
     if (
-      leftOrRight === "right" &&
+      rlOrHuman === "human" &&
       ball.y + ballHeight / 2 > paddle.y + paddleHeight / 2
     ) {
-      // It's past the right paddle
+      // It's past the human paddle
       return false;
     }
 
@@ -235,8 +235,8 @@ export class PongRLEnv {
 
   // reset
   reset() {
-    this.leftPaddle = Object.create(this.leftPaddleInitState);
-    this.rightPaddle = Object.create(this.rightPaddleInitState);
+    this.rlPaddle = Object.create(this.rlPaddleInitState);
+    this.humanPaddle = Object.create(this.humanPaddleInitState);
     this.ball = Object.create(this.ballInitState);
     this.initBallDirection();
     this.currentState = this.getState();
@@ -247,9 +247,9 @@ export class PongRLEnv {
   }
 
   actionInterpret(action_str) {
-    if (action_str === "up") {
+    if (action_str === "left") {
       return -1;
-    } else if (action_str === "down") {
+    } else if (action_str === "right") {
       return 1;
     } else {
       return 0;
@@ -257,7 +257,7 @@ export class PongRLEnv {
   }
 
   // step (action)
-  // actionのe.g. {"leftAction": "noop", "rightAction": "up"}
+  // actionのe.g. {"rlAction": "noop", "humanAction": "right"}
   // return: 次の状態（ボールの位置など）、報酬、終了タグ
   step(action) {
     let reward = 0;
@@ -269,32 +269,32 @@ export class PongRLEnv {
     const winner = this.currentState.winner;
     if (winner) {
       this.winner = winner;
-      reward = winner === "left" ? 1.0 : -1.0;
+      reward = winner === "rl" ? 1.0 : -1.0;
       done = true;
     }
 
     // Ask controllers for action based on current state.
     // Either every few frames or if there's a winner (to give them a chance to register the win)
-    let leftAction = this.leftPaddle.lastAction || 0;
-    let rightAction = this.rightPaddle.lastAction || 0;
+    let rlAction = this.rlPaddle.lastAction || 0;
+    let humanAction = this.humanPaddle.lastAction || 0;
 
     if (
       this.currentState.winner ||
       this.currentFrame % this.controllerFrameInterval === 0
     ) {
-      leftAction = this.actionInterpret(action.leftAction);
-      rightAction = this.actionInterpret(action.rightAction);
+      rlAction = this.actionInterpret(action.rlAction);
+      humanAction = this.actionInterpret(action.humanAction);
     }
 
-    this.leftPaddle.forceX = leftAction;
-    this.rightPaddle.forceX = rightAction;
+    this.rlPaddle.forceX = rlAction;
+    this.humanPaddle.forceX = humanAction;
 
-    this.leftPaddle.lastAction = leftAction;
-    this.rightPaddle.lastAction = rightAction;
+    this.rlPaddle.lastAction = rlAction;
+    this.humanPaddle.lastAction = humanAction;
 
     // Update each object:
-    this.moveObject(this.leftPaddle, this.timeFactor);
-    this.moveObject(this.rightPaddle, this.timeFactor);
+    this.moveObject(this.rlPaddle, this.timeFactor);
+    this.moveObject(this.humanPaddle, this.timeFactor);
     const ballWasHit = this.moveObject(this.ball, this.timeFactor, true);
 
     if (ballWasHit) {

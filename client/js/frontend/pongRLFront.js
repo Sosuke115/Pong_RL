@@ -24,8 +24,8 @@ class DrawState {
     this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.drawObject(state.ball);
-    this.drawObject(state.leftPaddle);
-    this.drawObject(state.rightPaddle);
+    this.drawObject(state.humanPaddle);
+    this.drawObject(state.rlPaddle);
 
     return new Promise((resolve) => {
       window.requestAnimationFrame(resolve);
@@ -37,37 +37,37 @@ class DrawState {
 class KeyController {
   constructor(options) {
     options = {
-      upKey: 37,
-      downKey: 39,
+      leftKey: 37,
+      rightKey: 39,
       ...(options || {}),
     };
 
     Object.assign(this, options);
 
-    this.isUpKeyPressed = false;
-    this.isDownKeyPressed = false;
+    this.isLeftKeyPressed = false;
+    this.isRightKeyPressed = false;
 
     // Set up keys:
     $(document).keydown((event) => {
-      if (event.which === this.upKey) {
-        this.isUpKeyPressed = true;
-      } else if (event.which === this.downKey) {
-        this.isDownKeyPressed = true;
+      if (event.which === this.leftKey) {
+        this.isLeftKeyPressed = true;
+      } else if (event.which === this.rightKey) {
+        this.isRightKeyPressed = true;
       }
     });
 
     $(document).keyup((event) => {
-      if (event.which === this.upKey) {
-        this.isUpKeyPressed = false;
-      } else if (event.which === this.downKey) {
-        this.isDownKeyPressed = false;
+      if (event.which === this.leftKey) {
+        this.isLeftKeyPressed = false;
+      } else if (event.which === this.rightKey) {
+        this.isRightKeyPressed = false;
       }
     });
   }
 
   selectAction() {
-    if (this.isUpKeyPressed) return "up";
-    if (this.isDownKeyPressed) return "down";
+    if (this.isLeftKeyPressed) return "left";
+    if (this.isRightKeyPressed) return "right";
     return "noop";
   }
 }
@@ -81,9 +81,10 @@ function drawTest() {
   const refreshIntervalId = setInterval(() => {
     // action
     let action = {
-      leftAction: keyController.selectAction(),
-      rightAction: keyController.selectAction(),
+      humanAction: keyController.selectAction(),
+      rlAction: "noop",
     };
+    console.log(action.humanAction);
     // step
     let res = pongRLEnv.step(action);
     // draw
