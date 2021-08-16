@@ -1,4 +1,5 @@
 import { PongRLEnv } from "../rl/pongRLEnv.js";
+import { KeyController } from "../rl/keyController.js";
 
 //Stateから描画するクラス
 class DrawState {
@@ -33,45 +34,6 @@ class DrawState {
   }
 }
 
-// キー操作を管理するクラス
-class KeyController {
-  constructor(options) {
-    options = {
-      leftKey: 37,
-      rightKey: 39,
-      ...(options || {}),
-    };
-
-    Object.assign(this, options);
-
-    this.isLeftKeyPressed = false;
-    this.isRightKeyPressed = false;
-
-    // Set up keys:
-    $(document).keydown((event) => {
-      if (event.which === this.leftKey) {
-        this.isLeftKeyPressed = true;
-      } else if (event.which === this.rightKey) {
-        this.isRightKeyPressed = true;
-      }
-    });
-
-    $(document).keyup((event) => {
-      if (event.which === this.leftKey) {
-        this.isLeftKeyPressed = false;
-      } else if (event.which === this.rightKey) {
-        this.isRightKeyPressed = false;
-      }
-    });
-  }
-
-  selectAction() {
-    if (this.isLeftKeyPressed) return "left";
-    if (this.isRightKeyPressed) return "right";
-    return "noop";
-  }
-}
-
 // 描画をテストする関数
 function drawTest() {
   const keyController = new KeyController();
@@ -84,7 +46,6 @@ function drawTest() {
       humanAction: keyController.selectAction(),
       rlAction: "noop",
     };
-    console.log(action.humanAction);
     // step
     let res = pongRLEnv.step(action);
     // draw
