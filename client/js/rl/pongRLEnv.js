@@ -152,7 +152,7 @@ export class PongRLEnv {
           if (Math.abs(obj.forceX) < 0.33) obj.forceX *= 2;
           // Re-normalize it:
           const norm = Math.sqrt(
-            Math.pow(obj.forceX, 2) + Math.pow(obj.forceX, 2)
+            Math.pow(obj.forceX, 2) + Math.pow(obj.forceY, 2)
           );
           obj.forceX /= norm;
           obj.forceY /= norm;
