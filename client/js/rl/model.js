@@ -1,5 +1,5 @@
 
-export function buildNetwork(inputDim, outputDim, hiddenDim, layerNum) {
+export function buildNetwork(inputDim, outputDim, hiddenDim, layerNum, dropout) {
   const model = tf.sequential();
   model.add(
     tf.layers.dense({
@@ -8,6 +8,9 @@ export function buildNetwork(inputDim, outputDim, hiddenDim, layerNum) {
       activation: "relu",
     }),
   );
+  if (dropout > 0) {
+    model.add(tf.layers.dropout({rate: dropout}));
+  }
 
   for (let i = 0; i < layerNum - 2; i++) {
     model.add(
@@ -16,6 +19,9 @@ export function buildNetwork(inputDim, outputDim, hiddenDim, layerNum) {
         activation: "relu",
       }),
     );
+    if (dropout > 0) {
+      model.add(tf.layers.dropout({rate: dropout}));
+    }
   }
 
   model.add(

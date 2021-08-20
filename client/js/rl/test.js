@@ -1,7 +1,10 @@
 import { PongRLEnv } from "./pongRLEnv.js";
 import { KeyController } from "./keyController.js";
 import { RLAgent } from "./agent.js";
+// import { DrawState } from "../frontend/pongRLFront.js";
 
+// TODO: import from pongRLFront.js.
+// Currently, it automatically starts a game.
 class DrawState {
   constructor() {
     this.canvas = document.getElementById("gameCanvas");
@@ -38,14 +41,31 @@ function sleep(msec) {
   return new Promise(resolve => setTimeout(resolve, Math.max(msec, 0)));
 }
 
-async function drawTest() {
-  const keyController = new KeyController();
+async function getController(input) {
+  let controller;
+  if (input) {
+    controller = new RLAgent(false);
+    await controller.loadModel(`http://localhost:3000/js/rl/models/model-${input}.json`);
+  } else {
+    controller = new KeyController();
+  }
+  return controller;
+}
+
+async function main(humanInput, rlInput) {
   const env = new PongRLEnv();
   const drawState = new DrawState();
-  const rlAgent = new RLAgent(false);
 
   // load model
-  await rlAgent.loadModel("http://localhost:3000/models/model-100000.json");
+  const humanController = await getController(humanInput);
+  const rlController = await getController(rlInput);
+
+  let frameSkip;
+  if (humanController instanceof RLAgent) {
+    frameSkip = humanController.config.frameSkip;
+  } else {
+    frameSkip = rlController.config.frameSkip;
+  }
 
   let state = env.reset();
   drawState.draw(state);
@@ -56,11 +76,11 @@ async function drawTest() {
   while (true) {
     const startTime = performance.now();
 
-    humanAction = keyController.selectAction();
     // decrease frequency of inference (human action?)
-    if (timeStep % rlAgent.config.frameSkip === 0) {
-      // humanAction = rlAgent.selectAction(state, "human", false);
-      rlAction = rlAgent.selectAction(state, "rl", false);
+    if (timeStep % frameSkip === 0) {
+      // 3rd argument (false): no exploration
+      humanAction = humanController.selectAction(state, "human", false);
+      rlAction = rlController.selectAction(state, "rl", false);
     }
 
     const res = env.step({
@@ -70,11 +90,10 @@ async function drawTest() {
     drawState.draw(res.state);
 
     const endTime = performance.now();
-    // decide sleep time considering computation time so far
+    // decide sleep time considering the computation time so far
     await sleep(env.updateFrequency - (endTime - startTime));
 
     if (res.done) {
-      // console.log(endTime - startTime);
       state = env.reset();
       drawState.draw(state);
       timeStep = 0;
@@ -85,6 +104,25 @@ async function drawTest() {
   }
 }
 
-$(document).ready(() => {
-  drawTest();
+$("#start-button").on("click", () => {
+  const humanInput = $("#human-player").val();
+  const rlInput = $("#rl-player").val();
+
+  if (!humanInput && !rlInput) {
+    alert("One of the players has to be an RL agent");
+    return false;
+  }
+
+  const checkInput = (input) => (input === "" || !isNaN(parseInt(input)));
+  if (!checkInput(humanInput) || !checkInput(rlInput)) {
+    alert(`Invalid input  Human: "${humanInput}" RL: "${rlInput}"`);
+    return false;
+  }
+
+  // Disable the start button.
+  // Please reload the page if you want to restart.
+  $("#start-button").prop("disabled", true);
+
+  console.log(`Start  Human: "${humanInput}" RL: "${rlInput}"`);
+  main(humanInput, rlInput);
 });

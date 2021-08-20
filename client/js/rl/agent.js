@@ -21,33 +21,30 @@ export class RLAgent {
       state_dim: 6,
       action_num: 3,
       gamma: 0.99,
-      lr: 0.001,
+      lr: 1.0e-4,
       targetSyncFreq: 500,
       frameSkip: 4,
       epsilon: {
         init: 1.0,
-        end: 0.01,
+        end: 0.05,
         decay: 10000,
       },
       model: {
-        hiddenDim: 128,
+        hiddenDim: 256,
         layerNum: 4,
+        dropout: 0.0,
       },
     };
 
     this.qnet = buildNetwork(
-      this.config.state_dim,
-      this.config.action_num,
-      this.config.model.hiddenDim,
-      this.config.model.layerNum,
+      this.config.state_dim, this.config.action_num,
+      this.config.model.hiddenDim, this.config.model.layerNum, this.config.model.dropout,
     );
 
     if (train) {
       this.qnetTarget = buildNetwork(
-        this.config.state_dim,
-        this.config.action_num,
-        this.config.model.hiddenDim,
-        this.config.model.layerNum,
+        this.config.state_dim, this.config.action_num,
+        this.config.model.hiddenDim, this.config.model.layerNum, this.config.model.dropout,
       );
       this.qnetTarget.trainable = false
       copyWeights(this.qnetTarget, this.qnet);
@@ -135,7 +132,7 @@ export class RLAgent {
       ]);
 
       // calculate double DQN loss
-      const q = this.qnet.apply(stateTensor).mul(tf.oneHot(actionTensor, this.config.action_num)).sum(-1);
+      const q = this.qnet.apply(stateTensor, {training: true}).mul(tf.oneHot(actionTensor, this.config.action_num)).sum(-1);
       const nextPi = this.qnet.predict(nextStateTensor).argMax(-1);
       const nextTargetQ = this.qnetTarget.predict(nextStateTensor).mul(tf.oneHot(nextPi, this.config.action_num)).sum(-1);
       const y = rewardTensor.add(nextTargetQ.mul(maskTensor).mul(this.config.gamma));

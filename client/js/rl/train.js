@@ -6,14 +6,13 @@ import { ReplayMemory } from "./replay_memory.js";
 async function main() {
   const config = {
     memoryCapacity: 10000,
-    maxStep: 100000,
+    maxStep: 50000,
     batchSize: 128,
     checkpointFreq: 10000,
   };
 
   const env = new PongRLEnv();
   const agent = new RLAgent();
-  // const agent2 = new RandomAgent();
   const replayMemory = new ReplayMemory(config.memoryCapacity);
 
   let totalStep = 0;
@@ -79,7 +78,10 @@ async function main() {
   }
 }
 
-$(document).ready(() => {
+$("#start-button").on("click", () => {
+  const res = window.confirm("Is developer tool open?\nYou can see logs on the console window.");
+  if (!res) return false;
+
   console.log("Start training!");
   main().then(() => {
     console.log("Finish training!");
