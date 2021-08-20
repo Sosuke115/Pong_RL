@@ -44,9 +44,8 @@ async function drawTest() {
   const drawState = new DrawState();
   const rlAgent = new RLAgent(false);
 
-  await rlAgent.loadModel("http://localhost:3000/models/model-250.json");
-
-  console.log("load model");
+  // load model
+  await rlAgent.loadModel("http://localhost:3000/models/model-100000.json");
 
   let state = env.reset();
   drawState.draw(state);
@@ -60,15 +59,14 @@ async function drawTest() {
     humanAction = keyController.selectAction();
     // decrease frequency of inference (human action?)
     if (timeStep % rlAgent.config.frameSkip === 0) {
-      rlAction = rlAgent.selectAction(state, "rl")
+      // humanAction = rlAgent.selectAction(state, "human", false);
+      rlAction = rlAgent.selectAction(state, "rl", false);
     }
 
-    const action = {
+    const res = env.step({
       humanAction: humanAction,
       rlAction: rlAction,
-    };
-
-    const res = env.step(action);    
+    });
     drawState.draw(res.state);
 
     const endTime = performance.now();
@@ -76,6 +74,7 @@ async function drawTest() {
     await sleep(env.updateFrequency - (endTime - startTime));
 
     if (res.done) {
+      // console.log(endTime - startTime);
       state = env.reset();
       drawState.draw(state);
       timeStep = 0;

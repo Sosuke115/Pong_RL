@@ -1,5 +1,5 @@
 
-export function buildNetwork(inputDim, hiddenDim, layerNum) {
+export function buildNetwork(inputDim, outputDim, hiddenDim, layerNum) {
   const model = tf.sequential();
   model.add(
     tf.layers.dense({
@@ -20,7 +20,7 @@ export function buildNetwork(inputDim, hiddenDim, layerNum) {
 
   model.add(
     tf.layers.dense({
-      units: 3,
+      units: outputDim,
     }),
   );
 

@@ -124,7 +124,7 @@ export class PongRLEnv {
     const timeFactor = this.updateFrequency / 1000;
     let wasHit = false;
 
-    // If a paddle is already touching the wall, forceY should set to zero:
+    // If a paddle is already touching the wall, forceX should set to zero:
     if (!isBall && obj.forceX) {
       if (
         (obj.x === minX && obj.forceX < 0) ||
@@ -245,16 +245,6 @@ export class PongRLEnv {
     return this.getState();
   }
 
-  // actionInterpret(action_str) {
-  //   if (action_str === "left") {
-  //     return -1;
-  //   } else if (action_str === "right") {
-  //     return 1;
-  //   } else {
-  //     return 0;
-  //   }
-  // }
-
   actionToForce(action) {
     if (action === 0) {
       return -1.;
@@ -282,27 +272,10 @@ export class PongRLEnv {
       done = true;
     }
 
-    // Ask controllers for action based on current state.
-    // Either every few frames or if there's a winner (to give them a chance to register the win)
-    // let rlAction = this.rlPaddle.lastAction || 0;
-    // let humanAction = this.humanPaddle.lastAction || 0;
-
-    // if (
-    //   this.currentState.winner ||
-    //   this.currentFrame % this.controllerFrameInterval === 0
-    // ) {
-    // const rlAction = this.actionInterpret(action.rlAction);
-    // const humanAction = this.actionInterpret(action.humanAction);
-    // }
-
     this.rlPaddle.forceX = this.actionToForce(action.rlAction);
     this.humanPaddle.forceX = this.actionToForce(action.humanAction);
 
-    // this.rlPaddle.lastAction = rlAction;
-    // this.humanPaddle.lastAction = humanAction;
-
     // Update each object:
-    // for (let i = 0; i < this.frameSkip; i++) {
     this.moveObject(this.rlPaddle, false);
     this.moveObject(this.humanPaddle, false);
     const ballWasHit = this.moveObject(this.ball, true);
@@ -314,7 +287,6 @@ export class PongRLEnv {
         this.ball.speed * this.ballSpeedIncrease
       );
     }
-    // }
 
     this.currentFrame += 1;
 
