@@ -1,6 +1,6 @@
 import { PongRLEnv } from "./pongRLEnv.js";
 import { KeyController } from "./keyController.js";
-import { RLAgent } from "./agent.js";
+import { RLAgent, RandomAgent } from "./agent.js";
 // import { DrawState } from "../frontend/pongRLFront.js";
 
 // TODO: import from pongRLFront.js.
@@ -44,8 +44,12 @@ function sleep(msec) {
 async function getController(input) {
   let controller;
   if (input) {
-    controller = new RLAgent(false);
-    await controller.loadModel(`http://localhost:3000/js/rl/models/model-${input}.json`);
+    if (input === "0") {
+      controller = new RandomAgent();
+    } else {
+      controller = new RLAgent(false);
+      await controller.loadModel(`http://localhost:3000/js/rl/models/model-${input}.json`);
+    }
   } else {
     controller = new KeyController();
   }
@@ -60,12 +64,7 @@ async function main(humanInput, rlInput) {
   const humanController = await getController(humanInput);
   const rlController = await getController(rlInput);
 
-  let frameSkip;
-  if (humanController instanceof RLAgent) {
-    frameSkip = humanController.config.frameSkip;
-  } else {
-    frameSkip = rlController.config.frameSkip;
-  }
+  const frameSkip = (new RLAgent()).config.frameSkip;
 
   let state = env.reset();
   drawState.draw(state);
