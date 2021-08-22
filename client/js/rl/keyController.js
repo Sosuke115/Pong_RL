@@ -31,8 +31,8 @@ export class KeyController {
   }
 
   selectAction() {
-    if (this.isLeftKeyPressed) return "left";
-    if (this.isRightKeyPressed) return "right";
-    return "noop";
+    if (this.isLeftKeyPressed) return 0;
+    if (this.isRightKeyPressed) return 2;
+    return 1;
   }
 }

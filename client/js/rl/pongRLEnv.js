@@ -6,14 +6,12 @@ export class PongRLEnv {
       paddleWidth: 0.25,
       canvasId: "gameCanvas",
 
-      // If false, doesn't draw and goes as fast as possible
-      live: true,
-
       // How often the game should be updated / redrawn
-      updateFrequency: 10, // = 100 FPS
+      updateFrequency: 10, // = 10 FPS
 
-      // Ask controllers every X frames for an updated action:
-      controllerFrameInterval: 5, // 25 FPS / 5 = 5 updates per second
+      // // Ask controllers every X frames for an updated action:
+      // controllerFrameInterval: 5, // 25 FPS / 5 = 5 updates per second
+      // frameSkip: 5,
 
       // How fast the paddles and the ball can move
       paddleSpeed: 1,
@@ -29,7 +27,7 @@ export class PongRLEnv {
     Object.assign(this, options);
     // How much time has passed at each update. Fixed so we get same results
     // on every machine.
-    this.timeFactor = this.updateFrequency / 1000;
+    // this.timeFactor = this.updateFrequency / 1000;
 
     // Keep track of the ball and two paddles.
     this.rlPaddleInitState = {
@@ -93,7 +91,7 @@ export class PongRLEnv {
         width: this.humanPaddle.width,
       },
       winner: this.getWinner(),
-      timePassed: this.currentFrame * this.timeFactor,
+      timePassed: this.currentFrame * this.updateFrequency,
     };
     return state;
   }
@@ -119,13 +117,14 @@ export class PongRLEnv {
 
   // Move the given object by its force, checking for collisions and potentially
   // updating the force values. If the ball, returns whether it was hit by a paddle.
-  moveObject(obj, timeFactor, isBall) {
+  moveObject(obj, isBall) {
     const radiusX = obj.width / 2;
     const minX = radiusX;
     const maxX = 1 - radiusX;
+    const timeFactor = this.updateFrequency / 1000;
     let wasHit = false;
 
-    // If a paddle is already touching the wall, forceY should set to zero:
+    // If a paddle is already touching the wall, forceX should set to zero:
     if (!isBall && obj.forceX) {
       if (
         (obj.x === minX && obj.forceX < 0) ||
@@ -246,13 +245,13 @@ export class PongRLEnv {
     return this.getState();
   }
 
-  actionInterpret(action_str) {
-    if (action_str === "left") {
-      return -1;
-    } else if (action_str === "right") {
-      return 1;
+  actionToForce(action) {
+    if (action === 0) {
+      return -1.;
+    } else if (action === 2) {
+      return 1.;
     } else {
-      return 0;
+      return 0.;
     }
   }
 
@@ -273,29 +272,13 @@ export class PongRLEnv {
       done = true;
     }
 
-    // Ask controllers for action based on current state.
-    // Either every few frames or if there's a winner (to give them a chance to register the win)
-    let rlAction = this.rlPaddle.lastAction || 0;
-    let humanAction = this.humanPaddle.lastAction || 0;
-
-    if (
-      this.currentState.winner ||
-      this.currentFrame % this.controllerFrameInterval === 0
-    ) {
-      rlAction = this.actionInterpret(action.rlAction);
-      humanAction = this.actionInterpret(action.humanAction);
-    }
-
-    this.rlPaddle.forceX = rlAction;
-    this.humanPaddle.forceX = humanAction;
-
-    this.rlPaddle.lastAction = rlAction;
-    this.humanPaddle.lastAction = humanAction;
+    this.rlPaddle.forceX = this.actionToForce(action.rlAction);
+    this.humanPaddle.forceX = this.actionToForce(action.humanAction);
 
     // Update each object:
-    this.moveObject(this.rlPaddle, this.timeFactor);
-    this.moveObject(this.humanPaddle, this.timeFactor);
-    const ballWasHit = this.moveObject(this.ball, this.timeFactor, true);
+    this.moveObject(this.rlPaddle, false);
+    this.moveObject(this.humanPaddle, false);
+    const ballWasHit = this.moveObject(this.ball, true);
 
     if (ballWasHit) {
       // Increase ball speed
