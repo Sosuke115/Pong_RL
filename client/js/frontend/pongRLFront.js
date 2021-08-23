@@ -8,6 +8,17 @@ class DrawState {
     this.ctx = this.canvas.getContext("2d");
   }
 
+  drawHorizontalLine(winner) {
+    let line_y = winner == "rl" ? this.canvas.height : 0;
+    this.ctx.strokeStyle = "#CEB845";
+    this.ctx.lineWidth = 10;
+    this.ctx.beginPath();
+    this.ctx.moveTo(0, line_y);
+    this.ctx.lineTo(this.canvas.width, line_y);
+    this.ctx.closePath();
+    this.ctx.stroke();
+  }
+
   // Given an object with coordinates and size, draw it to the canvas
   drawObject(obj, color) {
     const width = obj.width * this.canvas.width;
@@ -29,6 +40,10 @@ class DrawState {
     this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.lineWidth = 1;
 
+    if (state.winner) {
+      this.drawHorizontalLine(state.winner);
+    }
+
     this.drawObject(state.ball, "#FFFFFF");
     this.drawObject(state.humanPaddle, "#628DA5");
     this.drawObject(state.rlPaddle, "#628DA5");
@@ -37,6 +52,10 @@ class DrawState {
       window.requestAnimationFrame(resolve);
     });
   }
+}
+
+function sleep(msec) {
+  return new Promise((resolve) => setTimeout(resolve, Math.max(msec, 0)));
 }
 
 // 描画をテストする関数
