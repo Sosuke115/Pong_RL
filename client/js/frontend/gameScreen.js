@@ -3,8 +3,7 @@ import { KeyController } from "../rl/keyController.js";
 import { RLAgent, RandomAgent } from "../rl/agent.js";
 
 //Stateから描画するクラス
-//GameScreen
-class DrawState {
+export class GameScreen {
   constructor() {
     this.canvas = document.getElementById("gameCanvas");
     this.ctx = this.canvas.getContext("2d");
@@ -61,11 +60,12 @@ function sleep(msec) {
 }
 
 // 描画をテストする関数
-function drawTest() {
+// todo RLモデルの導入
+export function drawTest() {
   const keyController = new KeyController();
   const pongRLEnv = new PongRLEnv();
-  const drawState = new DrawState();
-  drawState.draw(pongRLEnv.reset());
+  const gameScreen = new GameScreen();
+  gameScreen.draw(pongRLEnv.reset());
   const refreshIntervalId = setInterval(() => {
     // action
     let action = {
@@ -75,17 +75,13 @@ function drawTest() {
     // step
     let res = pongRLEnv.step(action);
     // draw
-    drawState.draw(res.state);
+    gameScreen.draw(res.state);
     if (res.done) {
-      drawState.draw(pongRLEnv.reset());
+      gameScreen.draw(pongRLEnv.reset());
       // clearInterval(refreshIntervalId);
     }
   }, pongRLEnv.updateFrequency);
 }
-
-$(document).ready(() => {
-  drawTest();
-});
 
 /**
  * 角が丸い四角形のパスを作成する
