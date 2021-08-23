@@ -1,7 +1,9 @@
 import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyController } from "../rl/keyController.js";
+import { RLAgent, RandomAgent } from "../rl/agent.js";
 
 //Stateから描画するクラス
+//GameScreen
 class DrawState {
   constructor() {
     this.canvas = document.getElementById("gameCanvas");
