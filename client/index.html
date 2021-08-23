@@ -1,25 +1,55 @@
 <!DOCTYPE html>
 <html lang="ja">
- <head>
- <meta charset="utf-8">
- <title>サイトタイトル</title>
- <meta name="description" content="ディスクリプションを入力">
- <link rel="stylesheet" href="css/style.css">
- </head>
- <body>
-
- <!----- main ----->
- <section class="animated section" id="game">
+  <head>
+    <meta charset="utf-8" />
+    <title>Pong RL</title>
+    <meta name="description" content="ディスクリプションを入力" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!----- main ----->
     <div class="container">
-      <div class="columns">
-        <div class="column has-text-centered">
-          <canvas id="gameCanvas" width="400" height="480"></canvas>
+      <div class="title">Pong RL</div>
+      <div class="button-area">
+        <div class="button-description">~ Select training step ~</div>
+        <div class="frame-buttons">
+          <table>
+            <tr>
+              <td>
+                <div class="frame-button"><button>random</button></div>
+              </td>
+              <td>
+                <div class="frame-button"><button>10,000</button></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="frame-button"><button>10,000</button></div>
+              </td>
+              <td>
+                <div class="frame-button"><button>10,000</button></div>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
+      <div class="game">
+        <canvas id="gameCanvas" width="350" height="400"></canvas>
+      </div>
+
+      <br />
+
+      <div class="key-area">
+        <div class="left-key"></div>
+        <div class="time-area">
+          <div class="time-description">time</div>
+          <div class="time">58</div>
+        </div>
+        <div class="right-key"></div>
+      </div>
     </div>
-  </section>
- <!----- /main ----->
- <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
- <script src="js/frontend/pongRLFront.js" type="module"></script> 
- </body>
+    <!----- /main ----->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="js/frontend/main.js" type="module"></script>
+  </body>
 </html>

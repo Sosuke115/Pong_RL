@@ -3,7 +3,7 @@ export class PongRLEnv {
   constructor(options) {
     //固定値
     options = {
-      paddleWidth: 0.25,
+      paddleWidth: 0.15,
       canvasId: "gameCanvas",
 
       // How often the game should be updated / redrawn
@@ -32,7 +32,7 @@ export class PongRLEnv {
     // Keep track of the ball and two paddles.
     this.rlPaddleInitState = {
       x: 0.5,
-      y: 0.02,
+      y: 0.04,
       height: 0.0375,
       width: this.paddleWidth,
       forceX: 0,
@@ -41,7 +41,7 @@ export class PongRLEnv {
     };
     this.humanPaddleInitState = {
       x: 0.5,
-      y: 0.98,
+      y: 0.96,
       height: 0.0375,
       width: this.paddleWidth,
       forceX: 0,
@@ -247,11 +247,11 @@ export class PongRLEnv {
 
   actionToForce(action) {
     if (action === 0) {
-      return -1.;
+      return -1;
     } else if (action === 2) {
-      return 1.;
+      return 1;
     } else {
-      return 0.;
+      return 0;
     }
   }
 
