@@ -15,15 +15,19 @@ class DrawState {
     const x = obj.x * this.canvas.width - width / 2;
     const y = obj.y * this.canvas.height - height / 2;
     this.ctx.fillStyle = color;
-    fillRoundRect(this.ctx, x, y, width, height, 10);
+    fillRoundRect(this.ctx, x, y, width, height, 5);
   }
 
   // Redraw the game based on the current state
   async draw(state) {
-    this.ctx.fillStyle = "#628DA5";
-    this.ctx.strokeStyle = "#628DA5";
+    this.ctx.fillStyle = "#FFFFFF";
+    this.ctx.strokeStyle = "#FFFFFF";
+
+    this.ctx.lineWidth = 3;
+
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.lineWidth = 1;
 
     this.drawObject(state.ball, "#FFFFFF");
     this.drawObject(state.humanPaddle, "#628DA5");

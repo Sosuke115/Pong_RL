@@ -32,8 +32,8 @@ export class PongRLEnv {
     // Keep track of the ball and two paddles.
     this.rlPaddleInitState = {
       x: 0.5,
-      y: 0.02,
-      height: 0.0375,
+      y: 0.03,
+      height: 0.0275,
       width: this.paddleWidth,
       forceX: 0,
       previousAction: null,
@@ -41,8 +41,8 @@ export class PongRLEnv {
     };
     this.humanPaddleInitState = {
       x: 0.5,
-      y: 0.98,
-      height: 0.0375,
+      y: 0.97,
+      height: 0.0275,
       width: this.paddleWidth,
       forceX: 0,
       previousAction: null,
@@ -247,11 +247,11 @@ export class PongRLEnv {
 
   actionToForce(action) {
     if (action === 0) {
-      return -1.;
+      return -1;
     } else if (action === 2) {
-      return 1.;
+      return 1;
     } else {
-      return 0.;
+      return 0;
     }
   }
 

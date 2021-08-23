@@ -1,9 +1,100 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap");
+
 body {
   height: 100%;
   width: 100%;
-  background-color: black;
-  margin: 0;
-  padding: 0;
+  background-color: #262544;
+  margin: 10;
+  padding: 10;
   color: white;
   overflow: hidden;
+  font-weight: 100;
+  font-family: "Quicksand", sans-serif;
+}
+
+.container {
+  text-align: center;
+  margin: 0 auto;
+}
+.title {
+  display: inline-block;
+  position: relative;
+  font-size: 70px;
+  margin-bottom: 10px;
+}
+
+.title:before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px; /*下線の上下位置調整*/
+  display: inline-block;
+  width: 150%; /*下線の幅*/
+  height: 2px; /*下線の太さ*/
+  -moz-transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translate(-50%); /*位置調整*/
+  background-color: #628da5; /*下線の色*/
+}
+
+.button-description {
+  font-size: 18px;
+}
+
+.game {
+  margin: 10px 0;
+  display: inline-block;
+}
+
+.frame-buttons {
+  margin: 10px 0;
+}
+.frame-buttons button {
+  width: 80px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 6px;
+}
+
+table {
+  margin: auto;
+  width: 300px;
+  height: 110px;
+}
+
+.key-area {
+  display: inline-block;
+  margin: 10px 0;
+}
+.time-area {
+  float: left;
+  margin-right: 70px;
+  margin-left: 70px;
+  margin-top: 0px;
+}
+.time {
+  font-size: 40px;
+}
+
+.time-description {
+  font-size: 20px;
+}
+.right-key {
+  width: 0;
+  height: 0;
+  border-left: 40px solid white;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  float: left;
+  margin-top: 10px;
+}
+.left-key {
+  width: 0;
+  height: 0;
+  border-right: 40px solid white;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  float: left;
+  margin-top: 10px;
 }
