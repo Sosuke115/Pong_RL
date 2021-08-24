@@ -9,18 +9,11 @@ export class PongRLEnv {
       // How often the game should be updated / redrawn
       updateFrequency: 10, // = 10 FPS
 
-      // // Ask controllers every X frames for an updated action:
-      // controllerFrameInterval: 5, // 25 FPS / 5 = 5 updates per second
-      // frameSkip: 5,
-
       // How fast the paddles and the ball can move
       paddleSpeed: 1,
       ballInitSpeed: 1,
-      ballSpeedIncrease: 1.01,
-      ballSpeedMax: 2,
-
-      // How strongly the image is downscaled for visual controllers
-      visualDownscalingFactor: 10,
+      ballSpeedIncrease: 1.02,
+      ballSpeedMax: 3,
 
       ...options,
     };
@@ -61,7 +54,7 @@ export class PongRLEnv {
 
   initBallDirection() {
     const forceX = 0.9 + Math.random() * 0.25;
-    const forceY = 0.5 + Math.random() * 0.25;
+    const forceY = 0.4 + Math.random() * 0.25;
     const norm = Math.sqrt(Math.pow(forceX, 2) + Math.pow(forceY, 2));
     this.ball.forceX = ((Math.random() > 0.5 ? 1 : -1) * forceX) / norm;
     this.ball.forceY = ((Math.random() > 0.5 ? 1 : -1) * forceY) / norm;

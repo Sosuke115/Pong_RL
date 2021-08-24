@@ -1,41 +1,8 @@
 import { PongRLEnv } from "./pongRLEnv.js";
 import { KeyController } from "./keyController.js";
 import { RLAgent, RandomAgent } from "./agent.js";
-// import { DrawState } from "../frontend/pongRLFront.js";
+import { GameScreen } from "../frontend/gameScreen.js";
 
-// TODO: import from pongRLFront.js.
-// Currently, it automatically starts a game.
-class DrawState {
-  constructor() {
-    this.canvas = document.getElementById("gameCanvas");
-    this.ctx = this.canvas.getContext("2d");
-  }
-
-  // Given an object with coordinates and size, draw it to the canvas
-  drawObject(obj) {
-    const width = obj.width * this.canvas.width;
-    const height = obj.height * this.canvas.height;
-    const x = obj.x * this.canvas.width - width / 2;
-    const y = obj.y * this.canvas.height - height / 2;
-    this.ctx.fillRect(x, y, width, height);
-  }
-
-  // Redraw the game based on the current state
-  async draw(state) {
-    this.ctx.fillStyle = "#e5e5e6";
-    this.ctx.strokeStyle = "#e5e5e6";
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
-
-    this.drawObject(state.ball);
-    this.drawObject(state.humanPaddle);
-    this.drawObject(state.rlPaddle);
-
-    return new Promise((resolve) => {
-      window.requestAnimationFrame(resolve);
-    });
-  }
-}
 
 function sleep(msec) {
   return new Promise(resolve => setTimeout(resolve, Math.max(msec, 0)));
@@ -56,9 +23,9 @@ async function getController(input) {
   return controller;
 }
 
-async function main(humanInput, rlInput) {
+async function main(humanInput, rlInput, visualize = true) {
   const env = new PongRLEnv();
-  const drawState = new DrawState();
+  const screen = new GameScreen();
 
   // load model
   const humanController = await getController(humanInput);
@@ -66,8 +33,11 @@ async function main(humanInput, rlInput) {
 
   const frameSkip = (new RLAgent()).config.frameSkip;
 
+  let gameCount = 0;
+  let rlWinRate = 0;
+
   let state = env.reset();
-  drawState.draw(state);
+  if (visualize) screen.draw(state);
   let timeStep = 0;
   let humanAction = undefined;
   let rlAction = undefined;
@@ -75,10 +45,14 @@ async function main(humanInput, rlInput) {
   while (true) {
     const startTime = performance.now();
 
-    // decrease frequency of inference (human action?)
-    if (timeStep % frameSkip === 0) {
-      // 3rd argument (false): no exploration
+    if (humanController instanceof KeyController) {
+      humanAction = humanController.selectAction();
+    } else if (timeStep % frameSkip === 0) {
       humanAction = humanController.selectAction(state, "human", false);
+    }
+    if (rlController instanceof KeyController) {
+      rlAction = rlController.selectAction();
+    } else if (timeStep % frameSkip === 0) {
       rlAction = rlController.selectAction(state, "rl", false);
     }
 
@@ -86,15 +60,21 @@ async function main(humanInput, rlInput) {
       humanAction: humanAction,
       rlAction: rlAction,
     });
-    drawState.draw(res.state);
+    if (visualize) screen.draw(res.state);
 
     const endTime = performance.now();
-    // decide sleep time considering the computation time so far
-    await sleep(env.updateFrequency - (endTime - startTime));
+    if (visualize) {
+      // decide sleep time considering the computation time so far
+      await sleep(env.updateFrequency - (endTime - startTime));
+    }
 
     if (res.done) {
+      gameCount += 1;
+      rlWinRate += (Number(res.reward === 1) - rlWinRate) / gameCount;
+      console.log(`gameCount: ${gameCount}  rlReward: ${res.reward}  rlWinRate: ${rlWinRate.toFixed(4)}`);
+
       state = env.reset();
-      drawState.draw(state);
+      if (visualize) screen.draw(state);
       timeStep = 0;
     } else {
       state = res.state;
@@ -118,10 +98,12 @@ $("#start-button").on("click", () => {
     return false;
   }
 
+  const visualize = $("#visualize-checkbox").prop("checked");
+
   // Disable the start button.
   // Please reload the page if you want to restart.
   $("#start-button").prop("disabled", true);
 
-  console.log(`Start  Human: "${humanInput}" RL: "${rlInput}"`);
-  main(humanInput, rlInput);
+  console.log(`Start  Human: "${humanInput}" RL: "${rlInput}" visualize: ${visualize}`);
+  main(humanInput, rlInput, visualize);
 });
