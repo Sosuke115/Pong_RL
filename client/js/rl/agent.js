@@ -18,12 +18,13 @@ export class RandomAgent {
 export class RLAgent {
   constructor(train = true) {
     this.config = {
-      state_dim: 6,
-      action_num: 3,
+      stateDim: 6,
+      actionNum: 3,
       gamma: 0.99,
       lr: 1.0e-4,
-      targetSyncFreq: 500,
-      frameSkip: 4,
+      targetSyncFreq: 1000,
+      frameSkip: 8,
+      // nstep: 1,
       epsilon: {
         init: 1.0,
         end: 0.05,
@@ -32,18 +33,19 @@ export class RLAgent {
       model: {
         hiddenDim: 256,
         layerNum: 4,
+        batchNorm: false,
         dropout: 0.0,
       },
     };
 
     this.qnet = buildNetwork(
-      this.config.state_dim, this.config.action_num,
+      this.config.stateDim, this.config.actionNum,
       this.config.model.hiddenDim, this.config.model.layerNum, this.config.model.dropout,
     );
 
     if (train) {
       this.qnetTarget = buildNetwork(
-        this.config.state_dim, this.config.action_num,
+        this.config.stateDim, this.config.actionNum,
         this.config.model.hiddenDim, this.config.model.layerNum, this.config.model.dropout,
       );
       this.qnetTarget.trainable = false
@@ -55,18 +57,23 @@ export class RLAgent {
   }
 
   stateToArray(state, side = "rl") {
-    const ballX = state.ball.x;
-    const ballY = state.ball.y;
+    // const ballX = state.ball.x;
+    // const ballY = state.ball.y;
+    const ballX = state.ball.x * 2 - 1;
+    const ballY = state.ball.y * 2 - 1;
     const ballForceX = state.ball.forceX;
     const ballForceY = state.ball.forceY;
-    const rlX = state.rlPaddle.x;
-    const humanX = state.humanPaddle.x;
+    // const rlX = state.rlPaddle.x;
+    // const humanX = state.humanPaddle.x;
+    const rlX = state.rlPaddle.x * 2 - 1;
+    const humanX = state.humanPaddle.x * 2 - 1;
 
     if (side === "rl") {
       return [ballX, ballY, ballForceX, ballForceY, rlX, humanX];
     } else {
       // flip position and force
-      return [1-ballX, 1-ballY, -ballForceX, -ballForceY, 1-humanX, 1-rlX];
+      // return [1-ballX, 1-ballY, -ballForceX, -ballForceY, 1-humanX, 1-rlX];
+      return [-ballX, -ballY, -ballForceX, -ballForceY, -humanX, -rlX];
     }
   }
 
@@ -132,9 +139,10 @@ export class RLAgent {
       ]);
 
       // calculate double DQN loss
-      const q = this.qnet.apply(stateTensor, {training: true}).mul(tf.oneHot(actionTensor, this.config.action_num)).sum(-1);
+      const q = this.qnet.apply(stateTensor, {training: true}).mul(tf.oneHot(actionTensor, this.config.actionNum)).sum(-1);
       const nextPi = this.qnet.predict(nextStateTensor).argMax(-1);
-      const nextTargetQ = this.qnetTarget.predict(nextStateTensor).mul(tf.oneHot(nextPi, this.config.action_num)).sum(-1);
+      const nextTargetQ = this.qnetTarget.predict(nextStateTensor).mul(tf.oneHot(nextPi, this.config.actionNum)).sum(-1);
+      // const y = rewardTensor.add(nextTargetQ.mul(maskTensor).mul(this.config.gamma ** this.config.nstep));
       const y = rewardTensor.add(nextTargetQ.mul(maskTensor).mul(this.config.gamma));
       return tf.losses.meanSquaredError(y, q);
     });

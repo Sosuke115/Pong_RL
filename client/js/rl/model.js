@@ -1,34 +1,20 @@
 
-export function buildNetwork(inputDim, outputDim, hiddenDim, layerNum, dropout) {
+export function buildNetwork(inputDim, outputDim, hiddenDim, layerNum, batchNorm, dropout) {
   const model = tf.sequential();
-  model.add(
-    tf.layers.dense({
-      units: hiddenDim,
-      inputShape: [inputDim],
-      activation: "relu",
-    }),
-  );
-  if (dropout > 0) {
-    model.add(tf.layers.dropout({rate: dropout}));
-  }
+
+  model.add(tf.layers.dense({units: hiddenDim, inputShape: [inputDim]}));
+  if (batchNorm) model.add(tf.layers.batchNormalization());
+  model.add(tf.layers.reLU());
+  if (dropout > 0) model.add(tf.layers.dropout({rate: dropout}));
 
   for (let i = 0; i < layerNum - 2; i++) {
-    model.add(
-      tf.layers.dense({
-        units: hiddenDim,
-        activation: "relu",
-      }),
-    );
-    if (dropout > 0) {
-      model.add(tf.layers.dropout({rate: dropout}));
-    }
+    model.add(tf.layers.dense({units: hiddenDim}));
+    if (batchNorm) model.add(tf.layers.batchNormalization());
+    model.add(tf.layers.reLU());
+    if (dropout > 0) model.add(tf.layers.dropout({rate: dropout}));
   }
 
-  model.add(
-    tf.layers.dense({
-      units: outputDim,
-    }),
-  );
+  model.add(tf.layers.dense({units: outputDim}));
 
   return model;
 }

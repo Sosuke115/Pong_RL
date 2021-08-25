@@ -1,14 +1,14 @@
 import { PongRLEnv } from "./pongRLEnv.js";
 import { RLAgent, RandomAgent } from "./agent.js";
-import { ReplayMemory } from "./replay_memory.js";
+import { ReplayMemory } from "./replayMemory.js";
 
 
 async function main() {
   const config = {
-    memoryCapacity: 10000,
-    maxStep: 50000,
+    memoryCapacity: 50000,
+    maxStep: 40000,
     batchSize: 128,
-    checkpointFreq: 10000,
+    checkpointFreq: 5000,
   };
 
   const env = new PongRLEnv();
