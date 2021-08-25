@@ -47,15 +47,23 @@ body {
   display: inline-block;
 }
 
-.frame-buttons {
+.rl-selection-button-container {
   margin: 10px 0;
 }
-.frame-buttons button {
+.rl-selection-button-container button {
   width: 80px;
   height: 40px;
   line-height: 40px;
   border-radius: 6px;
 }
+
+/* .rl-selection-button {
+  background-color: #ceb845;
+} */
+
+/* #step-0k {
+  background-color: #ceb845;
+} */
 
 table {
   margin: auto;

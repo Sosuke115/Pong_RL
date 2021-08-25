@@ -55,34 +55,6 @@ export class GameScreen {
   }
 }
 
-function sleep(msec) {
-  return new Promise((resolve) => setTimeout(resolve, Math.max(msec, 0)));
-}
-
-// 描画をテストする関数
-// todo RLモデルの導入
-export function drawTest() {
-  const keyController = new KeyController();
-  const pongRLEnv = new PongRLEnv();
-  const gameScreen = new GameScreen();
-  gameScreen.draw(pongRLEnv.reset());
-  const refreshIntervalId = setInterval(() => {
-    // action
-    let action = {
-      humanAction: keyController.selectAction(),
-      rlAction: "noop",
-    };
-    // step
-    let res = pongRLEnv.step(action);
-    // draw
-    gameScreen.draw(res.state);
-    if (res.done) {
-      gameScreen.draw(pongRLEnv.reset());
-      // clearInterval(refreshIntervalId);
-    }
-  }, pongRLEnv.updateFrequency);
-}
-
 /**
  * 角が丸い四角形のパスを作成する
  * @param  {CanvasRenderingContext2D} ctx コンテキスト
