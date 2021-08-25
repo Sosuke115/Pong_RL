@@ -69,13 +69,11 @@ async function main(rlId) {
 }
 
 // Process for training step button
-let lastButtonId = undefined; // global変数使うのは微妙か？・・？
 $(".rl-selection-button").on("click", function () {
   // color
   const buttonId = $(this).attr("id");
-  $("#" + lastButtonId).css("background-color", "#FFFFFF");
+  $(".rl-selection-button").css("background-color", "#FFFFFF");
   $("#" + buttonId).css("background-color", "#CEB845");
-  lastButtonId = buttonId;
 
   // rl model
   const rlId = parseInt(
@@ -89,6 +87,7 @@ $(".rl-selection-button").on("click", function () {
   $(".rl-selection-button").prop("disabled", true);
 });
 
+// 
 $(document).keydown(function (event) {
   if (event.key === "ArrowRight") {
     $(".right-key").css("border-left", "40px solid #628DA5");
