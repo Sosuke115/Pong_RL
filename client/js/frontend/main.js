@@ -1,4 +1,5 @@
 import { GameScreen } from "./gameScreen.js";
+import { Scorer } from "./scorer.js";
 import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyController } from "../rl/keyController.js";
 import { RLAgent, RandomAgent } from "../rl/agent.js";
@@ -30,6 +31,7 @@ async function main(rlId) {
   const humanController = await getController(-1);
   const rlController = await getController(rlId);
   const frameSkip = new RLAgent().config.frameSkip;
+  const scorer = new Scorer();
 
   let state = env.reset();
   gameScreen.draw(state);
@@ -51,6 +53,7 @@ async function main(rlId) {
       humanAction: humanAction,
       rlAction: rlAction,
     });
+
     gameScreen.draw(res.state);
 
     const endTime = performance.now();
@@ -60,6 +63,7 @@ async function main(rlId) {
     if (res.done) {
       state = env.reset();
       gameScreen.draw(state);
+      scorer.step_and_draw(res.state.winner);
       timeStep = 0;
     } else {
       state = res.state;
@@ -87,7 +91,7 @@ $(".rl-selection-button").on("click", function () {
   $(".rl-selection-button").prop("disabled", true);
 });
 
-// 
+//
 $(document).keydown(function (event) {
   if (event.key === "ArrowRight") {
     $(".right-key").css("border-left", "40px solid #628DA5");
