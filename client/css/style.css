@@ -12,6 +12,10 @@ body {
   font-family: "Quicksand", sans-serif;
 }
 
+button {
+  font-family: "Quicksand", sans-serif;
+}
+
 .container {
   text-align: center;
   margin: 0 auto;
@@ -57,14 +61,6 @@ body {
   border-radius: 6px;
 }
 
-/* .rl-selection-button {
-  background-color: #ceb845;
-} */
-
-/* #step-0k {
-  background-color: #ceb845;
-} */
-
 table {
   margin: auto;
   width: 250px;
@@ -75,19 +71,50 @@ table {
   display: inline-block;
   margin: 10px 0;
 }
-.time-area {
+.restart-button {
+  width: 100px;
+  height: 50px;
+  line-height: 40px;
+  border-radius: 6px;
   float: left;
   margin-right: 70px;
   margin-left: 70px;
-  margin-top: 0px;
-}
-.time {
-  font-size: 40px;
-}
-
-.time-description {
+  margin-top: 10px;
   font-size: 20px;
 }
+
+.time-area{
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 20px;
+  margin-top: 20px;
+}
+
+.time-area .time-description {
+  font-size: 20px;
+}
+
+.time-area .time {
+  margin-top: 130px;
+  font-size: 45px;
+}
+
+.score-area{
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+.score-area .score-description {
+  font-size: 20px;
+}
+
+.score-area .score {
+  margin-top: 80px;
+  font-size: 45px;
+}
+
 .right-key {
   width: 0;
   height: 0;
