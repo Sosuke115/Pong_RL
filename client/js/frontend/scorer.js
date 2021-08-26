@@ -11,9 +11,9 @@ export class Scorer {
   }
 
   step(humanOrRl) {
-    if (humanOrRl == "human") {
+    if (humanOrRl === "human") {
       this.humanScore += 1;
-    } else if (humanOrRl == "rl") {
+    } else if (humanOrRl === "rl") {
       this.rlScore += 1;
     } else {
       // do nothing
