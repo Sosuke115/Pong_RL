@@ -10,6 +10,7 @@
     <!----- main ----->
     <div class="container">
       <div class="title">Pong RL</div>
+
       <div class="button-area">
         <div class="button-description">~ Select training step ~</div>
         <div class="rl-selection-button-container">
@@ -39,18 +40,29 @@
           </table>
         </div>
       </div>
-      <div class="game">
-        <canvas id="gameCanvas" width="350" height="400"></canvas>
+
+      <div class="game-area">
+        <div class="time-area">
+          <div class="time-description">time</div>
+          <div class="time">60</div>
+        </div>
+
+        <div class="game">
+          <canvas id="gameCanvas" width="350" height="400"></canvas>
+        </div>
+
+        <div class="score-area">
+          <div class="score-description">score</div>
+          <div class="score" id="rl-score">0</div>
+          <div class="score" id="human-score">0</div>
+        </div>
       </div>
 
       <br />
 
       <div class="key-area">
         <div class="left-key"></div>
-        <div class="time-area">
-          <div class="time-description">time</div>
-          <div class="time">58</div>
-        </div>
+        <button class="restart-button">Restart</button>
         <div class="right-key"></div>
       </div>
     </div>
