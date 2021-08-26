@@ -1,4 +1,4 @@
-// スコアの保持・描画を担当
+// スコアの保持と描画
 export class Scorer {
   constructor() {
     this.rlScore = 0;

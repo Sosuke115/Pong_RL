@@ -1,5 +1,6 @@
 import { GameScreen } from "./gameScreen.js";
 import { Scorer } from "./scorer.js";
+import { Timer } from "./timer.js";
 import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyController } from "../rl/keyController.js";
 import { RLAgent, RandomAgent } from "../rl/agent.js";
@@ -23,6 +24,7 @@ async function getController(input) {
   return controller;
 }
 
+// flagで終了する形式にする？
 async function main(rlId) {
   const env = new PongRLEnv();
   const gameScreen = new GameScreen();
@@ -32,6 +34,7 @@ async function main(rlId) {
   const rlController = await getController(rlId);
   const frameSkip = new RLAgent().config.frameSkip;
   const scorer = new Scorer();
+  const timer = new Timer(60);
 
   let state = env.reset();
   gameScreen.draw(state);
@@ -55,6 +58,7 @@ async function main(rlId) {
     });
 
     gameScreen.draw(res.state);
+    timer.draw();
 
     const endTime = performance.now();
     // decide sleep time considering the computation time so far
