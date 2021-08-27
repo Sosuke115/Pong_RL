@@ -24,9 +24,21 @@ async function getController(input) {
   return controller;
 }
 
+function getEndFlag(remTime) {
+  let reStartFlag = $("#start-button").prop("disabled");
+  if (reStartFlag) {
+    return 1; // button break
+  } else if (remTime === 0) {
+    return 2; // time break
+  } else {
+    return -1;
+  }
+}
+
 // flagで終了する形式にする？
 async function main(rlId) {
   const env = new PongRLEnv();
+  console.log(`Start  RL: "${rlId}"`);
   const gameScreen = new GameScreen();
 
   // load model
@@ -34,17 +46,31 @@ async function main(rlId) {
   const rlController = await getController(rlId);
   const frameSkip = new RLAgent().config.frameSkip;
   const scorer = new Scorer();
-  const timer = new Timer(60);
+  const timer = new Timer(10);
 
   let state = env.reset();
   gameScreen.draw(state);
+  timer.draw();
+  scorer.draw();
   let timeStep = 0;
   let humanAction = undefined;
   let rlAction = undefined;
+  let endFlag = -1;
 
   while (true) {
-    const startTime = performance.now();
+    // monitor the end flag
+    let endFlag = getEndFlag(timer.getRemTime());
 
+    // handle the end flag
+    if (endFlag != -1) {
+      if (endFlag == 2) {
+        $("#start-button").removeClass("first-click");
+      }
+      $("#start-button").prop("disabled", false);
+      break;
+    }
+
+    const startTime = performance.now();
     // decrease frequency of inference (human action?)
     if (timeStep % frameSkip === 0) {
       // 3rd argument (false): no exploration
@@ -74,6 +100,7 @@ async function main(rlId) {
       timeStep += 1;
     }
   }
+  gameScreen.clearCanvas();
 }
 
 // Process for training step button
@@ -94,21 +121,24 @@ $(".rl-selection-button").on("click", function () {
   $("#" + buttonId).prop("disabled", true);
 });
 
-// Process for restart button
-$(".restart-button").on("click", function () {
-
-  let rlId = undefined
-
-  $(".rl-selection-button").each(function(index, element){ 
-    if ($(element).prop("disabled")){
-      rlId = parseInt(
-        $(element)
-          .text()
-          .replace(/,/, "")
-      );
+// Start button
+$("#start-button").on("click", async function () {
+  let rlId = undefined;
+  $(".rl-selection-button").each(function (index, element) {
+    if ($(element).prop("disabled")) {
+      rlId = parseInt($(element).text().replace(/,/, ""));
     }
   });
-  // console.log(rlId);
+
+  if ($(this).hasClass("first-click") == false) {
+    $(this).addClass("first-click");
+    $(this).text("ReStart");
+  } else {
+    $("#start-button").prop("disabled", true);
+    // falseになるまで（前回のmainが終わるまで）待つ
+    // TODO確実にfalseになるまで待つようにしたい
+    await sleep(100);
+  }
   main(rlId);
 });
 

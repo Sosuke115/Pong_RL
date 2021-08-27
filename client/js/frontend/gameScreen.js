@@ -30,6 +30,10 @@ export class GameScreen {
     fillRoundRect(this.ctx, x, y, width, height, 5);
   }
 
+  clearCanvas() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
   // Redraw the game based on the current state
   async draw(state) {
     this.ctx.fillStyle = "#FFFFFF";
