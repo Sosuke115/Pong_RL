@@ -78,6 +78,7 @@ async function main(rlId) {
 
 // Process for training step button
 $(".rl-selection-button").on("click", function () {
+  $(".rl-selection-button").prop("disabled", false);
   // color
   const buttonId = $(this).attr("id");
   $(".rl-selection-button").css("background-color", "#FFFFFF");
@@ -90,9 +91,25 @@ $(".rl-selection-button").on("click", function () {
       .replace(/,/, "")
   );
 
+  $("#" + buttonId).prop("disabled", true);
+});
+
+// Process for restart button
+$(".restart-button").on("click", function () {
+
+  let rlId = undefined
+
+  $(".rl-selection-button").each(function(index, element){ 
+    if ($(element).prop("disabled")){
+      rlId = parseInt(
+        $(element)
+          .text()
+          .replace(/,/, "")
+      );
+    }
+  });
+  // console.log(rlId);
   main(rlId);
-  // todo restart button
-  $(".rl-selection-button").prop("disabled", true);
 });
 
 //
