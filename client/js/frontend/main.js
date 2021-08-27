@@ -37,16 +37,22 @@ function getEndFlag(remTime) {
 
 // flagで終了する形式にする？
 async function main(rlId) {
+
+  // 
   const env = new PongRLEnv();
   console.log(`Start  RL: "${rlId}"`);
-  const gameScreen = new GameScreen();
+
+  // load game screen
+  const betweenMatchInterval = 200;
+  const goalEffectInterval = 500;
+  const gameScreen = new GameScreen(goalEffectInterval);
 
   // load model
   const humanController = await getController(-1);
   const rlController = await getController(rlId);
   const frameSkip = new RLAgent().config.frameSkip;
   const scorer = new Scorer();
-  const timer = new Timer(10);
+  const timer = new Timer(60);
 
   let state = env.reset();
   gameScreen.draw(state);
@@ -56,6 +62,8 @@ async function main(rlId) {
   let humanAction = undefined;
   let rlAction = undefined;
   let endFlag = -1;
+
+  await sleep(betweenMatchInterval);
 
   while (true) {
     // monitor the end flag
@@ -88,13 +96,16 @@ async function main(rlId) {
 
     const endTime = performance.now();
     // decide sleep time considering the computation time so far
-    await sleep(env.updateFrequency - (endTime - startTime));
+    let sleepTime = env.updateFrequency - (endTime - startTime)
+    if (res.done) {sleepTime = sleepTime + goalEffectInterval};
+    await sleep(sleepTime);
 
     if (res.done) {
       state = env.reset();
       gameScreen.draw(state);
       scorer.step_and_draw(res.state.winner);
       timeStep = 0;
+      await sleep(betweenMatchInterval);
     } else {
       state = res.state;
       timeStep += 1;
@@ -130,14 +141,14 @@ $("#start-button").on("click", async function () {
     }
   });
 
-  if ($(this).hasClass("first-click") == false) {
+  if ($(this).hasClass("first-click") === false) {
     $(this).addClass("first-click");
     $(this).text("ReStart");
   } else {
     $("#start-button").prop("disabled", true);
     // falseになるまで（前回のmainが終わるまで）待つ
     // TODO確実にfalseになるまで待つようにしたい
-    await sleep(100);
+    await sleep(80);
   }
   main(rlId);
 });
