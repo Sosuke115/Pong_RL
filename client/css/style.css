@@ -67,23 +67,7 @@ table {
   height: 110px;
 }
 
-.key-area {
-  display: inline-block;
-  margin: 10px 0;
-}
-.restart-button {
-  width: 100px;
-  height: 50px;
-  line-height: 40px;
-  border-radius: 6px;
-  float: left;
-  margin-right: 70px;
-  margin-left: 70px;
-  margin-top: 10px;
-  font-size: 20px;
-}
-
-.time-area{
+.time-area {
   display: inline-block;
   vertical-align: top;
   margin-right: 20px;
@@ -100,7 +84,7 @@ table {
   font-size: 45px;
 }
 
-.score-area{
+.score-area {
   display: inline-block;
   vertical-align: top;
   margin-left: 20px;
@@ -117,6 +101,23 @@ table {
   font-size: 45px;
 }
 
+.key-area {
+  display: inline-block;
+  margin: 10px 0;
+  margin-top: 0px;
+}
+
+#start-button {
+  width: 100px;
+  height: 50px;
+  line-height: 40px;
+  border-radius: 6px;
+  float: left;
+  margin-right: 70px;
+  margin-left: 70px;
+  font-size: 20px;
+}
+
 .right-key {
   width: 0;
   height: 0;
@@ -124,7 +125,7 @@ table {
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
   float: left;
-  margin-top: 15px;
+  margin-top: 3px;
 }
 .left-key {
   width: 0;
@@ -133,5 +134,5 @@ table {
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
   float: left;
-  margin-top: 15px;
+  margin-top: 3px;
 }

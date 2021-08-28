@@ -1,23 +1,48 @@
 import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyController } from "../rl/keyController.js";
 import { RLAgent, RandomAgent } from "../rl/agent.js";
+import { sleep } from "../utils.js";
 
 //Stateから描画するクラス
 export class GameScreen {
-  constructor() {
+  constructor(goalEffectInterval) {
     this.canvas = document.getElementById("gameCanvas");
     this.ctx = this.canvas.getContext("2d");
+    this.goalEffectInterval = goalEffectInterval;
   }
 
-  drawHorizontalLine(winner) {
+  drawHorizontalLine(winner, drawOrClear) {
     let line_y = winner == "rl" ? this.canvas.height : 0;
-    this.ctx.strokeStyle = "#CEB845";
-    this.ctx.lineWidth = 10;
-    this.ctx.beginPath();
-    this.ctx.moveTo(0, line_y);
-    this.ctx.lineTo(this.canvas.width, line_y);
-    this.ctx.closePath();
-    this.ctx.stroke();
+    if (drawOrClear === "draw") {
+      this.ctx.strokeStyle = "#CEB845";
+      this.ctx.lineWidth = 5;
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, line_y);
+      this.ctx.lineTo(this.canvas.width, line_y);
+      this.ctx.closePath();
+      this.ctx.stroke();
+    } else {
+      this.ctx.strokeStyle = "#FFFFFF";
+      this.ctx.lineWidth = 3;
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, line_y);
+      this.ctx.lineTo(this.canvas.width, line_y);
+      this.ctx.closePath();
+      this.ctx.stroke();
+    }
+  }
+
+  async drawGoalEffect(winner) {
+    let keepGoing = true;
+    setTimeout(function () {
+      keepGoing = false;
+    }, this.goalEffectInterval);
+    let drawOrClear = "draw";
+    while (keepGoing === true) {
+      this.drawHorizontalLine(winner, drawOrClear);
+      drawOrClear = drawOrClear === "draw" ? "clear" : "draw";
+      await sleep(100);
+    }
   }
 
   // Given an object with coordinates and size, draw it to the canvas
@@ -28,6 +53,10 @@ export class GameScreen {
     const y = obj.y * this.canvas.height - height / 2;
     this.ctx.fillStyle = color;
     fillRoundRect(this.ctx, x, y, width, height, 5);
+  }
+
+  clearCanvas() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   // Redraw the game based on the current state
@@ -42,7 +71,8 @@ export class GameScreen {
     this.ctx.lineWidth = 1;
 
     if (state.winner) {
-      this.drawHorizontalLine(state.winner);
+      this.drawGoalEffect(state.winner);
+      // this.drawHorizontalLine(state.winner);
     }
 
     this.drawObject(state.ball, "#FFFFFF");

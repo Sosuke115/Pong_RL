@@ -12,6 +12,10 @@ export class Timer {
     this.previousTime = new Date().getTime();
   }
 
+  getRemTime() {
+    return parseInt(this.limitTime / 1000);
+  }
+
   // 現在の残り時間を描画
   draw() {
     let currentTime = new Date().getTime();

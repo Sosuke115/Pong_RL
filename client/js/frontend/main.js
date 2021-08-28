@@ -24,10 +24,28 @@ async function getController(input) {
   return controller;
 }
 
+function getEndFlag(remTime) {
+  let reStartFlag = $("#start-button").prop("disabled");
+  if (reStartFlag) {
+    return 1; // button break
+  } else if (remTime === 0) {
+    return 2; // time break
+  } else {
+    return -1;
+  }
+}
+
 // flagで終了する形式にする？
 async function main(rlId) {
+
+  // 
   const env = new PongRLEnv();
-  const gameScreen = new GameScreen();
+  console.log(`Start  RL: "${rlId}"`);
+
+  // load game screen
+  const betweenMatchInterval = 200;
+  const goalEffectInterval = 500;
+  const gameScreen = new GameScreen(goalEffectInterval);
 
   // load model
   const humanController = await getController(-1);
@@ -38,13 +56,29 @@ async function main(rlId) {
 
   let state = env.reset();
   gameScreen.draw(state);
+  timer.draw();
+  scorer.draw();
   let timeStep = 0;
   let humanAction = undefined;
   let rlAction = undefined;
+  let endFlag = -1;
+
+  await sleep(betweenMatchInterval);
 
   while (true) {
-    const startTime = performance.now();
+    // monitor the end flag
+    let endFlag = getEndFlag(timer.getRemTime());
 
+    // handle the end flag
+    if (endFlag != -1) {
+      if (endFlag == 2) {
+        $("#start-button").removeClass("first-click");
+      }
+      $("#start-button").prop("disabled", false);
+      break;
+    }
+
+    const startTime = performance.now();
     // decrease frequency of inference (human action?)
     if (timeStep % frameSkip === 0) {
       // 3rd argument (false): no exploration
@@ -62,22 +96,27 @@ async function main(rlId) {
 
     const endTime = performance.now();
     // decide sleep time considering the computation time so far
-    await sleep(env.updateFrequency - (endTime - startTime));
+    let sleepTime = env.updateFrequency - (endTime - startTime)
+    if (res.done) {sleepTime = sleepTime + goalEffectInterval};
+    await sleep(sleepTime);
 
     if (res.done) {
       state = env.reset();
       gameScreen.draw(state);
       scorer.step_and_draw(res.state.winner);
       timeStep = 0;
+      await sleep(betweenMatchInterval);
     } else {
       state = res.state;
       timeStep += 1;
     }
   }
+  gameScreen.clearCanvas();
 }
 
 // Process for training step button
 $(".rl-selection-button").on("click", function () {
+  $(".rl-selection-button").prop("disabled", false);
   // color
   const buttonId = $(this).attr("id");
   $(".rl-selection-button").css("background-color", "#FFFFFF");
@@ -90,9 +129,28 @@ $(".rl-selection-button").on("click", function () {
       .replace(/,/, "")
   );
 
+  $("#" + buttonId).prop("disabled", true);
+});
+
+// Start button
+$("#start-button").on("click", async function () {
+  let rlId = undefined;
+  $(".rl-selection-button").each(function (index, element) {
+    if ($(element).prop("disabled")) {
+      rlId = parseInt($(element).text().replace(/,/, ""));
+    }
+  });
+
+  if ($(this).hasClass("first-click") === false) {
+    $(this).addClass("first-click");
+    $(this).text("ReStart");
+  } else {
+    $("#start-button").prop("disabled", true);
+    // falseになるまで（前回のmainが終わるまで）待つ
+    // TODO確実にfalseになるまで待つようにしたい
+    await sleep(80);
+  }
   main(rlId);
-  // todo restart button
-  $(".rl-selection-button").prop("disabled", true);
 });
 
 //
