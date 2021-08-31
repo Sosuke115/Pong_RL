@@ -5,6 +5,7 @@ import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyController } from "../rl/keyController.js";
 import { RLAgent, RandomAgent } from "../rl/agent.js";
 import { sleep } from "../utils.js";
+// import * as tf from "@tensorflow/tfjs";
 
 async function getController(input) {
   let controller;
