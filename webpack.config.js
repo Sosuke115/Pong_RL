@@ -4,12 +4,12 @@ const webpack = require('webpack');
 module.exports = {
     mode: 'development',
     entry: {
-        app: './client/js/frontend/main.js',
-        train: './client/js/rl/train.js',
-        test: './client/js/rl/test.js',
+        'dist/app': './client/js/frontend/main.js',
+        'js/rl/train': './client/js/rl/train.js',
+        'js/rl/test': './client/js/rl/test.js',
     },
     output: {
-        path: path.join(__dirname, 'client/dist'),
+        path: path.join(__dirname, 'client'),
         publicPath: '/js/',
         filename: `[name].bundle.js`,
     },
@@ -41,7 +41,7 @@ module.exports = {
                 test: /worker\.js$/,
                 loader: "worker-loader",
                 options: {
-                    inline: "fallback"
+                    inline: 'no-fallback',
                 },
             },
         ]
