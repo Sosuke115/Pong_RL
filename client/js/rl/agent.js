@@ -1,4 +1,5 @@
 import { buildNetwork, copyWeights } from "./model.js";
+import * as tf from "@tensorflow/tfjs";
 
 
 export class RandomAgent {

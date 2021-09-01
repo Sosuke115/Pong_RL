@@ -1,4 +1,6 @@
 
+import * as tf from "@tensorflow/tfjs";
+
 export function buildNetwork(inputDim, outputDim, hiddenDim, layerNum, batchNorm, dropout) {
   const model = tf.sequential();
 
