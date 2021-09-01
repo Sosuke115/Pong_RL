@@ -4,12 +4,14 @@ const webpack = require('webpack');
 module.exports = {
     mode: 'development',
     entry: {
-        app: ['./client/js/frontend/main.js']
+        app: './client/js/frontend/main.js',
+        train: './client/js/rl/train.js',
+        test: './client/js/rl/test.js',
     },
     output: {
         path: path.join(__dirname, 'client/dist'),
         publicPath: '/js/',
-        filename: `bundle.js`,
+        filename: `[name].bundle.js`,
     },
     module: {
         rules: [
@@ -34,7 +36,14 @@ module.exports = {
                         }
                     }
                 ]
-            }
+            },
+            {
+                test: /worker\.js$/,
+                loader: "worker-loader",
+                options: {
+                    inline: "fallback"
+                },
+            },
         ]
     },
     resolve: {
@@ -45,6 +54,6 @@ module.exports = {
           $: 'jquery',
           jQuery: 'jquery'
         })
-      ]
-
+    ],
+    devtool: "eval-source-map",
 };

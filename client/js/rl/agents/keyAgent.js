@@ -1,5 +1,5 @@
 // キー操作を管理するクラス
-export class KeyController {
+export class KeyAgent {
   constructor(options) {
     options = {
       leftKey: 37,

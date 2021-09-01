@@ -25,7 +25,6 @@ export class RLAgent {
       lr: 1.0e-4,
       targetSyncFreq: 1000,
       frameSkip: 8,
-      // nstep: 1,
       epsilon: {
         init: 1.0,
         end: 0.05,
@@ -58,14 +57,10 @@ export class RLAgent {
   }
 
   stateToArray(state, side = "rl") {
-    // const ballX = state.ball.x;
-    // const ballY = state.ball.y;
     const ballX = state.ball.x * 2 - 1;
     const ballY = state.ball.y * 2 - 1;
     const ballForceX = state.ball.forceX;
     const ballForceY = state.ball.forceY;
-    // const rlX = state.rlPaddle.x;
-    // const humanX = state.humanPaddle.x;
     const rlX = state.rlPaddle.x * 2 - 1;
     const humanX = state.humanPaddle.x * 2 - 1;
 
@@ -73,7 +68,6 @@ export class RLAgent {
       return [ballX, ballY, ballForceX, ballForceY, rlX, humanX];
     } else {
       // flip position and force
-      // return [1-ballX, 1-ballY, -ballForceX, -ballForceY, 1-humanX, 1-rlX];
       return [-ballX, -ballY, -ballForceX, -ballForceY, -humanX, -rlX];
     }
   }
@@ -114,18 +108,14 @@ export class RLAgent {
 
     const lossFunction = () => tf.tidy(() => {
       // merge data from rl side and human side
-      // const rlStateTensor = tf.tensor2d(batch.map(b => this.stateToArray(b.state, "rl")), undefined, "float32");
-      // const humanStateTensor = tf.tensor2d(batch.map(b => this.stateToArray(b.state, "human")), undefined, "float32");
       const stateTensor = tf.concat([
         tf.tensor2d(batch.map(b => this.stateToArray(b.state, "rl")), undefined, "float32"),
         tf.tensor2d(batch.map(b => this.stateToArray(b.state, "human")), undefined, "float32"),
       ]);
-      // const nextStateTensor = tf.tensor2d(batch.map(b => this.stateToArray(b.nextState)), undefined, "float32");
       const nextStateTensor = tf.concat([
         tf.tensor2d(batch.map(b => this.stateToArray(b.nextState, "rl")), undefined, "float32"),
         tf.tensor2d(batch.map(b => this.stateToArray(b.nextState, "human")), undefined, "float32"),
       ]);
-      // const actionTensor = tf.tensor1d(batch.map(b => b.action), "int32");
       const actionTensor = tf.concat([
         tf.tensor1d(batch.map(b => b.action[0]), "int32"),
         tf.tensor1d(batch.map(b => 2 - b.action[1]), "int32"), // flip action
@@ -143,7 +133,6 @@ export class RLAgent {
       const q = this.qnet.apply(stateTensor, {training: true}).mul(tf.oneHot(actionTensor, this.config.actionNum)).sum(-1);
       const nextPi = this.qnet.predict(nextStateTensor).argMax(-1);
       const nextTargetQ = this.qnetTarget.predict(nextStateTensor).mul(tf.oneHot(nextPi, this.config.actionNum)).sum(-1);
-      // const y = rewardTensor.add(nextTargetQ.mul(maskTensor).mul(this.config.gamma ** this.config.nstep));
       const y = rewardTensor.add(nextTargetQ.mul(maskTensor).mul(this.config.gamma));
       return tf.losses.meanSquaredError(y, q);
     });
