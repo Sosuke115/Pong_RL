@@ -50,7 +50,85 @@ button {
 .game {
   margin: 10px 0;
   display: inline-block;
+  position: relative;
+  z-index: 0;
 }
+
+.game canvas{
+  z-index: 3;
+}
+
+/* リザルト画面 */
+.result-screen{
+  position: absolute;
+  /* top: 150px;
+  left: 150px; */
+  z-index: 0;
+  width: 350px;
+  height: 400px;
+}
+
+.result-title{
+  margin-top: 25px;
+  font-size: 30px;
+}
+
+.result-ranking{
+  margin-top: 20px;
+}
+
+.ranks{
+  display: inline-block;
+}
+.nicknames{
+  display: inline-block;
+  margin-right: 40px;
+}
+.threshold{
+  display: inline-block;
+  margin-right: 10px;
+}
+.ranking-scores{
+  display: inline-block;
+  text-align: left;
+}
+
+.result-your{
+  margin-top: 20px;
+}
+
+.your-result-index{
+  display: inline-block;
+  margin-left: 40px;
+  margin-right: 40px;
+  text-align: left;
+}
+
+.your-scores{
+  display: inline-block;
+  text-align: left;
+}
+
+.register-area{
+  margin-top: 30px;
+}
+
+input.input-nickname{
+  width: 40%;
+  height:40px;
+  font-size: 12px;
+  border-radius: 10px;
+  text-align: center;
+  margin-right: 20px;
+}
+
+button.register-button{
+  font-size: 12px;
+  width: 70px;
+  border-radius: 20px;
+  height:40px;
+}
+
 
 .rl-selection-button-container {
   margin: 10px 0;
