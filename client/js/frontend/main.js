@@ -206,3 +206,14 @@ $(document).keyup(function (event) {
     $(".left-key").css("border-right", "40px solid white");
   }
 });
+
+
+$(document).ready(function(){
+  console.log("ready");
+   // load game screen
+   const betweenMatchInterval = 200;
+   const goalEffectInterval = 500;
+   const gameScreen = new GameScreen(goalEffectInterval);
+   gameScreen.drawFrameBorder();
+});
+

@@ -44,6 +44,7 @@ export class GameScreen {
 
   // Given an object with coordinates and size, draw it to the canvas
   drawObject(obj, color) {
+    this.ctx.lineWidth = 1;
     const width = obj.width * this.canvas.width;
     const height = obj.height * this.canvas.height;
     const x = obj.x * this.canvas.width - width / 2;
@@ -52,20 +53,22 @@ export class GameScreen {
     fillRoundRect(this.ctx, x, y, width, height, 5);
   }
 
+  drawFrameBorder(){
+    this.ctx.fillStyle = "#FFFFFF";
+    this.ctx.strokeStyle = "#FFFFFF";
+    this.ctx.lineWidth = 3;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
   clearCanvas() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   // Redraw the game based on the current state
   async draw(state) {
-    this.ctx.fillStyle = "#FFFFFF";
-    this.ctx.strokeStyle = "#FFFFFF";
 
-    this.ctx.lineWidth = 3;
-
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.lineWidth = 1;
+    this.drawFrameBorder();
 
     if (state.winner) {
       this.drawGoalEffect(state.winner);
