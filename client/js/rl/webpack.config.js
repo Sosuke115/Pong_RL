@@ -1,16 +1,16 @@
 const path = require('path');
 const webpack = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
     mode: 'development',
     entry: {
-        'dist/app': './client/js/frontend/main.js',
-        'js/rl/train': './client/js/rl/train.js',
-        'js/rl/test': './client/js/rl/test.js',
+        'train': path.join(__dirname, 'train.js'),
+        'test': path.join(__dirname, 'test.js'),
     },
     output: {
-        path: path.join(__dirname, 'client'),
-        publicPath: '/js/',
+        path: path.join(__dirname, 'dist'),
+        publicPath: '/js/rl/dist/',
         filename: `[name].bundle.js`,
     },
     module: {
@@ -37,13 +37,6 @@ module.exports = {
                     }
                 ]
             },
-            {
-                test: /worker\.js$/,
-                loader: "worker-loader",
-                options: {
-                    inline: 'no-fallback',
-                },
-            },
         ]
     },
     resolve: {
@@ -53,7 +46,8 @@ module.exports = {
         new webpack.ProvidePlugin({
           $: 'jquery',
           jQuery: 'jquery'
-        })
+        }),
+        // new BundleAnalyzerPlugin(),
     ],
     devtool: "eval-source-map",
 };

@@ -2,7 +2,6 @@ import { PongRLEnv } from "./pongRLEnv.js";
 import { KeyAgent } from "./agents/keyAgent.js";
 import { GameScreen } from "../frontend/gameScreen.js";
 import { sleep } from "../utils.js";
-import Worker from "./worker.js";
 
 
 class Controller {
@@ -16,7 +15,7 @@ class Controller {
       this.rlConfig = null;
       this.action = null;
       this.nextAction = null;
-      this.worker = new Worker();
+      this.worker = new Worker(new URL("./worker.js", import.meta.url));
       this.worker.postMessage({
         command: "buildController",
         input: input,

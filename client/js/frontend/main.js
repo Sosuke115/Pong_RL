@@ -4,7 +4,6 @@ import { Timer } from "./timer.js";
 import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyAgent } from "../rl/agents/keyAgent.js";
 import { sleep } from "../utils.js";
-import Worker from "../rl/worker.js";
 
 
 class RLController {
@@ -12,7 +11,7 @@ class RLController {
     this.rlConfig = null;
     this.action = null;
     this.nextAction = null;
-    this.worker = new Worker();
+    this.worker = new Worker(new URL("../rl/worker.js", import.meta.url));
     this.worker.postMessage({
       command: "buildController",
       input: input,
