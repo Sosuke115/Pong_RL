@@ -5,7 +5,6 @@ import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyAgent } from "../rl/agents/keyAgent.js";
 import { sleep } from "../utils.js";
 
-
 class RLController {
   constructor(input) {
     this.rlConfig = null;
@@ -20,7 +19,7 @@ class RLController {
     this.worker.onmessage = (m) => {
       if ("config" in m.data) this.rlConfig = m.data.config;
       if ("action" in m.data) this.nextAction = m.data.action;
-    }
+    };
   }
 
   async warmUp() {
@@ -30,9 +29,9 @@ class RLController {
 
     // compute action (first inference takes much longer time than others)
     const dummyState = {
-      ball: {x: 0, y: 0, forceX: 0, forceY: 0},
-      rlPaddle: {x: 0},
-      humanPaddle: {x: 0},
+      ball: { x: 0, y: 0, forceX: 0, forceY: 0 },
+      rlPaddle: { x: 0 },
+      humanPaddle: { x: 0 },
     };
     this.worker.postMessage({
       command: "computeAction",
@@ -69,10 +68,14 @@ class RLController {
 
 function getEndFlag(remTime) {
   let reStartFlag = $("#start-button").prop("disabled");
+  let rankingFlag = $("#ranking-button").prop("disabled");
   if (reStartFlag) {
     return 1; // button break
   } else if (remTime === 0) {
     return 2; // time break
+  }
+  if (rankingFlag) {
+    return 3; // button break
   } else {
     return -1;
   }
@@ -80,8 +83,7 @@ function getEndFlag(remTime) {
 
 // flagで終了する形式にする？
 async function main(rlId) {
-
-  // 
+  //
   const env = new PongRLEnv();
   console.log(`Start  RL: "${rlId}"`);
 
@@ -90,18 +92,20 @@ async function main(rlId) {
   const goalEffectInterval = 500;
   const gameScreen = new GameScreen(goalEffectInterval);
 
+  const scorer = new Scorer();
+  const timer = new Timer(60);
+
+  // draw init state
+  let state = env.reset();
+  gameScreen.draw(state);
+  timer.draw();
+  scorer.draw();
+
   // load model
   const humanController = new KeyAgent();
   const rlController = new RLController(rlId);
   await rlController.warmUp();
 
-  const scorer = new Scorer();
-  const timer = new Timer(60);
-
-  let state = env.reset();
-  gameScreen.draw(state);
-  timer.draw();
-  scorer.draw();
   let timeStep = 0;
 
   await sleep(betweenMatchInterval);
@@ -116,6 +120,7 @@ async function main(rlId) {
         $("#start-button").removeClass("first-click");
       }
       $("#start-button").prop("disabled", false);
+      $("#ranking-button").prop("disabled", false);
       break;
     }
 
@@ -131,8 +136,10 @@ async function main(rlId) {
 
     const endTime = performance.now();
     // decide sleep time considering the computation time so far
-    let sleepTime = env.updateFrequency - (endTime - startTime)
-    if (res.done) {sleepTime = sleepTime + goalEffectInterval};
+    let sleepTime = env.updateFrequency - (endTime - startTime);
+    if (res.done) {
+      sleepTime = sleepTime + goalEffectInterval;
+    }
     await sleep(sleepTime);
 
     if (res.done) {
@@ -147,7 +154,21 @@ async function main(rlId) {
     }
   }
   gameScreen.clearCanvas();
+  gameScreen.drawFrameBorder();
 }
+
+//
+$(document).ready(function () {
+  // ボタンの初期状態
+  const buttonId = "step-0k";
+  $(".rl-selection-button").css("background-color", "#FFFFFF");
+  $("#" + buttonId).css("background-color", "#CEB845");
+  $("#" + buttonId).prop("disabled", true);
+
+  // 初期ゲーム画面の描画
+  const goalEffectInterval = 500;
+  new GameScreen(goalEffectInterval).drawFrameBorder();
+});
 
 // Process for training step button
 $(".rl-selection-button").on("click", function () {
@@ -169,6 +190,10 @@ $(".rl-selection-button").on("click", function () {
 
 // Start button
 $("#start-button").on("click", async function () {
+  // reset ranking button
+  $("#ranking-button").prop("disabled", false);
+  $(".result-screen").fadeOut();
+
   let rlId = undefined;
   $(".rl-selection-button").each(function (index, element) {
     if ($(element).prop("disabled")) {
@@ -207,13 +232,10 @@ $(document).keyup(function (event) {
   }
 });
 
-
-$(document).ready(function(){
-  console.log("ready");
-   // load game screen
-   const betweenMatchInterval = 200;
-   const goalEffectInterval = 500;
-   const gameScreen = new GameScreen(goalEffectInterval);
-   gameScreen.drawFrameBorder();
+$("#ranking-button").on("click", async function () {
+  $("#ranking-button").prop("disabled", true);
+  if ($("#start-button").hasClass("first-click") === true) {
+    $("#start-button").removeClass("first-click");
+  }
+  $(".result-screen").fadeIn();
 });
-

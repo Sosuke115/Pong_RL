@@ -57,7 +57,6 @@ export class GameScreen {
     this.ctx.fillStyle = "#FFFFFF";
     this.ctx.strokeStyle = "#FFFFFF";
     this.ctx.lineWidth = 3;
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
@@ -68,6 +67,8 @@ export class GameScreen {
   // Redraw the game based on the current state
   async draw(state) {
 
+    
+    this.clearCanvas();
     this.drawFrameBorder();
 
     if (state.winner) {
