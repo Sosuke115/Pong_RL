@@ -2,26 +2,69 @@ import { GameScreen } from "./gameScreen.js";
 import { Scorer } from "./scorer.js";
 import { Timer } from "./timer.js";
 import { PongRLEnv } from "../rl/pongRLEnv.js";
-import { KeyController } from "../rl/keyController.js";
-import { RLAgent, RandomAgent } from "../rl/agent.js";
+import { KeyAgent } from "../rl/agents/keyAgent.js";
 import { sleep } from "../utils.js";
 
-async function getController(input) {
-  let controller;
-  const controllerList = [0, 10000, 20000, 30000];
-  if ($.inArray(input, controllerList) != -1) {
-    if (input === 0) {
-      controller = new RandomAgent();
-    } else {
-      controller = new RLAgent(false);
-      await controller.loadModel(
-        `http://localhost:3000/js/rl/models/model-${input}.json`
-      );
+
+class RLController {
+  constructor(input) {
+    this.rlConfig = null;
+    this.action = null;
+    this.nextAction = null;
+    this.worker = new Worker(new URL("../rl/worker.js", import.meta.url));
+    this.worker.postMessage({
+      command: "buildController",
+      input: input,
+      side: "rl",
+    });
+    this.worker.onmessage = (m) => {
+      if ("config" in m.data) this.rlConfig = m.data.config;
+      if ("action" in m.data) this.nextAction = m.data.action;
     }
-  } else {
-    controller = new KeyController();
   }
-  return controller;
+
+  async warmUp() {
+    // build controller
+    while (this.rlConfig === null) await sleep(500);
+    // console.log("build complete");
+
+    // compute action (first inference takes much longer time than others)
+    const dummyState = {
+      ball: {x: 0, y: 0, forceX: 0, forceY: 0},
+      rlPaddle: {x: 0},
+      humanPaddle: {x: 0},
+    };
+    this.worker.postMessage({
+      command: "computeAction",
+      state: dummyState,
+    });
+
+    while (this.nextAction === null) await sleep(500);
+    this.nextAction = null;
+    // console.log("inference complete");
+  }
+
+  selectAction(state, timeStep) {
+    if (timeStep % this.rlConfig.frameSkip === 0) {
+      const nextAction = this.nextAction;
+      this.nextAction = null;
+      this.worker.postMessage({
+        command: "computeAction",
+        state: state,
+      });
+
+      if (nextAction === null) {
+        if (timeStep === 0) {
+          this.action = 1;
+        } else {
+          console.warn("compute action is not completed");
+        }
+      } else {
+        this.action = nextAction;
+      }
+    }
+    return this.action;
+  }
 }
 
 function getEndFlag(remTime) {
@@ -48,9 +91,10 @@ async function main(rlId) {
   const gameScreen = new GameScreen(goalEffectInterval);
 
   // load model
-  const humanController = await getController(-1);
-  const rlController = await getController(rlId);
-  const frameSkip = new RLAgent().config.frameSkip;
+  const humanController = new KeyAgent();
+  const rlController = new RLController(rlId);
+  await rlController.warmUp();
+
   const scorer = new Scorer();
   const timer = new Timer(60);
 
@@ -59,9 +103,6 @@ async function main(rlId) {
   timer.draw();
   scorer.draw();
   let timeStep = 0;
-  let humanAction = undefined;
-  let rlAction = undefined;
-  let endFlag = -1;
 
   await sleep(betweenMatchInterval);
 
@@ -79,16 +120,10 @@ async function main(rlId) {
     }
 
     const startTime = performance.now();
-    // decrease frequency of inference (human action?)
-    if (timeStep % frameSkip === 0) {
-      // 3rd argument (false): no exploration
-      rlAction = rlController.selectAction(state, "rl", false);
-    }
-    humanAction = humanController.selectAction(state, "human", false);
 
     const res = env.step({
-      humanAction: humanAction,
-      rlAction: rlAction,
+      humanAction: humanController.selectAction(),
+      rlAction: rlController.selectAction(state, timeStep),
     });
 
     gameScreen.draw(res.state);

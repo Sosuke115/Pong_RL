@@ -1,26 +1,83 @@
 import { PongRLEnv } from "./pongRLEnv.js";
-import { KeyController } from "./keyController.js";
-import { RLAgent, RandomAgent } from "./agent.js";
+import { KeyAgent } from "./agents/keyAgent.js";
 import { GameScreen } from "../frontend/gameScreen.js";
+import { sleep } from "../utils.js";
 
 
-function sleep(msec) {
-  return new Promise(resolve => setTimeout(resolve, Math.max(msec, 0)));
-}
-
-async function getController(input) {
-  let controller;
-  if (input) {
-    if (input === "0") {
-      controller = new RandomAgent();
+class Controller {
+  constructor(side, input) {
+    this.side = side;
+    if (input === "") {
+      this.type_ = "key";
+      this.agent = new KeyAgent();
     } else {
-      controller = new RLAgent(false);
-      await controller.loadModel(`http://localhost:3000/js/rl/models/model-${input}.json`);
+      this.type_ = "rl";
+      this.rlConfig = null;
+      this.action = null;
+      this.nextAction = null;
+      this.worker = new Worker(new URL("./worker.js", import.meta.url));
+      this.worker.postMessage({
+        command: "buildController",
+        input: input,
+        side: side,
+      });
+      this.worker.onmessage = (m) => {
+        if ("config" in m.data) this.rlConfig = m.data.config;
+        if ("action" in m.data) this.nextAction = m.data.action;
+      }
     }
-  } else {
-    controller = new KeyController();
   }
-  return controller;
+
+  async warmUp() {
+    if (this.type_ === "key") return;
+
+    console.log("warmup");
+    // build controller
+    while (this.rlConfig === null) await sleep(500);
+    console.log("build complete");
+
+    // compute action (first inference takes much longer time than others)
+    const dummyState = {
+      ball: {x: 0, y: 0, forceX: 0, forceY: 0},
+      rlPaddle: {x: 0},
+      humanPaddle: {x: 0},
+    };
+    this.worker.postMessage({
+      command: "computeAction",
+      state: dummyState,
+    });
+    console.log("post message");
+
+    while (this.nextAction === null) await sleep(500);
+    this.nextAction = null;
+    console.log("inference complete");
+  }
+
+  selectAction(state, timeStep) {
+    if (this.type_ === "rl") {
+      if (timeStep % this.rlConfig.frameSkip === 0) {
+        const nextAction = this.nextAction;
+        this.nextAction = null;
+        this.worker.postMessage({
+          command: "computeAction",
+          state: state,
+        });
+
+        if (nextAction === null) {
+          if (timeStep === 0) {
+            this.action = 1;
+          } else {
+            console.warn("compute action is not completed");
+          }
+        } else {
+          this.action = nextAction;
+        }
+      }
+      return this.action;
+    } else {
+      return this.agent.selectAction(state, this.side);
+    }
+  }
 }
 
 async function main(humanInput, rlInput, visualize = true) {
@@ -28,10 +85,10 @@ async function main(humanInput, rlInput, visualize = true) {
   const screen = new GameScreen();
 
   // load model
-  const humanController = await getController(humanInput);
-  const rlController = await getController(rlInput);
-
-  const frameSkip = (new RLAgent()).config.frameSkip;
+  const humanController = new Controller("human", humanInput);
+  const rlController = new Controller("rl", rlInput);
+  await humanController.warmUp();
+  await rlController.warmUp();
 
   let gameCount = 0;
   let rlWinRate = 0;
@@ -39,26 +96,13 @@ async function main(humanInput, rlInput, visualize = true) {
   let state = env.reset();
   if (visualize) screen.draw(state);
   let timeStep = 0;
-  let humanAction = undefined;
-  let rlAction = undefined;
 
   while (true) {
     const startTime = performance.now();
 
-    if (humanController instanceof KeyController) {
-      humanAction = humanController.selectAction();
-    } else if (timeStep % frameSkip === 0) {
-      humanAction = humanController.selectAction(state, "human", false);
-    }
-    if (rlController instanceof KeyController) {
-      rlAction = rlController.selectAction();
-    } else if (timeStep % frameSkip === 0) {
-      rlAction = rlController.selectAction(state, "rl", false);
-    }
-
     const res = env.step({
-      humanAction: humanAction,
-      rlAction: rlAction,
+      humanAction: humanController.selectAction(state, timeStep),
+      rlAction: rlController.selectAction(state, timeStep),
     });
     if (visualize) screen.draw(res.state);
 

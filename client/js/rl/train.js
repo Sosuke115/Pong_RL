@@ -1,12 +1,12 @@
 import { PongRLEnv } from "./pongRLEnv.js";
-import { RLAgent, RandomAgent } from "./agent.js";
+import { RLAgent } from "./agents/rlAgent.js";
 import { ReplayMemory } from "./replayMemory.js";
 
 
 async function main() {
   const config = {
-    memoryCapacity: 50000,
-    maxStep: 40000,
+    memoryCapacity: 25000,
+    maxStep: 50000,
     batchSize: 128,
     checkpointFreq: 5000,
   };
@@ -15,16 +15,22 @@ async function main() {
   const agent = new RLAgent();
   const replayMemory = new ReplayMemory(config.memoryCapacity);
 
+  const path = "model-0";
+  console.log(`save ${path}`);
+  await agent.saveModel(`downloads://${path}`);
+
   let totalStep = 0;
   let episode = 0;
   let episodeStep = 0;
   let episodeReward = 0;
   let lossMean = 0;
+  let prevState = null;
   let state = env.reset();
 
   while (true) {
-    const rlAction = agent.selectAction(state, "rl", true);
-    const humanAction = agent.selectAction(state, "human", true);
+    // shift one step to obtain computation time in deployment
+    const rlAction = prevState ? agent.selectAction(prevState, "rl", true) : 1;
+    const humanAction = prevState ? agent.selectAction(prevState, "human", true) : 1;
 
     // frame skip
     let reward = 0;
@@ -37,7 +43,8 @@ async function main() {
       nextState = res.state;
       if (done) break;
     }
-    replayMemory.push(state, [rlAction, humanAction], reward, done, nextState);
+    if (prevState)
+      replayMemory.push(prevState, [rlAction, humanAction], reward, done, state);
 
     if (replayMemory.size() >= config.batchSize) {
       // train model
@@ -46,6 +53,7 @@ async function main() {
       lossMean += (loss - lossMean) / (episodeStep + 1);
     }
 
+    prevState = state;
     state = nextState;
     totalStep += 1;
     episodeStep += 1;
@@ -73,6 +81,7 @@ async function main() {
       episodeStep = 0;
       episodeReward = 0;
       lossMean = 0;
+      prevState = null;
       state = env.reset();
     }
   }
