@@ -75,10 +75,6 @@ export class GameScreen {
     this.drawObject(state.ball, "#FFFFFF");
     this.drawObject(state.humanPaddle, "#628DA5");
     this.drawObject(state.rlPaddle, "#628DA5");
-
-    return new Promise((resolve) => {
-      window.requestAnimationFrame(resolve);
-    });
   }
 }
 

@@ -1,3 +1,4 @@
+import * as tf from "@tensorflow/tfjs";
 import { GameScreen } from "./gameScreen.js";
 import { Scorer } from "./scorer.js";
 import { Timer } from "./timer.js";
@@ -128,12 +129,7 @@ async function main(rlId) {
 
     gameScreen.draw(res.state);
     timer.draw();
-
-    const endTime = performance.now();
-    // decide sleep time considering the computation time so far
-    let sleepTime = env.updateFrequency - (endTime - startTime)
-    if (res.done) {sleepTime = sleepTime + goalEffectInterval};
-    await sleep(sleepTime);
+    await tf.nextFrame();
 
     if (res.done) {
       state = env.reset();
