@@ -3,12 +3,13 @@ import { RLAgent } from "./agents/rlAgent.js";
 import { ReplayMemory } from "./replayMemory.js";
 
 
-async function main() {
+async function main(options) {
   const config = {
-    memoryCapacity: 25000,
     maxStep: 50000,
+    memoryCapacity: 50000,
     batchSize: 128,
     checkpointFreq: 5000,
+    ...options
   };
 
   const env = new PongRLEnv();
@@ -26,16 +27,17 @@ async function main() {
   let lossMean = 0;
   let prevState = null;
   let state = env.reset();
+  let prevRlAction = 1;
+  let prevHumanAction = 1;
 
   while (true) {
-    // shift one step to obtain computation time in deployment
-    const rlAction = prevState ? agent.selectAction(prevState, "rl", true) : 1;
-    const humanAction = prevState ? agent.selectAction(prevState, "human", true) : 1;
+    const rlAction = prevState ? agent.selectAction(prevState, prevRlAction, "rl", true) : 1;
+    const humanAction = prevState ? agent.selectAction(prevState, prevHumanAction, "human", true) : 1;
 
     // frame skip
     let reward = 0;
     let done = false;
-    let nextState = undefined;
+    let nextState = null;
     for (let i = 0; i < agent.config.frameSkip; i++) {
       const res = env.step({rlAction: rlAction, humanAction: humanAction});
       reward += res.reward;
@@ -44,7 +46,7 @@ async function main() {
       if (done) break;
     }
     if (prevState)
-      replayMemory.push(prevState, [rlAction, humanAction], reward, done, state);
+      replayMemory.push(prevState, [prevRlAction, prevHumanAction], [rlAction, humanAction], reward, done, state);
 
     if (replayMemory.size() >= config.batchSize) {
       // train model
@@ -55,6 +57,8 @@ async function main() {
 
     prevState = state;
     state = nextState;
+    prevRlAction = rlAction;
+    prevHumanAction = humanAction;
     totalStep += 1;
     episodeStep += 1;
     episodeReward += reward;
@@ -91,8 +95,21 @@ $("#start-button").on("click", () => {
   const res = window.confirm("Is developer tool open?\nYou can see logs on the console window.");
   if (!res) return false;
 
+  const options = {};
+  const maxStep = $("#max-step").val();
+  const memoryCapacity = $("#memory-capacity").val();
+  const batchSize = $("#batch-size").val();
+  const checkpointFreq = $("#checkpoint-freq").val();
+  const criticStep = $("#critic-step").val();
+  if (maxStep !== "") options["maxStep"] = maxStep;
+  if (memoryCapacity !== "") options["memoryCapacity"] = memoryCapacity;
+  if (batchSize !== "") options["batchSize"] = batchSize;
+  if (checkpointFreq !== "") options["checkpointFreq"] = checkpointFreq;
+  if (criticStep !== "") options["criticStep"] = criticStep;
+  console.log("options:", options);
+
   console.log("Start training!");
-  main().then(() => {
+  main(options).then(() => {
     console.log("Finish training!");
   });
 });

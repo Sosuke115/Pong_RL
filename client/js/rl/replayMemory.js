@@ -22,12 +22,14 @@ export class ReplayMemory {
     return this.memory.length;
   }
 
-  push(state, action, reward, done, nextState) {
+  // push(state, action, reward, done, nextState) {
+  push(state, prevAction, action, reward, done, nextState) {
     if (this.memory.length < this.capacity) {
       this.memory.push(undefined);
     }
     this.memory[this.position] = {
       state: state,
+      prevAction: prevAction,
       action: action,
       reward: reward,
       done: done,
