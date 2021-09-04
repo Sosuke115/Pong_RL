@@ -1,4 +1,3 @@
-import * as tf from "@tensorflow/tfjs";
 import { GameScreen } from "./gameScreen.js";
 import { Scorer } from "./scorer.js";
 import { Timer } from "./timer.js";
@@ -26,7 +25,7 @@ class RLController {
 
   async warmUp() {
     // build controller
-    while (this.rlConfig === null) await sleep(500);
+    while (this.rlConfig === null) await sleep(200);
     // console.log("build complete");
 
     // compute action (first inference takes much longer time than others)
@@ -40,7 +39,7 @@ class RLController {
       state: dummyState,
     });
 
-    while (this.nextAction === null) await sleep(500);
+    while (this.nextAction === null) await sleep(200);
     this.nextAction = null;
     // console.log("inference complete");
   }
@@ -88,8 +87,7 @@ async function main(rlId) {
 
   // load game screen
   const betweenMatchInterval = 200;
-  const goalEffectInterval = 500;
-  const gameScreen = new GameScreen(goalEffectInterval);
+  const gameScreen = new GameScreen();
 
   // load model
   const humanController = new KeyAgent();
@@ -100,7 +98,7 @@ async function main(rlId) {
   const timer = new Timer(60);
 
   let state = env.reset();
-  gameScreen.draw(state);
+  await gameScreen.draw(state);
   timer.draw();
   scorer.draw();
   let timeStep = 0;
@@ -120,20 +118,17 @@ async function main(rlId) {
       break;
     }
 
-    const startTime = performance.now();
-
     const res = env.step({
       humanAction: humanController.selectAction(),
       rlAction: rlController.selectAction(state, timeStep),
     });
 
-    gameScreen.draw(res.state);
+    await gameScreen.draw(res.state);
     timer.draw();
-    await tf.nextFrame();
 
     if (res.done) {
       state = env.reset();
-      gameScreen.draw(state);
+      await gameScreen.draw(state);
       scorer.step_and_draw(res.state.winner);
       timeStep = 0;
       await sleep(betweenMatchInterval);

@@ -1,4 +1,3 @@
-import * as tf from "@tensorflow/tfjs";
 import { PongRLEnv } from "./pongRLEnv.js";
 import { KeyAgent } from "./agents/keyAgent.js";
 import { GameScreen } from "../frontend/gameScreen.js";
@@ -95,7 +94,7 @@ async function main(humanInput, rlInput, visualize = true) {
   let rlWinRate = 0;
 
   let state = env.reset();
-  if (visualize) screen.draw(state);
+  if (visualize) await screen.draw(state);
   let timeStep = 0;
 
   while (true) {
@@ -103,8 +102,7 @@ async function main(humanInput, rlInput, visualize = true) {
       humanAction: humanController.selectAction(state, timeStep),
       rlAction: rlController.selectAction(state, timeStep),
     });
-    if (visualize) screen.draw(res.state);
-    await tf.nextFrame();
+    if (visualize) await screen.draw(res.state);
 
     if (res.done) {
       gameCount += 1;
@@ -112,7 +110,7 @@ async function main(humanInput, rlInput, visualize = true) {
       console.log(`gameCount: ${gameCount}  timeStep: ${timeStep}  rlReward: ${res.reward}  rlWinRate: ${rlWinRate.toFixed(4)}`);
 
       state = env.reset();
-      if (visualize) screen.draw(state);
+      if (visualize) await screen.draw(state);
       timeStep = 0;
     } else {
       state = res.state;

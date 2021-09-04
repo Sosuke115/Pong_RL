@@ -225,10 +225,7 @@ export class PongRLEnv {
     this.humanPaddle = Object.create(this.humanPaddleInitState);
     this.ball = Object.create(this.ballInitState);
     this.initBallDirection();
-    this.currentState = this.getState();
-    this.previousState = null;
     this.currentFrame = 0;
-    this.winner = null;
     return this.getState();
   }
 
@@ -246,19 +243,6 @@ export class PongRLEnv {
   // actionのe.g. {"rlAction": "noop", "humanAction": "right"}
   // return: 次の状態（ボールの位置など）、報酬、終了タグ
   step(action) {
-    let reward = 0;
-    let done = false;
-    this.previousState = this.currentState;
-    this.currentState = this.getState();
-
-    // Check if match ended:
-    const winner = this.currentState.winner;
-    if (winner) {
-      this.winner = winner;
-      reward = winner === "rl" ? 1.0 : -1.0;
-      done = true;
-    }
-
     this.rlPaddle.forceX = this.actionToForce(action.rlAction);
     this.humanPaddle.forceX = this.actionToForce(action.humanAction);
 
@@ -276,6 +260,14 @@ export class PongRLEnv {
     }
 
     this.currentFrame += 1;
+    
+    let reward = 0;
+    let done = false;
+    const winner = this.getWinner();
+    if (winner) {
+      reward = winner === "rl" ? 1.0 : -1.0;
+      done = true;
+    }
 
     return { state: this.getState(), reward: reward, done: done };
   }
