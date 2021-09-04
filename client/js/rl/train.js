@@ -27,8 +27,8 @@ async function main(options) {
   let lossMean = 0;
   let prevState = null;
   let state = env.reset();
-  let prevRlAction = 1;
-  let prevHumanAction = 1;
+  let prevRlAction = null;
+  let prevHumanAction = null;
 
   while (true) {
     const rlAction = prevState ? agent.selectAction(prevState, prevRlAction, "rl", true) : 1;
@@ -87,6 +87,8 @@ async function main(options) {
       lossMean = 0;
       prevState = null;
       state = env.reset();
+      prevRlAction = null;
+      prevHumanAction = null;
     }
   }
 }
