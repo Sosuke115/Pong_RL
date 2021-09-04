@@ -120,7 +120,6 @@ async function main(rlId) {
         $("#start-button").removeClass("first-click");
       }
       $("#start-button").prop("disabled", false);
-      $("#ranking-button").prop("disabled", false);
       break;
     }
 
