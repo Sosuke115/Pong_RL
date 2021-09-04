@@ -93,12 +93,10 @@ async function main(rlId) {
   const gameScreen = new GameScreen(goalEffectInterval);
 
   const scorer = new Scorer();
-  const timer = new Timer(60);
 
   // draw init state
   let state = env.reset();
   gameScreen.draw(state);
-  timer.draw();
   scorer.draw();
 
   // load model
@@ -110,6 +108,7 @@ async function main(rlId) {
 
   await sleep(betweenMatchInterval);
 
+  const timer = new Timer(60);
   while (true) {
     // monitor the end flag
     let endFlag = getEndFlag(timer.getRemTime());
