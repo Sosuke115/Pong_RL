@@ -5,10 +5,16 @@ export class Timer {
     this.initLimitTime = (limitTime + 1) * 1000;
     this.limitTime = (limitTime + 1) * 1000;
     this.previousTime = new Date().getTime();
+    this.isRunning = false;
   }
 
-  reset() {
-    this.limitTime = this.initLimitTime;
+  stop() {
+    this.isRunning = false;
+    this.updateLimitTime();
+  }
+
+  start() {
+    this.isRunning = true;
     this.previousTime = new Date().getTime();
   }
 
@@ -16,14 +22,20 @@ export class Timer {
     return parseInt(this.limitTime / 1000);
   }
 
-  // 現在の残り時間を描画
-  draw() {
+  updateLimitTime() {
     let currentTime = new Date().getTime();
     this.limitTime = Math.max(
       this.limitTime - (currentTime - this.previousTime),
       0
     );
     this.previousTime = currentTime;
+  }
+
+  // 現在の残り時間を描画
+  draw() {
+    if (this.isRunning) {
+      this.updateLimitTime();
+    }
 
     $(".time").text(parseInt(this.limitTime / 1000).toString());
   }
