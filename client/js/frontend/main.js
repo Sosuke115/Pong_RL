@@ -167,13 +167,6 @@ $(".rl-selection-button").on("click", function () {
   $(".rl-selection-button").css("background-color", "#FFFFFF");
   $("#" + buttonId).css("background-color", "#CEB845");
 
-  // rl model
-  const rlId = parseInt(
-    $("#" + buttonId)
-      .text()
-      .replace(/,/, "")
-  );
-
   $("#" + buttonId).prop("disabled", true);
 });
 
@@ -186,7 +179,7 @@ $("#start-button").on("click", async function () {
   let rlId = undefined;
   $(".rl-selection-button").each(function (index, element) {
     if ($(element).prop("disabled")) {
-      rlId = parseInt($(element).text().replace(/,/, ""));
+      rlId = parseInt($(element).text().replace(/k/, "000"));
     }
   });
 
