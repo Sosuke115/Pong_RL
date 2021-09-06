@@ -33,7 +33,7 @@ class Controller {
 
     console.log("warmup");
     // build controller
-    while (this.rlConfig === null) await sleep(500);
+    while (this.rlConfig === null) await sleep(200);
     console.log("build complete");
 
     // compute action (first inference takes much longer time than others)
@@ -48,13 +48,15 @@ class Controller {
     });
     console.log("post message");
 
-    while (this.nextAction === null) await sleep(500);
+    while (this.nextAction === null) await sleep(200);
     this.nextAction = null;
     console.log("inference complete");
   }
 
   selectAction(state, timeStep) {
-    if (this.type_ === "rl") {
+    if (this.type_ === "key") {
+      return this.agent.selectAction();
+    } else {
       if (timeStep % this.rlConfig.frameSkip === 0) {
         const nextAction = this.nextAction;
         this.nextAction = null;
@@ -74,8 +76,6 @@ class Controller {
         }
       }
       return this.action;
-    } else {
-      return this.agent.selectAction(state, this.side);
     }
   }
 }
@@ -94,31 +94,23 @@ async function main(humanInput, rlInput, visualize = true) {
   let rlWinRate = 0;
 
   let state = env.reset();
-  if (visualize) screen.draw(state);
+  if (visualize) await screen.draw(state);
   let timeStep = 0;
 
   while (true) {
-    const startTime = performance.now();
-
     const res = env.step({
       humanAction: humanController.selectAction(state, timeStep),
       rlAction: rlController.selectAction(state, timeStep),
     });
-    if (visualize) screen.draw(res.state);
-
-    const endTime = performance.now();
-    if (visualize) {
-      // decide sleep time considering the computation time so far
-      await sleep(env.updateFrequency - (endTime - startTime));
-    }
+    if (visualize) await screen.draw(res.state);
 
     if (res.done) {
       gameCount += 1;
       rlWinRate += (Number(res.reward === 1) - rlWinRate) / gameCount;
-      console.log(`gameCount: ${gameCount}  rlReward: ${res.reward}  rlWinRate: ${rlWinRate.toFixed(4)}`);
+      console.log(`gameCount: ${gameCount}  timeStep: ${timeStep}  rlReward: ${res.reward}  rlWinRate: ${rlWinRate.toFixed(4)}`);
 
       state = env.reset();
-      if (visualize) screen.draw(state);
+      if (visualize) await screen.draw(state);
       timeStep = 0;
     } else {
       state = res.state;

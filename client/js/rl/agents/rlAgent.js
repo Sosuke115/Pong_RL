@@ -1,19 +1,5 @@
-import { buildNetwork, copyWeights } from "./model.js";
 import * as tf from "@tensorflow/tfjs";
-
-
-export class RandomAgent {
-  selectAction() {
-    const r = Math.random();
-    if (r < 1/3) {
-      return 0;
-    } else if (r < 2/3) {
-      return 1;
-    } else {
-      return 2;
-    }
-  }
-}
+import { buildNetwork, copyWeights } from "./model.js";
 
 
 export class RLAgent {
@@ -22,7 +8,6 @@ export class RLAgent {
       stateDim: 6,
       actionNum: 3,
       gamma: 0.99,
-      lr: 1.0e-4,
       targetSyncFreq: 1000,
       frameSkip: 8,
       epsilon: {
@@ -35,49 +20,54 @@ export class RLAgent {
         layerNum: 4,
         batchNorm: false,
         dropout: 0.0,
+        lr: 1.0e-4,
       },
     };
 
     this.qnet = buildNetwork(
-      this.config.stateDim, this.config.actionNum,
+      this.config.stateDim + 1, this.config.actionNum,
       this.config.model.hiddenDim, this.config.model.layerNum, this.config.model.dropout,
     );
 
     if (train) {
       this.qnetTarget = buildNetwork(
-        this.config.stateDim, this.config.actionNum,
+        this.config.stateDim + 1, this.config.actionNum,
         this.config.model.hiddenDim, this.config.model.layerNum, this.config.model.dropout,
       );
       this.qnetTarget.trainable = false
       copyWeights(this.qnetTarget, this.qnet);
-      this.optimizer = tf.train.adam(this.config.lr);
+
+      this.optimizer = tf.train.adam(this.config.model.lr);
 
       this.updateCount = 0;
     }
   }
 
-  stateToArray(state, side = "rl") {
-    const ballX = state.ball.x * 2 - 1;
-    const ballY = state.ball.y * 2 - 1;
-    const ballForceX = state.ball.forceX;
-    const ballForceY = state.ball.forceY;
-    const rlX = state.rlPaddle.x * 2 - 1;
-    const humanX = state.humanPaddle.x * 2 - 1;
+  getInput(prevState, prevAction, side = "rl") {
+    const ballX = prevState.ball.x * 2 - 1;
+    const ballY = prevState.ball.y * 2 - 1;
+    const ballForceX = prevState.ball.forceX;
+    const ballForceY = prevState.ball.forceY;
+    const rlX = prevState.rlPaddle.x * 2 - 1;
+    const humanX = prevState.humanPaddle.x * 2 - 1;
 
     if (side === "rl") {
-      return [ballX, ballY, ballForceX, ballForceY, rlX, humanX];
+      return [ballX, ballY, ballForceX, ballForceY, rlX, humanX, prevAction - 1];
     } else {
       // flip position and force
-      return [-ballX, -ballY, -ballForceX, -ballForceY, -humanX, -rlX];
+      return [-ballX, -ballY, -ballForceX, -ballForceY, -humanX, -rlX, 1 - prevAction];
     }
   }
 
-  selectAction(state, side = "rl", explore = true) {
-    // get epsilon for the current timestep
-    const stepRatio = Math.min(this.updateCount / this.config.epsilon.decay, 1.0)
-    const epsilon = this.config.epsilon.init * (1-stepRatio) + this.config.epsilon.end * stepRatio;
+  selectAction(prevState, prevAction, side = "rl", explore = true) {
+    let random = false;
+    if (explore) {
+      const stepRatio = Math.min(this.updateCount / this.config.epsilon.decay, 1.0)
+      const epsilon = this.config.epsilon.init * (1-stepRatio) + this.config.epsilon.end * stepRatio;
+      random = Math.random() < epsilon;
+    }
 
-    if (explore && Math.random() < epsilon) {
+    if (random) {
       // random action:
       const r = Math.random();
       if (r < 1/3) {
@@ -90,8 +80,9 @@ export class RLAgent {
     } else {
       // greedy action
       const action = tf.tidy(() => {
-        const stateArray = this.stateToArray(state, side);
-        const stateTensor = tf.tensor2d([stateArray], undefined, "float32");
+        const stateTensor = tf.tensor2d(
+          [this.getInput(prevState, prevAction, side)], undefined, "float32"
+        );
         return this.qnet.predict(stateTensor).argMax(-1).arraySync()[0];
       });
       if (side === "rl") {
@@ -108,32 +99,33 @@ export class RLAgent {
 
     const lossFunction = () => tf.tidy(() => {
       // merge data from rl side and human side
-      const stateTensor = tf.concat([
-        tf.tensor2d(batch.map(b => this.stateToArray(b.state, "rl")), undefined, "float32"),
-        tf.tensor2d(batch.map(b => this.stateToArray(b.state, "human")), undefined, "float32"),
+      const input = tf.concat([
+        tf.tensor2d(batch.map(b => this.getInput(b.state, b.prevAction[0], "rl")), undefined, "float32"),
+        tf.tensor2d(batch.map(b => this.getInput(b.state, b.prevAction[1], "human")), undefined, "float32"),
       ]);
-      const nextStateTensor = tf.concat([
-        tf.tensor2d(batch.map(b => this.stateToArray(b.nextState, "rl")), undefined, "float32"),
-        tf.tensor2d(batch.map(b => this.stateToArray(b.nextState, "human")), undefined, "float32"),
+      const nextInput = tf.concat([
+        tf.tensor2d(batch.map(b => this.getInput(b.nextState, b.action[0], "rl")), undefined, "float32"),
+        tf.tensor2d(batch.map(b => this.getInput(b.nextState, b.action[1], "human")), undefined, "float32"),
       ]);
-      const actionTensor = tf.concat([
+      const action = tf.concat([
         tf.tensor1d(batch.map(b => b.action[0]), "int32"),
         tf.tensor1d(batch.map(b => 2 - b.action[1]), "int32"), // flip action
       ]);
-      const rewardTensor = tf.concat([
+      const reward = tf.concat([
         tf.tensor1d(batch.map(b => b.reward * 1), "float32"),
         tf.tensor1d(batch.map(b => b.reward * -1), "float32"),
       ]);
-      const maskTensor = tf.concat([
+      const mask = tf.concat([
         tf.tensor1d(batch.map(b => !b.done), "float32"),
         tf.tensor1d(batch.map(b => !b.done), "float32"),
       ]);
 
       // calculate double DQN loss
-      const q = this.qnet.apply(stateTensor, {training: true}).mul(tf.oneHot(actionTensor, this.config.actionNum)).sum(-1);
-      const nextPi = this.qnet.predict(nextStateTensor).argMax(-1);
-      const nextTargetQ = this.qnetTarget.predict(nextStateTensor).mul(tf.oneHot(nextPi, this.config.actionNum)).sum(-1);
-      const y = rewardTensor.add(nextTargetQ.mul(maskTensor).mul(this.config.gamma));
+      const q = this.qnet.apply(input, {training: true}).mul(tf.oneHot(action, this.config.actionNum)).sum(-1);
+      const nextPi = this.qnet.predict(nextInput).argMax(-1);
+      const nextPiOneHot = tf.oneHot(nextPi, this.config.actionNum)
+      const nextTargetQ = this.qnetTarget.predict(nextInput).mul(nextPiOneHot).sum(-1);
+      const y = reward.add(nextTargetQ.mul(mask).mul(this.config.gamma));
       return tf.losses.meanSquaredError(y, q);
     });
 

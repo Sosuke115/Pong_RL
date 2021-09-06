@@ -1,8 +1,9 @@
+import * as tf from "@tensorflow/tfjs";
 import { sleep } from "../utils.js";
 
 //Stateから描画するクラス
 export class GameScreen {
-  constructor(goalEffectInterval) {
+  constructor(goalEffectInterval = 500) {
     this.canvas = document.getElementById("gameCanvas");
     this.ctx = this.canvas.getContext("2d");
     this.goalEffectInterval = goalEffectInterval;
@@ -71,18 +72,15 @@ export class GameScreen {
     this.clearCanvas();
     this.drawFrameBorder();
 
-    if (state.winner) {
-      this.drawGoalEffect(state.winner);
-      // this.drawHorizontalLine(state.winner);
-    }
-
     this.drawObject(state.ball, "#FFFFFF");
     this.drawObject(state.humanPaddle, "#628DA5");
     this.drawObject(state.rlPaddle, "#628DA5");
 
-    return new Promise((resolve) => {
-      window.requestAnimationFrame(resolve);
-    });
+    if (state.winner) {
+      await this.drawGoalEffect(state.winner);
+    } else {
+      await tf.nextFrame();
+    }
   }
 }
 

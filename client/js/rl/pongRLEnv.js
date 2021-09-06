@@ -6,21 +6,16 @@ export class PongRLEnv {
       paddleWidth: 0.15,
       canvasId: "gameCanvas",
 
-      // How often the game should be updated / redrawn
-      updateFrequency: 10, // = 10 FPS
-
       // How fast the paddles and the ball can move
-      paddleSpeed: 1,
-      ballInitSpeed: 1,
-      ballSpeedIncrease: 1.02,
+      paddleSpeed: 1.25,
+      ballInitSpeed: 2,
+      ballSpeedIncrease: 0.05,
       ballSpeedMax: 3,
+      ballSpinRate: 0.75,
 
       ...options,
     };
     Object.assign(this, options);
-    // How much time has passed at each update. Fixed so we get same results
-    // on every machine.
-    // this.timeFactor = this.updateFrequency / 1000;
 
     // Keep track of the ball and two paddles.
     this.rlPaddleInitState = {
@@ -53,8 +48,8 @@ export class PongRLEnv {
   }
 
   initBallDirection() {
-    const forceX = 0.9 + Math.random() * 0.25;
-    const forceY = 0.4 + Math.random() * 0.25;
+    const forceX = 0.8 * (1 + Math.random() * 0.1);
+    const forceY = 0.4 * (1 + Math.random() * 0.1);
     const norm = Math.sqrt(Math.pow(forceX, 2) + Math.pow(forceY, 2));
     this.ball.forceX = ((Math.random() > 0.5 ? 1 : -1) * forceX) / norm;
     this.ball.forceY = ((Math.random() > 0.5 ? 1 : -1) * forceY) / norm;
@@ -84,7 +79,6 @@ export class PongRLEnv {
         width: this.humanPaddle.width,
       },
       winner: this.getWinner(),
-      timePassed: this.currentFrame * this.updateFrequency,
     };
     return state;
   }
@@ -114,7 +108,7 @@ export class PongRLEnv {
     const radiusX = obj.width / 2;
     const minX = radiusX;
     const maxX = 1 - radiusX;
-    const timeFactor = this.updateFrequency / 1000;
+    const timeFactor = 0.01;
     let wasHit = false;
 
     // If a paddle is already touching the wall, forceX should set to zero:
@@ -139,7 +133,7 @@ export class PongRLEnv {
         // Add a spin to it:
         const paddle = this[`${sideToCheck}Paddle`];
         if (paddle.forceX !== 0) {
-          obj.forceX = (obj.forceX + paddle.forceX) / 2;
+          obj.forceX = obj.forceX * (1 - this.ballSpinRate) + paddle.forceX * this.ballSpinRate;
           // Make mean spins a little harder:
           if (Math.abs(obj.forceX) < 0.33) obj.forceX *= 2;
           // Re-normalize it:
@@ -231,10 +225,7 @@ export class PongRLEnv {
     this.humanPaddle = Object.create(this.humanPaddleInitState);
     this.ball = Object.create(this.ballInitState);
     this.initBallDirection();
-    this.currentState = this.getState();
-    this.previousState = null;
     this.currentFrame = 0;
-    this.winner = null;
     return this.getState();
   }
 
@@ -252,19 +243,6 @@ export class PongRLEnv {
   // actionのe.g. {"rlAction": "noop", "humanAction": "right"}
   // return: 次の状態（ボールの位置など）、報酬、終了タグ
   step(action) {
-    let reward = 0;
-    let done = false;
-    this.previousState = this.currentState;
-    this.currentState = this.getState();
-
-    // Check if match ended:
-    const winner = this.currentState.winner;
-    if (winner) {
-      this.winner = winner;
-      reward = winner === "rl" ? 1.0 : -1.0;
-      done = true;
-    }
-
     this.rlPaddle.forceX = this.actionToForce(action.rlAction);
     this.humanPaddle.forceX = this.actionToForce(action.humanAction);
 
@@ -277,11 +255,19 @@ export class PongRLEnv {
       // Increase ball speed
       this.ball.speed = Math.min(
         this.ballSpeedMax,
-        this.ball.speed * this.ballSpeedIncrease
+        this.ball.speed + this.ballSpeedIncrease
       );
     }
 
     this.currentFrame += 1;
+    
+    let reward = 0;
+    let done = false;
+    const winner = this.getWinner();
+    if (winner) {
+      reward = winner === "rl" ? 1.0 : -1.0;
+      done = true;
+    }
 
     return { state: this.getState(), reward: reward, done: done };
   }
