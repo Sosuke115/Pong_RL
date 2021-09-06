@@ -116,6 +116,7 @@ async function main(rlId) {
     if (endFlag != -1) {
       if (endFlag == 2) {
         $("#start-button").removeClass("first-click");
+        $('#ranking-button').click();
       }
       $("#start-button").prop("disabled", false);
       break;
