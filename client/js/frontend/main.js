@@ -92,6 +92,7 @@ async function main(rlId) {
   const gameScreen = new GameScreen();
 
   const scorer = new Scorer();
+  const timer = new Timer(60);
 
   // draw init state
   let state = env.reset();
@@ -106,7 +107,7 @@ async function main(rlId) {
 
   await sleep(betweenMatchInterval);
 
-  const timer = new Timer(60);
+  timer.start();
   while (true) {
     // monitor the end flag
     let endFlag = getEndFlag(timer.getRemTime());
@@ -115,6 +116,7 @@ async function main(rlId) {
     if (endFlag != -1) {
       if (endFlag == 2) {
         $("#start-button").removeClass("first-click");
+        $('#ranking-button').click();
       }
       $("#start-button").prop("disabled", false);
       break;
@@ -129,11 +131,13 @@ async function main(rlId) {
     timer.draw();
 
     if (res.done) {
+      timer.stop();
       state = env.reset();
       await gameScreen.draw(state);
       scorer.step_and_draw(res.state.winner);
       timeStep = 0;
       await sleep(betweenMatchInterval);
+      timer.start();
     } else {
       state = res.state;
       timeStep += 1;
@@ -164,13 +168,6 @@ $(".rl-selection-button").on("click", function () {
   $(".rl-selection-button").css("background-color", "#FFFFFF");
   $("#" + buttonId).css("background-color", "#CEB845");
 
-  // rl model
-  const rlId = parseInt(
-    $("#" + buttonId)
-      .text()
-      .replace(/,/, "")
-  );
-
   $("#" + buttonId).prop("disabled", true);
 });
 
@@ -183,7 +180,7 @@ $("#start-button").on("click", async function () {
   let rlId = undefined;
   $(".rl-selection-button").each(function (index, element) {
     if ($(element).prop("disabled")) {
-      rlId = parseInt($(element).text().replace(/,/, ""));
+      rlId = parseInt($(element).text().replace(/k/, "000"));
     }
   });
 
