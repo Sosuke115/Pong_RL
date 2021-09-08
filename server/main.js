@@ -10,5 +10,5 @@ if (port == null || port == "") {
 }
 
 app.listen(port, () => {
-  console.log(`Start server port:"${port}"`);
+  console.log(`Start server port:${port}`);
 });
