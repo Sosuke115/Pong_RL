@@ -20,6 +20,7 @@ class Controller {
         command: "buildController",
         input: input,
         side: side,
+        origin: window.location.origin,
       });
       this.worker.onmessage = (m) => {
         if ("config" in m.data) this.rlConfig = m.data.config;
