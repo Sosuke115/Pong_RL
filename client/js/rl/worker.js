@@ -6,7 +6,7 @@ let prevAction = 1;
 
 onmessage = (message) => {
   if (message.data.command === "buildController") {
-    agent = new RLAgent(false);
+    agent = new RLAgent();
     agent.loadModel(`${message.data.origin}/models/model-${message.data.input}.json`)
       .then(() => {
         side = message.data.side;
