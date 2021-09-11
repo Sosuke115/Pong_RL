@@ -46,8 +46,6 @@ export class KeyAgent {
   }
 
   selectAction() {
-    console.log(this.isLeftKeyPressed);
-    console.log(this.isRightKeyPressed);
     if (this.isLeftKeyPressed) {
       $(".left-key").css("border-right", "40px solid #628DA5");
       return 0;
