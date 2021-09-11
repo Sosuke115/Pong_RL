@@ -12,7 +12,22 @@ export class KeyAgent {
     this.isLeftKeyPressed = false;
     this.isRightKeyPressed = false;
 
-    // Set up keys:
+    // touch or mouse event
+    $(".right-key").on("touchstart mousedown", () => {
+      this.isRightKeyPressed = true;
+    });
+    $(".right-key").on("touchend mouseup", () => {
+      this.isRightKeyPressed = false;
+    });
+
+    $(".left-key").on("touchstart mousedown", () => {
+      this.isLeftKeyPressed = true;
+    });
+    $(".left-key").on("touchend mouseup", () => {
+      this.isLeftKeyPressed = false;
+    });
+
+    // key event
     $(document).keydown((event) => {
       if (event.which === this.leftKey) {
         this.isLeftKeyPressed = true;
@@ -31,8 +46,18 @@ export class KeyAgent {
   }
 
   selectAction() {
-    if (this.isLeftKeyPressed) return 0;
-    if (this.isRightKeyPressed) return 2;
-    return 1;
+    console.log(this.isLeftKeyPressed);
+    console.log(this.isRightKeyPressed);
+    if (this.isLeftKeyPressed) {
+      $(".left-key").css("border-right", "40px solid #628DA5");
+      return 0;
+    } else if (this.isRightKeyPressed) {
+      $(".right-key").css("border-left", "40px solid #628DA5");
+      return 2;
+    } else {
+      $(".right-key").css("border-left", "40px solid white");
+      $(".left-key").css("border-right", "40px solid white");
+      return 1;
+    }
   }
 }

@@ -204,23 +204,23 @@ $("#start-button").on("click", async function () {
 });
 
 //
-$(document).keydown(function (event) {
-  if (event.key === "ArrowRight") {
-    $(".right-key").css("border-left", "40px solid #628DA5");
-  }
-  if (event.key === "ArrowLeft") {
-    $(".left-key").css("border-right", "40px solid #628DA5");
-  }
-});
+// $(document).keydown(function (event) {
+//   if (event.key === "ArrowRight") {
+//     $(".right-key").css("border-left", "40px solid #628DA5");
+//   }
+//   if (event.key === "ArrowLeft") {
+//     $(".left-key").css("border-right", "40px solid #628DA5");
+//   }
+// });
 
-$(document).keyup(function (event) {
-  if (event.key === "ArrowRight") {
-    $(".right-key").css("border-left", "40px solid white");
-  }
-  if (event.key === "ArrowLeft") {
-    $(".left-key").css("border-right", "40px solid white");
-  }
-});
+// $(document).keyup(function (event) {
+//   if (event.key === "ArrowRight") {
+//     $(".right-key").css("border-left", "40px solid white");
+//   }
+//   if (event.key === "ArrowLeft") {
+//     $(".left-key").css("border-right", "40px solid white");
+//   }
+// });
 
 $("#ranking-button").on("click", async function () {
   $("#ranking-button").prop("disabled", true);
