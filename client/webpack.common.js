@@ -1,9 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-    mode: 'development',
     entry: {
         'app': path.join(__dirname, 'js', 'frontend', 'main.js'),
         'worker': path.join(__dirname, 'js', 'rl', 'worker.js'),
@@ -40,9 +38,6 @@ module.exports = {
             },
         ]
     },
-    optimization: {
-        usedExports: true,  // enable tree shaking
-    },
     resolve: {
         alias: {
             '@tensorflow/tfjs$':
@@ -56,7 +51,5 @@ module.exports = {
           $: 'jquery',
           jQuery: 'jquery'
         }),
-        new BundleAnalyzerPlugin(),
     ],
-    devtool: "eval-source-map",
 };
