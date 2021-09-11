@@ -1,5 +1,4 @@
-import * as tf from "@tensorflow/tfjs";
-import { sleep } from "../utils.js";
+import { sleep, nextFrame } from "../utils.js";
 
 //Stateから描画するクラス
 export class GameScreen {
@@ -79,7 +78,7 @@ export class GameScreen {
     if (state.winner) {
       await this.drawGoalEffect(state.winner);
     } else {
-      await tf.nextFrame();
+      await nextFrame();
     }
   }
 }

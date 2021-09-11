@@ -5,12 +5,15 @@ import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyAgent } from "../rl/agents/keyAgent.js";
 import { sleep } from "../utils.js";
 
+
+let worker;
+
 class RLController {
   constructor(input) {
     this.rlConfig = null;
     this.action = null;
     this.nextAction = null;
-    this.worker = new Worker(new URL("../rl/worker.js", import.meta.url));
+    this.worker = worker;
     this.worker.postMessage({
       command: "buildController",
       input: input,
@@ -159,6 +162,9 @@ $(document).ready(function () {
   // 初期ゲーム画面の描画
   const goalEffectInterval = 500;
   new GameScreen(goalEffectInterval).drawFrameBorder();
+
+  // load worker bundle in advance for better performance
+  worker = new Worker("../../dist/worker.bundle.js");
 });
 
 // Process for training step button

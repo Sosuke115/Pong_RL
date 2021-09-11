@@ -1,5 +1,5 @@
 import { PongRLEnv } from "./pongRLEnv.js";
-import { RLAgent } from "./agents/rlAgent.js";
+import { RLAgentTrain } from "./agents/rlAgentTrain.js";
 import { ReplayMemory } from "./replayMemory.js";
 
 
@@ -13,7 +13,7 @@ async function main(options) {
   };
 
   const env = new PongRLEnv();
-  const agent = new RLAgent();
+  const agent = new RLAgentTrain();
   const replayMemory = new ReplayMemory(config.memoryCapacity);
 
   const path = "model-0";

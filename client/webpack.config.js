@@ -6,6 +6,7 @@ module.exports = {
     mode: 'development',
     entry: {
         'app': path.join(__dirname, 'js', 'frontend', 'main.js'),
+        'worker': path.join(__dirname, 'js', 'rl', 'worker.js'),
     },
     output: {
         path: path.join(__dirname, 'dist'),
@@ -25,28 +26,37 @@ module.exports = {
                                 [
                                     '@babel/preset-env',
                                     {
-                                        'modules': 'commonjs',//commonjs,amd,umd,systemjs,auto
-                                        'useBuiltIns': 'usage',
-                                        'targets': '> 0.25%, not dead',
-                                        'corejs': 3
+                                        'modules': false,
+                                        // 'useBuiltIns': 'usage',
+                                        // 'targets': '> 0.25%, not dead',
+                                        // 'corejs': 3
                                     }
                                 ]
-                            ]
+                            ],
+                            plugins: ['@babel/plugin-transform-runtime'],
                         }
                     }
-                ]
+                ],
             },
         ]
     },
+    optimization: {
+        usedExports: true,  // enable tree shaking
+    },
     resolve: {
-        alias: {}
+        alias: {
+            '@tensorflow/tfjs$':
+                path.resolve(__dirname, './js/custom_tfjs/custom_tfjs.js'),
+            '@tensorflow/tfjs-core$':
+                path.resolve(__dirname, './js/custom_tfjs/custom_tfjs_core.js'),
+        }
     },
     plugins: [
         new webpack.ProvidePlugin({
           $: 'jquery',
           jQuery: 'jquery'
         }),
-        // new BundleAnalyzerPlugin(),
+        new BundleAnalyzerPlugin(),
     ],
     devtool: "eval-source-map",
 };

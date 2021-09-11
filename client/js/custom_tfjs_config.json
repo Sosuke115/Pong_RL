@@ -1,0 +1,9 @@
+{
+  "kernels": ["Slice", "Reshape", "_FusedMatMul", "fusedMatMul__op", "Relu", "Identity", "ArgMax"],
+  "backends": [
+    "cpu"
+  ],
+  "models": [],
+  "outputPath": "./custom_tfjs",
+  "forwardModeOnly": true
+}

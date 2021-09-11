@@ -7,6 +7,7 @@ module.exports = {
     entry: {
         'train': path.join(__dirname, 'train.js'),
         'test': path.join(__dirname, 'test.js'),
+        // 'checkKernels': path.join(__dirname, 'checkKernels.js'),
     },
     output: {
         path: path.join(__dirname, 'dist'),
@@ -26,18 +27,22 @@ module.exports = {
                                 [
                                     '@babel/preset-env',
                                     {
-                                        'modules': 'commonjs',//commonjs,amd,umd,systemjs,auto
-                                        'useBuiltIns': 'usage',
-                                        'targets': '> 0.25%, not dead',
-                                        'corejs': 3
+                                        'modules': false,
+                                        // 'useBuiltIns': 'usage',
+                                        // 'targets': '> 0.25%, not dead',
+                                        // 'corejs': 3
                                     }
                                 ]
-                            ]
+                            ],
+                            plugins: ['@babel/plugin-transform-runtime'],
                         }
                     }
                 ]
             },
         ]
+    },
+    optimization: {
+        usedExports: true,  // enable tree shaking
     },
     resolve: {
         alias: {}
@@ -47,7 +52,7 @@ module.exports = {
           $: 'jquery',
           jQuery: 'jquery'
         }),
-        // new BundleAnalyzerPlugin(),
+        new BundleAnalyzerPlugin(),
     ],
     devtool: "eval-source-map",
 };
