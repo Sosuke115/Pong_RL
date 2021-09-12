@@ -4,9 +4,9 @@
   "description": "",
   "scripts": {
     "build": "npx webpack --config client/webpack.dev.js",
-    "build-rl": "npx webpack --config client/js/rl/webpack.dev.js",
+    "build-rl": "npx webpack --config client/js/rl/webpack.config.js",
     "watch": "npx webpack --watch --config client/webpack.dev.js",
-    "watch-rl": "npx webpack --watch --config client/js/rl/webpack.dev.js",
+    "watch-rl": "npx webpack --watch --config client/js/rl/webpack.config.js",
     "start": "node ./server/main.js",
     "heroku-postbuild": "npx webpack --config client/webpack.prod.js"
   },
