@@ -203,25 +203,6 @@ $("#start-button").on("click", async function () {
   main(rlId);
 });
 
-//
-// $(document).keydown(function (event) {
-//   if (event.key === "ArrowRight") {
-//     $(".right-key").css("border-left", "40px solid #628DA5");
-//   }
-//   if (event.key === "ArrowLeft") {
-//     $(".left-key").css("border-right", "40px solid #628DA5");
-//   }
-// });
-
-// $(document).keyup(function (event) {
-//   if (event.key === "ArrowRight") {
-//     $(".right-key").css("border-left", "40px solid white");
-//   }
-//   if (event.key === "ArrowLeft") {
-//     $(".left-key").css("border-right", "40px solid white");
-//   }
-// });
-
 $("#ranking-button").on("click", async function () {
   $("#ranking-button").prop("disabled", true);
   if ($("#start-button").hasClass("first-click") === true) {

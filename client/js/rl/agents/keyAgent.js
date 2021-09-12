@@ -47,14 +47,14 @@ export class KeyAgent {
 
   selectAction() {
     if (this.isLeftKeyPressed) {
-      $(".left-key").css("border-right", "40px solid #628DA5");
+      $(".left-key").addClass("left-key-color");
       return 0;
     } else if (this.isRightKeyPressed) {
-      $(".right-key").css("border-left", "40px solid #628DA5");
+      $(".right-key").addClass("right-key-color");
       return 2;
     } else {
-      $(".right-key").css("border-left", "40px solid white");
-      $(".left-key").css("border-right", "40px solid white");
+      $(".left-key").removeClass("left-key-color");
+      $(".right-key").removeClass("right-key-color");
       return 1;
     }
   }
