@@ -20,21 +20,15 @@
                 <button class="rl-selection-button" id="step-0k">0</button>
               </td>
               <td>
-                <button class="rl-selection-button" id="step-20k">
-                  20k
-                </button>
+                <button class="rl-selection-button" id="step-20k">20k</button>
               </td>
             </tr>
             <tr>
               <td>
-                <button class="rl-selection-button" id="step-50k">
-                  50k
-                </button>
+                <button class="rl-selection-button" id="step-50k">50k</button>
               </td>
               <td>
-                <button class="rl-selection-button" id="step-100k">
-                  100k
-                </button>
+                <button class="rl-selection-button" id="step-100k">100k</button>
               </td>
             </tr>
           </table>
@@ -49,8 +43,8 @@
 
         <div class="game">
           <div class="result-screen">
-            <div class="result-title"> Ranking</div>
-            <div class="result-subtitle"> (10,000 step)</div>
+            <div class="result-title">Ranking</div>
+            <div class="result-subtitle">(10,000 step)</div>
             <div class="result-ranking">
               <div class="ranks">
                 <div>1</div>
@@ -69,12 +63,12 @@
                 <div id="avg">score</div>
               </div>
               <div class="threshold">
-                <div> : </div>
-                <div> : </div>
-                <div> : </div>
-                <div> : </div>
-                <div> : </div>
-                <div> : </div>
+                <div>:</div>
+                <div>:</div>
+                <div>:</div>
+                <div>:</div>
+                <div>:</div>
+                <div>:</div>
               </div>
               <div class="ranking-scores">
                 <div id="rank1-score">10</div>
@@ -91,8 +85,8 @@
                 <div id="your-rank-index">Your rank</div>
               </div>
               <div class="threshold">
-                <div> : </div>
-                <div> : </div>
+                <div>:</div>
+                <div>:</div>
               </div>
               <div class="your-scores">
                 <div id="your-score">5 (8-3)</div>
@@ -100,11 +94,17 @@
               </div>
             </div>
             <div class="register-area">
-              <input class="input-nickname" name="telNumber" placeholder="Fill in your nick name">
+              <input
+                class="input-nickname"
+                name="telNumber"
+                placeholder="Fill in your nick name"
+              />
               <button class="register-button">Register</button>
             </div>
           </div>
-          <canvas id="gameCanvas" width="350" height="400"></canvas>
+          <div id="canvas_wrapper">
+            <canvas id="gameCanvas" width="350" height="400"></canvas>
+          </div>
         </div>
 
         <div class="score-area">
@@ -118,8 +118,10 @@
 
       <div class="key-area">
         <div class="left-key"></div>
-        <button id="start-button">Start</button>
-        <button id="ranking-button">Ranking</button>
+        <div class="start_ranking_buttons">
+          <button id="start-button">Start</button>
+          <button id="ranking-button">Ranking</button>
+        </div>
         <div class="right-key"></div>
       </div>
     </div>
