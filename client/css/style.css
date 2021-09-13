@@ -108,7 +108,6 @@ button {
 
   .ranks {
     display: inline-block;
-    /* font-size: 40px; */
   }
   .result-ranking {
     margin-top: 40px;
@@ -262,7 +261,6 @@ button {
 }
 
 
-/* @media screen and (min-width: 1024px) { */
 @media screen and (min-width: 1024px) {
   /*　for PC　*/
   .title {
@@ -424,7 +422,3 @@ button {
     border-right: 40px solid #628da5;
   }
 }
-
-/* @media only screen and (max-width: 767px){ */
-/* @media screen and (max-width: 480px){ * */
-/* @media screen{ * */
