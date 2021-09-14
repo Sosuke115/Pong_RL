@@ -147,7 +147,7 @@ button {
     margin-top: 60px;
   }
 
-  #gameCanvas {
+  #game-canvas {
     width: 777px;
     height: 888px;
   }
@@ -317,7 +317,7 @@ button {
   .register-area {
     margin-top: 30px;
   }
-  #gameCanvas {
+  #game-canvas {
     width: 350px;
     height: 400px;
   }
