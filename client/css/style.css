@@ -86,8 +86,17 @@ button {
     margin-bottom: 10px;
   }
   .button-description {
-    margin-top: 20px;
+    margin-top: 10px;
     font-size: 30px;
+  }
+
+  .loading-screen{
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 100%;
+    margin-top: 50%;
+    font-size: 80px;
   }
 
 
@@ -149,6 +158,7 @@ button {
     display: inline-block;
     position: relative;
     margin-top: 30px;
+    margin-bottom: 0px;
     z-index: 0;
   }
 
@@ -276,6 +286,15 @@ button {
   }
   .button-description {
     font-size: 18px;
+  }
+
+  .loading-screen{
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 100%;
+    margin-top: 50%;
+    font-size: 40px;
   }
 
   .result-title {

@@ -102,10 +102,13 @@ async function main(rlId) {
   let state = env.reset();
   scorer.draw();
 
+  // loading screen
+  $(".loading-screen").show();
   // load model
   const humanController = new KeyAgent();
   const rlController = new RLController(rlId);
   await rlController.warmUp();
+  $(".loading-screen").fadeOut();
 
   let timeStep = 0;
 
