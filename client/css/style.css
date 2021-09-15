@@ -90,6 +90,24 @@ button {
     font-size: 30px;
   }
 
+  .start-screen{
+    position: absolute;
+    width: 100%;
+    height: 40%;
+    margin-top: 50%;
+  }
+
+  #start-button{
+    font-size: 80px;
+    font-weight: lighter;
+    border-radius: 50px;
+    width: 50%;
+    color: #FFFFFF;
+    background-color: #262544;
+    border-color: #FFFFFF;
+    border-width: 1px;
+  }
+
   .loading-screen{
     position: absolute;
     display: none;
@@ -218,7 +236,7 @@ button {
     font-size: 60px;
   }
 
-  #start-button {
+  #restart-button {
     font-size: 40px;
     display: block;
     width: 240px;
@@ -286,6 +304,24 @@ button {
   }
   .button-description {
     font-size: 18px;
+  }
+
+  .start-screen{
+    position: absolute;
+    width: 100%;
+    height: 50%;
+    margin-top: 50%;
+  }
+
+  #start-button{
+    font-size: 40px;
+    font-weight: lighter;
+    border-radius: 50px;
+    width: 50%;
+    color: #FFFFFF;
+    background-color: #262544;
+    border-color: #FFFFFF;
+    border-width: 1px;
   }
 
   .loading-screen{
@@ -405,7 +441,7 @@ button {
     font-size: 45px;
   }
 
-  #start-button {
+  #restart-button {
     font-size: 13px;
     width: 80px;
     height: 40px;

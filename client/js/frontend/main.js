@@ -71,7 +71,7 @@ class RLController {
 }
 
 function getEndFlag(remTime) {
-  let reStartFlag = $("#start-button").prop("disabled");
+  let reStartFlag = $("#restart-button").prop("disabled");
   let rankingFlag = $("#ranking-button").prop("disabled");
   if (reStartFlag) {
     return 1; // button break
@@ -85,14 +85,15 @@ function getEndFlag(remTime) {
   }
 }
 
-// flagで終了する形式にする？
+// main処理
 async function main(rlId) {
   //
   const env = new PongRLEnv();
+  const InitState = env.reset();
   console.log(`Start  RL: "${rlId}"`);
 
   // load game screen
-  const betweenMatchInterval = 200;
+  const betweenMatchInterval = 500;
   const gameScreen = new GameScreen();
 
   const scorer = new Scorer();
@@ -108,10 +109,11 @@ async function main(rlId) {
   const humanController = new KeyAgent();
   const rlController = new RLController(rlId);
   await rlController.warmUp();
-  $(".loading-screen").fadeOut();
+  $(".loading-screen").fadeOut(50);
 
   let timeStep = 0;
 
+  await gameScreen.draw(InitState);
   await sleep(betweenMatchInterval);
 
   timer.start();
@@ -122,10 +124,10 @@ async function main(rlId) {
     // handle the end flag
     if (endFlag != -1) {
       if (endFlag == 2) {
-        $("#start-button").removeClass("first-click");
+        $("#restart-button").removeClass("first-click");
         $('#ranking-button').click();
       }
-      $("#start-button").prop("disabled", false);
+      $("#restart-button").prop("disabled", false);
       break;
     }
 
@@ -154,7 +156,7 @@ async function main(rlId) {
   gameScreen.drawFrameBorder();
 }
 
-//
+// 初期の処理
 $(document).ready(function () {
   // ボタンの初期状態
   const buttonId = "step-0k";
@@ -181,11 +183,13 @@ $(".rl-selection-button").on("click", function () {
   $("#" + buttonId).prop("disabled", true);
 });
 
-// Start button
-$("#start-button").on("click", async function () {
+
+// Restart button
+$("#restart-button, #start-button").on("click", async function () {
   // reset ranking button
   $("#ranking-button").prop("disabled", false);
   $(".result-screen").fadeOut();
+  $(".start-screen").fadeOut();
 
   let rlId = undefined;
   $(".rl-selection-button").each(function (index, element) {
@@ -194,22 +198,20 @@ $("#start-button").on("click", async function () {
     }
   });
 
-  if ($(this).hasClass("first-click") === false) {
-    $(this).addClass("first-click");
-    $(this).text("ReStart");
+  if ($("#restart-button").hasClass("first-click") === false) {
+    $("#restart-button").addClass("first-click");
   } else {
-    $("#start-button").prop("disabled", true);
+    $("#restart-button").prop("disabled", true);
     // falseになるまで（前回のmainが終わるまで）待つ
-    // TODO確実にfalseになるまで待つようにしたい
-    await sleep(80);
+    while ($("#restart-button").prop("disabled" === false)) await sleep(80);
   }
   main(rlId);
 });
 
 $("#ranking-button").on("click", async function () {
   $("#ranking-button").prop("disabled", true);
-  if ($("#start-button").hasClass("first-click") === true) {
-    $("#start-button").removeClass("first-click");
+  if ($("#restart-button").hasClass("first-click") === true) {
+    $("#restart-button").removeClass("first-click");
   }
   $(".result-screen").fadeIn();
 });
