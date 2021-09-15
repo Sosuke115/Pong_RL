@@ -4,7 +4,7 @@ export class PongRLEnv {
     //固定値
     options = {
       paddleWidth: 0.15,
-      canvasId: "gameCanvas",
+      canvasId: "game-canvas",
 
       // How fast the paddles and the ball can move
       paddleSpeed: 1.25,

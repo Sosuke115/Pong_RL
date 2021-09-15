@@ -3,7 +3,7 @@ import { sleep, nextFrame } from "../utils.js";
 //Stateから描画するクラス
 export class GameScreen {
   constructor(goalEffectInterval = 500) {
-    this.canvas = document.getElementById("gameCanvas");
+    this.canvas = document.getElementById("game-canvas");
     this.ctx = this.canvas.getContext("2d");
     this.goalEffectInterval = goalEffectInterval;
   }
