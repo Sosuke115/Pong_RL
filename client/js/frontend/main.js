@@ -166,7 +166,7 @@ $(document).ready(function () {
 
   // 初期ゲーム画面の描画
   const goalEffectInterval = 500;
-  new GameScreen(goalEffectInterval).drawFrameBorder();
+  new GameScreen(goalEffectInterval).draw(new PongRLEnv().reset());
 
   // load worker bundle in advance for better performance
   worker = new Worker("../../dist/worker.bundle.js");
