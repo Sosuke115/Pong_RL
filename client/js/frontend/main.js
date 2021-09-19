@@ -113,12 +113,11 @@ async function main(rlId) {
   timer.start();
   while (true) {
     // monitor running flag
-    if ($.inArray(gameRunningState, [0, 1]) != -1) {
+    if ($.inArray(gameRunningState, [0, 1]) != -1 || timer.getRemTime() == 0) {
       gameRunningState = 0;
       break;
     }
 
-    
     const res = env.step({
       humanAction: humanController.selectAction(),
       rlAction: rlController.selectAction(state, timeStep),
@@ -188,7 +187,8 @@ $("#start-button").on("click", async function () {
 
   // start game
   gameRunningState = 2;
-  main(rlId);
+  await main(rlId);
+  $("#ranking-button").click();
 });
 
 // process for game button
@@ -209,7 +209,7 @@ $("#ranking-button").on("click", async function () {
   $("#game-button").prop("disabled", false);
   // wait until the game is over
   await stopGame();
-  
+
   // clear game screen
   initGameScreen.clearInsideCanvas();
   $(".start-screen").fadeOut();
