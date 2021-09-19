@@ -71,7 +71,7 @@ class RLController {
   }
 }
 
-async function waitUntilGameEnd() {
+async function stopGame() {
   if ($.inArray(gameRunningState, [1, 2]) != -1) {
     gameRunningState = 1;
     while (gameRunningState == 1) await sleep(80);
@@ -197,7 +197,7 @@ $("#game-button").on("click", async function () {
   $("#ranking-button").prop("disabled", false);
   $(".result-screen").fadeOut();
   // wait until the game is over
-  await waitUntilGameEnd();
+  await stopGame();
   // init game screen
   initGameScreen.draw(new PongRLEnv().reset());
   $(".start-screen").fadeIn();
@@ -208,7 +208,7 @@ $("#ranking-button").on("click", async function () {
   $("#ranking-button").prop("disabled", true);
   $("#game-button").prop("disabled", false);
   // wait until the game is over
-  await waitUntilGameEnd();
+  await stopGame();
   
   // clear game screen
   initGameScreen.clearInsideCanvas();
