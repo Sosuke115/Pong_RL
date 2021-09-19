@@ -75,8 +75,9 @@ button {
 
 @media screen{
   /*　for iPhone */
-  body{
-    overflow: hidden;
+  .body{
+    overflow-x: hidden;
+    overflow-y: hidden;
   }
 
   .title {
@@ -99,12 +100,14 @@ button {
 
   #start-button{
     font-size: 80px;
+    font-weight: 700;
+    border: 2px solid #FFFFFF;
     font-weight: lighter;
     border-radius: 50px;
     width: 50%;
-    color: #FFFFFF;
-    background-color: #262544;
-    border-color: #FFFFFF;
+    color: #262544;
+    background-color: #FFFFFF;
+    border-color: #262544;
     border-width: 1px;
   }
 
@@ -190,6 +193,10 @@ button {
   }
   .rl-selection-button-container button {
     font-size: 30px;
+    color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-width: 5px;
+    background-color: #262544;
     width: 200px;
     height: 80px;
     line-height: 70px;
@@ -239,6 +246,9 @@ button {
 
   #restart-button {
     font-size: 40px;
+    color: #FFFFFF;
+    border: 5px solid #FFFFFF;
+    background-color: #262544;
     display: block;
     width: 240px;
     height: 100px;
@@ -251,6 +261,9 @@ button {
 
   #ranking-button {
     font-size: 40px;
+    color: #FFFFFF;
+    border: 5px solid #FFFFFF;
+    background-color: #262544;
     display: block;
     width: 240px;
     height: 100px;
@@ -297,6 +310,10 @@ button {
 
 @media screen and (min-width: 1024px) {
   /*　for PC　*/
+  .body{
+    overflow-x: hidden;
+    overflow-y: scroll;
+    }
   .title {
     display: inline-block;
     position: relative;
@@ -315,12 +332,12 @@ button {
   }
 
   #start-button{
-    font-size: 40px;
-    font-weight: lighter;
-    border-radius: 50px;
-    width: 50%;
-    color: #FFFFFF;
-    background-color: #262544;
+    font-size: 35px;
+    font-weight: 500;
+    border-radius: 20px;
+    width: 45%;
+    color: #262544;
+    background-color: #FFFFFF;
     border-color: #FFFFFF;
     border-width: 1px;
   }
@@ -397,11 +414,14 @@ button {
     margin: 10px 0;
   }
   .rl-selection-button-container button {
-    font-size: 13px;
+    font-size: 14px;
+    color: #FFFFFF;
+    border: 3px solid #FFFFFF;
+    background-color: #262544;
     width: 80px;
     height: 40px;
     line-height: 35px;
-    border-radius: 20px;
+    border-radius: 10px;
   }
 
   table {
@@ -445,52 +465,68 @@ button {
   }
 
   #restart-button {
-    font-size: 13px;
-    width: 80px;
-    height: 40px;
+    font-size: 14px;
+    color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-width:3px 0px 3px 3px;
+    background-color: #262544;
+    width: 85px;
+    height: 45px;
     line-height: 35px;
-    border-radius: 20px;
     float: left;
-    margin-right: 10px;
-    margin-left: 20px;
-    margin-top: 5px;
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 
   #ranking-button {
-    font-size: 13px;
-    width: 80px;
-    height: 40px;
+    font-size: 14px;
+    color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-width: 3px;
+    background-color: #262544;
+    width: 85px;
+    height: 45px;
     line-height: 35px;
-    border-radius: 20px;
     float: left;
-    margin-right: 20px;
-    margin-left: 10px;
-    margin-top: 5px;
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
   }
 
   .right-key {
     width: 0;
     height: 0;
-    border-left: 40px solid white;
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
+    border-left: 45px solid white;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
     float: left;
-    margin-top: 7px;
+    margin-top: 0px;
+    margin-left: 40px;
   }
   .right-key-color {
-    border-left: 40px solid #628da5;
+    border-left: 45px solid #628da5;
   }
 
   .left-key {
     width: 0;
     height: 0;
-    border-right: 40px solid white;
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
+    border-right: 45px solid white;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
     float: left;
-    margin-top: 7px;
+    margin-top: 0px;
+    margin-right: 40px;
   }
   .left-key-color {
-    border-right: 40px solid #628da5;
+    border-right: 45px solid #628da5;
   }
 }

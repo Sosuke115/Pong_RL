@@ -160,7 +160,6 @@ async function main(rlId) {
 $(document).ready(function () {
   // ボタンの初期状態
   const buttonId = "step-0k";
-  $(".rl-selection-button").css("background-color", "#FFFFFF");
   $("#" + buttonId).css("background-color", "#CEB845");
   $("#" + buttonId).prop("disabled", true);
 
@@ -177,7 +176,7 @@ $(".rl-selection-button").on("click", function () {
   $(".rl-selection-button").prop("disabled", false);
   // color
   const buttonId = $(this).attr("id");
-  $(".rl-selection-button").css("background-color", "#FFFFFF");
+  $(".rl-selection-button").css("background-color", "#262544");
   $("#" + buttonId).css("background-color", "#CEB845");
 
   $("#" + buttonId).prop("disabled", true);
@@ -214,4 +213,10 @@ $("#ranking-button").on("click", async function () {
     $("#restart-button").removeClass("first-click");
   }
   $(".result-screen").fadeIn();
+});
+
+//game and ranking button color
+$("#restart-button, #ranking-button").on("click", function () {
+  $("#restart-button, #ranking-button").css("background-color", "#262544");
+  $(this).css("background-color", "#CEB845");
 });
