@@ -113,11 +113,12 @@ async function main(rlId) {
   timer.start();
   while (true) {
     // monitor running flag
-    if (gameRunningState == 1) {
+    if ($.inArray(gameRunningState, [0, 1]) != -1) {
       gameRunningState = 0;
       break;
     }
 
+    
     const res = env.step({
       humanAction: humanController.selectAction(),
       rlAction: rlController.selectAction(state, timeStep),
