@@ -3,6 +3,8 @@
 body {
   height: 100%;
   width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
   background-color: #262544;
   margin: 10;
   padding: 10;
@@ -14,6 +16,10 @@ body {
 button {
   font-family: "Quicksand", sans-serif;
   font-weight: medium;
+}
+
+.pressed-buttons-color {
+  background-color: #CEB845 !important;
 }
 
 .container {
@@ -75,10 +81,6 @@ button {
 
 @media screen{
   /*　for iPhone */
-  .body{
-    overflow-x: hidden;
-    overflow-y: hidden;
-  }
 
   .title {
     display: inline-block;
@@ -94,8 +96,9 @@ button {
   .start-screen{
     position: absolute;
     width: 100%;
-    height: 40%;
-    margin-top: 50%;
+    height: 100%;
+    margin-top: 0px;
+    background-color: rgba(255,255,255, 0.15);
   }
 
   #start-button{
@@ -109,6 +112,7 @@ button {
     background-color: #FFFFFF;
     border-color: #262544;
     border-width: 1px;
+    margin-top: 50%;
   }
 
   .loading-screen{
@@ -244,7 +248,7 @@ button {
     font-size: 60px;
   }
 
-  #restart-button {
+  #game-button {
     font-size: 40px;
     color: #FFFFFF;
     border: 5px solid #FFFFFF;
@@ -274,7 +278,7 @@ button {
     margin-left: 30px;
   }
 
-  .start_ranking_buttons {
+  .game_ranking_buttons {
     float: left;
   }
 
@@ -310,10 +314,7 @@ button {
 
 @media screen and (min-width: 1024px) {
   /*　for PC　*/
-  .body{
-    overflow-x: hidden;
-    overflow-y: scroll;
-    }
+
   .title {
     display: inline-block;
     position: relative;
@@ -327,8 +328,9 @@ button {
   .start-screen{
     position: absolute;
     width: 100%;
-    height: 50%;
-    margin-top: 50%;
+    height: 100%;
+    margin-top: 0px;
+    background-color: rgba(255,255,255, 0.15);
   }
 
   #start-button{
@@ -340,6 +342,7 @@ button {
     background-color: #FFFFFF;
     border-color: #FFFFFF;
     border-width: 1px;
+    margin-top: 50%;
   }
 
   .loading-screen{
@@ -464,7 +467,7 @@ button {
     font-size: 45px;
   }
 
-  #restart-button {
+  #game-button {
     font-size: 14px;
     color: #FFFFFF;
     border: 2px solid #FFFFFF;

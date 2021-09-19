@@ -5,8 +5,9 @@ import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyAgent } from "../rl/agents/keyAgent.js";
 import { sleep } from "../utils.js";
 
-
 let worker;
+let gameRunningState = 0; //0: pending, 1: trying to stop, 2: running
+const initGameScreen = new GameScreen(0);
 
 class RLController {
   constructor(input) {
@@ -70,24 +71,16 @@ class RLController {
   }
 }
 
-function getEndFlag(remTime) {
-  let reStartFlag = $("#restart-button").prop("disabled");
-  let rankingFlag = $("#ranking-button").prop("disabled");
-  if (reStartFlag) {
-    return 1; // button break
-  } else if (remTime === 0) {
-    return 2; // time break
-  }
-  if (rankingFlag) {
-    return 3; // button break
-  } else {
-    return -1;
+async function waitUntilGameEnd() {
+  if ($.inArray(gameRunningState, [1, 2]) != -1) {
+    gameRunningState = 1;
+    while (gameRunningState == 1) await sleep(80);
   }
 }
 
 // main処理
 async function main(rlId) {
-  //
+  // 環境
   const env = new PongRLEnv();
   const InitState = env.reset();
   console.log(`Start  RL: "${rlId}"`);
@@ -116,18 +109,12 @@ async function main(rlId) {
   await gameScreen.draw(InitState);
   await sleep(betweenMatchInterval);
 
+  timer.draw();
   timer.start();
   while (true) {
-    // monitor the end flag
-    let endFlag = getEndFlag(timer.getRemTime());
-
-    // handle the end flag
-    if (endFlag != -1) {
-      if (endFlag == 2) {
-        $("#restart-button").removeClass("first-click");
-        $('#ranking-button').click();
-      }
-      $("#restart-button").prop("disabled", false);
+    // monitor running flag
+    if (gameRunningState == 1) {
+      gameRunningState = 0;
       break;
     }
 
@@ -152,42 +139,43 @@ async function main(rlId) {
       timeStep += 1;
     }
   }
-  gameScreen.clearCanvas();
-  gameScreen.drawFrameBorder();
+  console.log("game end");
+  gameScreen.clearInsideCanvas();
 }
 
-// 初期の処理
+// init process
 $(document).ready(function () {
-  // ボタンの初期状態
+  // init rl selection button state
   const buttonId = "step-0k";
-  $("#" + buttonId).css("background-color", "#CEB845");
+  $("#" + buttonId).addClass("pressed-buttons-color");
   $("#" + buttonId).prop("disabled", true);
 
-  // 初期ゲーム画面の描画
-  const goalEffectInterval = 500;
-  new GameScreen(goalEffectInterval).draw(new PongRLEnv().reset());
+  // init game button
+  $("#game-button").addClass("pressed-buttons-color");
+  $("#game-button").prop("disabled", true);
+
+  // init game screen
+  initGameScreen.draw(new PongRLEnv().reset());
 
   // load worker bundle in advance for better performance
   worker = new Worker("../../dist/worker.bundle.js");
 });
 
-// Process for training step button
+// Process for rl selection button
 $(".rl-selection-button").on("click", function () {
   $(".rl-selection-button").prop("disabled", false);
   // color
   const buttonId = $(this).attr("id");
-  $(".rl-selection-button").css("background-color", "#262544");
-  $("#" + buttonId).css("background-color", "#CEB845");
-
+  $(".rl-selection-button").removeClass("pressed-buttons-color");
+  $("#" + buttonId).addClass("pressed-buttons-color");
   $("#" + buttonId).prop("disabled", true);
 });
 
-
-// Restart button
-$("#restart-button, #start-button").on("click", async function () {
+// process for start button
+$("#start-button").on("click", async function () {
   // reset ranking button
+  $("#game-button").prop("disabled", true);
   $("#ranking-button").prop("disabled", false);
-  $(".result-screen").fadeOut();
   $(".start-screen").fadeOut();
 
   let rlId = undefined;
@@ -197,26 +185,38 @@ $("#restart-button, #start-button").on("click", async function () {
     }
   });
 
-  if ($("#restart-button").hasClass("first-click") === false) {
-    $("#restart-button").addClass("first-click");
-  } else {
-    $("#restart-button").prop("disabled", true);
-    // falseになるまで（前回のmainが終わるまで）待つ
-    while ($("#restart-button").prop("disabled" === false)) await sleep(80);
-  }
+  // start game
+  gameRunningState = 2;
   main(rlId);
 });
 
+// process for game button
+$("#game-button").on("click", async function () {
+  $("#game-button").prop("disabled", true);
+  $("#ranking-button").prop("disabled", false);
+  $(".result-screen").fadeOut();
+  // wait until the game is over
+  await waitUntilGameEnd();
+  // init game screen
+  initGameScreen.draw(new PongRLEnv().reset());
+  $(".start-screen").fadeIn();
+});
+
+// process for ranking button
 $("#ranking-button").on("click", async function () {
   $("#ranking-button").prop("disabled", true);
-  if ($("#restart-button").hasClass("first-click") === true) {
-    $("#restart-button").removeClass("first-click");
-  }
+  $("#game-button").prop("disabled", false);
+  // wait until the game is over
+  await waitUntilGameEnd();
+  
+  // clear game screen
+  initGameScreen.clearInsideCanvas();
+  $(".start-screen").fadeOut();
   $(".result-screen").fadeIn();
 });
 
 //game and ranking button color
-$("#restart-button, #ranking-button").on("click", function () {
-  $("#restart-button, #ranking-button").css("background-color", "#262544");
-  $(this).css("background-color", "#CEB845");
+$("#game-button, #ranking-button").on("click", function () {
+  $("#game-button, #ranking-button").removeClass("pressed-buttons-color");
+  $(this).addClass("pressed-buttons-color");
 });
