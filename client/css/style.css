@@ -163,7 +163,7 @@ button {
     text-align: left;
   }
 
-  input.input-nickname {
+  .input-nickname {
     width: 300px;
     height: 80px;
     font-size: 25px;
@@ -172,11 +172,15 @@ button {
     margin-right: 20px;
   }
 
-  button.register-button {
+  .register-button {
     font-size: 25px;
     width: 150px;
     height: 80px;
-    border-radius: 25px;
+    border-radius: 25px;    
+    color: #262544;
+    background-color: #FFFFFF;
+    border-color: #FFFFFF;
+    border-width: 1px;
     margin-left: 20px;
   }
 
@@ -386,7 +390,7 @@ button {
     text-align: left;
   }
 
-  input.input-nickname {
+  .input-nickname {
     width: 40%;
     height: 40px;
     font-size: 12px;
@@ -395,7 +399,7 @@ button {
     margin-right: 20px;
   }
 
-  button.register-button {
+  .register-button {
     font-size: 12px;
     width: 70px;
     border-radius: 20px;
