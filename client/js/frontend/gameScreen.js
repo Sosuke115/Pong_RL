@@ -64,6 +64,11 @@ export class GameScreen {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
+  clearInsideCanvas() {
+    this.clearCanvas();
+    this.drawFrameBorder();
+  }
+
   // Redraw the game based on the current state
   async draw(state) {
 

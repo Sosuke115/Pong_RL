@@ -3,6 +3,8 @@
 body {
   height: 100%;
   width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
   background-color: #262544;
   margin: 10;
   padding: 10;
@@ -14,6 +16,10 @@ body {
 button {
   font-family: "Quicksand", sans-serif;
   font-weight: medium;
+}
+
+.pressed-buttons-color {
+  background-color: #CEB845 !important;
 }
 
 .container {
@@ -75,9 +81,6 @@ button {
 
 @media screen{
   /*　for iPhone */
-  body{
-    overflow: hidden;
-  }
 
   .title {
     display: inline-block;
@@ -86,8 +89,40 @@ button {
     margin-bottom: 10px;
   }
   .button-description {
-    margin-top: 20px;
+    margin-top: 10px;
     font-size: 30px;
+  }
+
+  .start-screen{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin-top: 0px;
+    background-color: rgba(255,255,255, 0.15);
+  }
+
+  #start-button{
+    font-size: 80px;
+    font-weight: 700;
+    border: 2px solid #FFFFFF;
+    font-weight: lighter;
+    border-radius: 50px;
+    width: 50%;
+    color: #262544;
+    background-color: #FFFFFF;
+    border-color: #262544;
+    border-width: 1px;
+    margin-top: 50%;
+  }
+
+  .loading-screen{
+    position: absolute;
+    display: none;
+    width: 50%;
+    height: 50%;
+    margin-top: 3%;
+    margin-left: 60%;
+    font-size: 40px;
   }
 
 
@@ -149,6 +184,7 @@ button {
     display: inline-block;
     position: relative;
     margin-top: 30px;
+    margin-bottom: 0px;
     z-index: 0;
   }
 
@@ -161,6 +197,10 @@ button {
   }
   .rl-selection-button-container button {
     font-size: 30px;
+    color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-width: 5px;
+    background-color: #262544;
     width: 200px;
     height: 80px;
     line-height: 70px;
@@ -208,8 +248,11 @@ button {
     font-size: 60px;
   }
 
-  #start-button {
+  #game-button {
     font-size: 40px;
+    color: #FFFFFF;
+    border: 5px solid #FFFFFF;
+    background-color: #262544;
     display: block;
     width: 240px;
     height: 100px;
@@ -222,6 +265,9 @@ button {
 
   #ranking-button {
     font-size: 40px;
+    color: #FFFFFF;
+    border: 5px solid #FFFFFF;
+    background-color: #262544;
     display: block;
     width: 240px;
     height: 100px;
@@ -232,7 +278,7 @@ button {
     margin-left: 30px;
   }
 
-  .start_ranking_buttons {
+  .game_ranking_buttons {
     float: left;
   }
 
@@ -268,6 +314,7 @@ button {
 
 @media screen and (min-width: 1024px) {
   /*　for PC　*/
+
   .title {
     display: inline-block;
     position: relative;
@@ -277,6 +324,37 @@ button {
   .button-description {
     font-size: 18px;
   }
+
+  .start-screen{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin-top: 0px;
+    background-color: rgba(255,255,255, 0.15);
+  }
+
+  #start-button{
+    font-size: 35px;
+    font-weight: 500;
+    border-radius: 20px;
+    width: 45%;
+    color: #262544;
+    background-color: #FFFFFF;
+    border-color: #FFFFFF;
+    border-width: 1px;
+    margin-top: 50%;
+  }
+
+  .loading-screen{
+    position: absolute;
+    display: none;
+    width: 50%;
+    height: 50%;
+    margin-top: 3%;
+    margin-left: 60%;
+    font-size: 20px;
+  }
+
 
   .result-title {
     margin-top: 25px;
@@ -339,11 +417,14 @@ button {
     margin: 10px 0;
   }
   .rl-selection-button-container button {
-    font-size: 13px;
+    font-size: 14px;
+    color: #FFFFFF;
+    border: 3px solid #FFFFFF;
+    background-color: #262544;
     width: 80px;
     height: 40px;
     line-height: 35px;
-    border-radius: 20px;
+    border-radius: 10px;
   }
 
   table {
@@ -386,53 +467,69 @@ button {
     font-size: 45px;
   }
 
-  #start-button {
-    font-size: 13px;
-    width: 80px;
-    height: 40px;
+  #game-button {
+    font-size: 14px;
+    color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-width:3px 0px 3px 3px;
+    background-color: #262544;
+    width: 85px;
+    height: 45px;
     line-height: 35px;
-    border-radius: 20px;
     float: left;
-    margin-right: 10px;
-    margin-left: 20px;
-    margin-top: 5px;
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 
   #ranking-button {
-    font-size: 13px;
-    width: 80px;
-    height: 40px;
+    font-size: 14px;
+    color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-width: 3px;
+    background-color: #262544;
+    width: 85px;
+    height: 45px;
     line-height: 35px;
-    border-radius: 20px;
     float: left;
-    margin-right: 20px;
-    margin-left: 10px;
-    margin-top: 5px;
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
   }
 
   .right-key {
     width: 0;
     height: 0;
-    border-left: 40px solid white;
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
+    border-left: 45px solid white;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
     float: left;
-    margin-top: 7px;
+    margin-top: 0px;
+    margin-left: 40px;
   }
   .right-key-color {
-    border-left: 40px solid #628da5;
+    border-left: 45px solid #628da5;
   }
 
   .left-key {
     width: 0;
     height: 0;
-    border-right: 40px solid white;
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
+    border-right: 45px solid white;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
     float: left;
-    margin-top: 7px;
+    margin-top: 0px;
+    margin-right: 40px;
   }
   .left-key-color {
-    border-right: 40px solid #628da5;
+    border-right: 45px solid #628da5;
   }
 }
