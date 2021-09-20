@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap");
 
+
 body {
   height: 100%;
   width: 100%;
@@ -11,6 +12,10 @@ body {
   color: white;
   font-weight: 100;
   font-family: "Quicksand", sans-serif;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-touch-callout:none; /* リンク長押しのポップアップを無効化 */
+  -webkit-user-select:none; /* テキスト長押しの選択ボックスを無効化 */
 }
 
 button {
