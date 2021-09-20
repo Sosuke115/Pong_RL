@@ -258,7 +258,7 @@ button {
   }
 
   #game-button {
-    font-size: 40px;
+    font-size: 30px;
     color: #FFFFFF;
     border: 5px solid #FFFFFF;
     background-color: #262544;
@@ -277,7 +277,7 @@ button {
   }
 
   #ranking-button {
-    font-size: 40px;
+    font-size: 30px;
     color: #FFFFFF;
     border: 5px solid #FFFFFF;
     border-width:0px 5px 5px 5px;
