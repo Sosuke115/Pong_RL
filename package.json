@@ -8,6 +8,7 @@
     "watch": "npx webpack --watch --config client/webpack.dev.js",
     "watch-rl": "npx webpack --watch --config client/js/rl/webpack.config.js",
     "start": "node ./server/main.js",
+    "start-local": "node ./server/main.js local",
     "heroku-postbuild": "npx webpack --config client/webpack.prod.js"
   },
   "repository": {

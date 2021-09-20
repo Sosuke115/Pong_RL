@@ -7,11 +7,12 @@ module.exports = {
     entry: {
         'train': path.join(__dirname, 'train.js'),
         'test': path.join(__dirname, 'test.js'),
+        'worker': path.join(__dirname, 'worker.js'),
         // 'checkKernels': path.join(__dirname, 'checkKernels.js'),
     },
     output: {
-        path: path.join(__dirname, 'dist'),
-        publicPath: '/js/rl/dist/',
+        path: path.join(__dirname, 'public'),
+        publicPath: '/public-rl',
         filename: `[name].bundle.js`,
     },
     module: {
