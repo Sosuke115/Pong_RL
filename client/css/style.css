@@ -90,11 +90,11 @@ button {
   .title {
     display: inline-block;
     position: relative;
-    font-size: 120px;
-    margin-bottom: 10px;
+    font-size: 80px;
+    margin-bottom: 5px;
   }
   .button-description {
-    margin-top: 10px;
+    margin-top: 5px;
     font-size: 30px;
   }
 
@@ -132,7 +132,7 @@ button {
 
 
   .result-title {
-    margin-top: 55px;
+    margin-top: 20px;
     font-size: 70px;
   }
   .result-subtitle {
@@ -185,21 +185,21 @@ button {
   }
 
   .register-area {
-    margin-top: 60px;
+    margin-top: 40px;
   }
 
   .game {
     margin: 10px 0;
     display: inline-block;
     position: relative;
-    margin-top: 30px;
+    margin-top: 10px;
     margin-bottom: 0px;
     z-index: 0;
   }
 
   #game-canvas {
-    width: 777px;
-    height: 888px;
+    width: 700px;
+    height: 800px;
   }
   .rl-selection-button-container {
     margin: 10px 0;
@@ -211,7 +211,7 @@ button {
     border-width: 5px;
     background-color: #262544;
     width: 200px;
-    height: 80px;
+    height: 75px;
     line-height: 70px;
     border-radius: 20px;
   }
@@ -219,7 +219,7 @@ button {
   table {
     margin: auto;
     width: 500px;
-    height: 220px;
+    height: 200px;
   }
 
   .time-area {
@@ -263,28 +263,37 @@ button {
     border: 5px solid #FFFFFF;
     background-color: #262544;
     display: block;
-    width: 240px;
-    height: 100px;
+    width: 190px;
+    height: 80px;
     line-height: 35px;
     border-radius: 20px;
-    margin-top: 20px;
+    margin-top: 5px;
     margin-right: 30px;
     margin-left: 30px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 0px;
   }
 
   #ranking-button {
     font-size: 40px;
     color: #FFFFFF;
     border: 5px solid #FFFFFF;
+    border-width:0px 5px 5px 5px;
     background-color: #262544;
     display: block;
-    width: 240px;
-    height: 100px;
+    width: 190px;
+    height: 80px;
     line-height: 35px;
     border-radius: 20px;
-    margin-top: 40px;
+    /* margin-top: 40px; */
     margin-right: 30px;
     margin-left: 30px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 10px;
   }
 
   .game_ranking_buttons {
@@ -294,29 +303,29 @@ button {
   .right-key {
     width: 0;
     height: 0;
-    border-left: 230px solid white;
-    border-top: 120px solid transparent;
-    border-bottom: 120px solid transparent;
+    border-left: 200px solid white;
+    border-top: 80px solid transparent;
+    border-bottom: 80px solid transparent;
     float: left;
-    margin-top: 12px;
-    margin-left: 70px;
+    margin-top: 5px;
+    margin-left: 50px;
   }
   .right-key-color {
-    border-left: 230px solid #628da5;
+    border-left: 200px solid #628da5;
   }
 
   .left-key {
     width: 0;
     height: 0;
-    border-right: 230px solid white;
-    border-top: 120px solid transparent;
-    border-bottom: 120px solid transparent;
+    border-right: 200px solid white;
+    border-top: 80px solid transparent;
+    border-bottom: 80px solid transparent;
     float: left;
-    margin-top: 12px;
-    margin-right: 70px;
+    margin-top: 5px;
+    margin-right: 50px;
   }
   .left-key-color {
-    border-right: 230px solid #628da5;
+    border-right: 200px solid #628da5;
   }
 }
 
