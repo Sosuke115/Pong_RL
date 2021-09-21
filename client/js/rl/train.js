@@ -93,7 +93,7 @@ async function main(options) {
   }
 }
 
-$("#start-button").on("click", () => {
+$("#start-button-rl").on("click", () => {
   const res = window.confirm("Is developer tool open?\nYou can see logs on the console window.");
   if (!res) return false;
 
@@ -102,12 +102,10 @@ $("#start-button").on("click", () => {
   const memoryCapacity = $("#memory-capacity").val();
   const batchSize = $("#batch-size").val();
   const checkpointFreq = $("#checkpoint-freq").val();
-  const criticStep = $("#critic-step").val();
   if (maxStep !== "") options["maxStep"] = maxStep;
   if (memoryCapacity !== "") options["memoryCapacity"] = memoryCapacity;
   if (batchSize !== "") options["batchSize"] = batchSize;
   if (checkpointFreq !== "") options["checkpointFreq"] = checkpointFreq;
-  if (criticStep !== "") options["criticStep"] = criticStep;
   console.log("options:", options);
 
   console.log("Start training!");

@@ -15,7 +15,7 @@ class Controller {
       this.rlConfig = null;
       this.action = null;
       this.nextAction = null;
-      this.worker = new Worker(new URL("./worker.js", import.meta.url));
+      this.worker = new Worker("/public-rl/worker.bundle.js");
       this.worker.postMessage({
         command: "buildController",
         input: input,
@@ -120,7 +120,7 @@ async function main(humanInput, rlInput, visualize = true) {
   }
 }
 
-$("#start-button").on("click", () => {
+$("#start-button-rl").on("click", () => {
   const humanInput = $("#human-player").val();
   const rlInput = $("#rl-player").val();
 
@@ -139,7 +139,7 @@ $("#start-button").on("click", () => {
 
   // Disable the start button.
   // Please reload the page if you want to restart.
-  $("#start-button").prop("disabled", true);
+  $("#start-button-rl").prop("disabled", true);
 
   console.log(`Start  Human: "${humanInput}" RL: "${rlInput}" visualize: ${visualize}`);
   main(humanInput, rlInput, visualize);

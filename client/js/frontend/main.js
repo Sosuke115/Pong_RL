@@ -158,7 +158,7 @@ $(document).ready(function () {
   initGameScreen.draw(new PongRLEnv().reset());
 
   // load worker bundle in advance for better performance
-  worker = new Worker("../../dist/worker.bundle.js");
+  worker = new Worker("/public/worker.bundle.js");
 });
 
 // Process for rl selection button

@@ -19,7 +19,7 @@ async function checkKernels() {
 }
 
 
-$("#start-button").on("click", async () => {
+$("#start-button-rl").on("click", async () => {
     tf.setBackend('cpu');
     console.log(tf.getBackend());
     const result = await tf.profile(async() => {

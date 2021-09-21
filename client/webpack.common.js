@@ -7,8 +7,8 @@ module.exports = {
         'worker': path.join(__dirname, 'js', 'rl', 'worker.js'),
     },
     output: {
-        path: path.join(__dirname, 'dist'),
-        publicPath: '/dist/',
+        path: path.join(__dirname, 'public'),
+        publicPath: '/public/',
         filename: `[name].bundle.js`,
     },
     module: {

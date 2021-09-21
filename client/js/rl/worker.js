@@ -7,7 +7,7 @@ let prevAction = 1;
 onmessage = (message) => {
   if (message.data.command === "buildController") {
     agent = new RLAgent();
-    agent.loadModel(`${message.data.origin}/models/model-${message.data.input}.json`)
+    agent.loadModel(`${message.data.origin}/public/models/model-${message.data.input}.json`)
       .then(() => {
         side = message.data.side;
         self.postMessage({config: agent.config});

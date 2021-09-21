@@ -15,9 +15,8 @@ yarn-error.log*
 .npm/
 yarn.lock
 
-# add
-client/dist/
-client/js/rl/dist/
+client/public/*.bundle.js
+client/js/rl/public/*.bundle.js
 
 # herokuビルド成果物への対応
 /node_modules
