@@ -1,5 +1,3 @@
-import { sleep, nextFrame } from "../utils.js";
-
 //Stateから描画するクラス
 export class GameScreen {
   constructor() {
