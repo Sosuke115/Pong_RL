@@ -1,11 +1,9 @@
-import { sleep, nextFrame } from "../utils.js";
-
 //Stateから描画するクラス
 export class GameScreen {
-  constructor(goalEffectInterval = 500) {
+  constructor() {
     this.canvas = document.getElementById("game-canvas");
     this.ctx = this.canvas.getContext("2d");
-    this.goalEffectInterval = goalEffectInterval;
+    this.intervalId = null;
   }
 
   drawHorizontalLine(winner, drawOrClear) {
@@ -29,16 +27,17 @@ export class GameScreen {
     }
   }
 
-  async drawGoalEffect(winner) {
-    let keepGoing = true;
-    setTimeout(function () {
-      keepGoing = false;
-    }, this.goalEffectInterval);
+  startGoalEffect(winner) {
     let drawOrClear = "draw";
-    while (keepGoing === true) {
+    this.intervalId = setInterval(() => {
       this.drawHorizontalLine(winner, drawOrClear);
       drawOrClear = drawOrClear === "draw" ? "clear" : "draw";
-      await sleep(100);
+    }, 100);
+  }
+
+  stopGoalEffect() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
     }
   }
 
@@ -70,9 +69,9 @@ export class GameScreen {
   }
 
   // Redraw the game based on the current state
-  async draw(state) {
+  draw(state) {
+    this.stopGoalEffect()
 
-    
     this.clearCanvas();
     this.drawFrameBorder();
 
@@ -81,9 +80,7 @@ export class GameScreen {
     this.drawObject(state.rlPaddle, "#628DA5");
 
     if (state.winner) {
-      await this.drawGoalEffect(state.winner);
-    } else {
-      await nextFrame();
+      this.startGoalEffect(state.winner);
     }
   }
 }

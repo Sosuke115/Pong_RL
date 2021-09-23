@@ -1,13 +1,14 @@
 import { GameScreen } from "./gameScreen.js";
 import { Scorer } from "./scorer.js";
 import { Timer } from "./timer.js";
+import { SleepTimeScheduler } from "./sleepTimeScheduler.js";
 import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyAgent } from "../rl/agents/keyAgent.js";
 import { sleep } from "../utils.js";
 
 let worker;
 let gameRunningState = 0; //0: pending, 1: trying to stop, 2: running
-const initGameScreen = new GameScreen(0);
+const initGameScreen = new GameScreen();
 
 class RLController {
   constructor(input) {
@@ -86,11 +87,11 @@ async function main(rlId) {
   console.log(`Start  RL: "${rlId}"`);
 
   // load game screen
-  const betweenMatchInterval = 500;
+  // const betweenMatchInterval = 500;
   const gameScreen = new GameScreen();
-
   const scorer = new Scorer();
   const timer = new Timer(60);
+  const sleepTimeScheduler = new SleepTimeScheduler();
 
   // draw init state
   let state = env.reset();
@@ -106,11 +107,10 @@ async function main(rlId) {
 
   let timeStep = 0;
 
-  await gameScreen.draw(InitState);
-  await sleep(betweenMatchInterval);
-
+  gameScreen.draw(InitState);
   timer.draw();
   timer.start();
+  await sleepTimeScheduler.reset();
   while (true) {
     // monitor running flag
     if ($.inArray(gameRunningState, [0, 1]) != -1 || timer.getRemTime() == 0) {
@@ -123,18 +123,21 @@ async function main(rlId) {
       rlAction: rlController.selectAction(state, timeStep),
     });
 
-    await gameScreen.draw(res.state);
+    gameScreen.draw(res.state);
     timer.draw();
 
     if (res.done) {
+      await sleepTimeScheduler.end();
       timer.stop();
+
       state = env.reset();
-      await gameScreen.draw(state);
+      gameScreen.draw(state);
       scorer.step_and_draw(res.state.winner);
+      await sleepTimeScheduler.reset();
       timeStep = 0;
-      await sleep(betweenMatchInterval);
       timer.start();
     } else {
+      await sleepTimeScheduler.step();
       state = res.state;
       timeStep += 1;
     }

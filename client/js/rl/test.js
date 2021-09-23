@@ -2,6 +2,7 @@ import { PongRLEnv } from "./pongRLEnv.js";
 import { KeyAgent } from "./agents/keyAgent.js";
 import { GameScreen } from "../frontend/gameScreen.js";
 import { sleep } from "../utils.js";
+import { SleepTimeScheduler } from "../frontend/sleepTimeScheduler.js";
 
 
 class Controller {
@@ -84,6 +85,7 @@ class Controller {
 async function main(humanInput, rlInput, visualize = true) {
   const env = new PongRLEnv();
   const screen = new GameScreen();
+  const sleepTimeScheduler = new SleepTimeScheduler();
 
   // load model
   const humanController = new Controller("human", humanInput);
@@ -95,7 +97,10 @@ async function main(humanInput, rlInput, visualize = true) {
   let rlWinRate = 0;
 
   let state = env.reset();
-  if (visualize) await screen.draw(state);
+  if (visualize) {
+    screen.draw(state);
+    await sleepTimeScheduler.reset();
+  }
   let timeStep = 0;
 
   while (true) {
@@ -103,17 +108,23 @@ async function main(humanInput, rlInput, visualize = true) {
       humanAction: humanController.selectAction(state, timeStep),
       rlAction: rlController.selectAction(state, timeStep),
     });
-    if (visualize) await screen.draw(res.state);
+    if (visualize) screen.draw(res.state);
 
     if (res.done) {
+      if (visualize) await sleepTimeScheduler.end();
+
       gameCount += 1;
       rlWinRate += (Number(res.reward === 1) - rlWinRate) / gameCount;
       console.log(`gameCount: ${gameCount}  timeStep: ${timeStep}  rlReward: ${res.reward}  rlWinRate: ${rlWinRate.toFixed(4)}`);
 
       state = env.reset();
-      if (visualize) await screen.draw(state);
+      if (visualize) {
+        screen.draw(state);
+        await sleepTimeScheduler.reset();
+      }
       timeStep = 0;
     } else {
+      if (visualize) await sleepTimeScheduler.step();
       state = res.state;
       timeStep += 1;
     }
