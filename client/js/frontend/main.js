@@ -1,7 +1,7 @@
 import { GameScreen } from "./gameScreen.js";
 import { Scorer } from "./scorer.js";
 import { Timer } from "./timer.js";
-import { Scheduler } from "./scheduler.js";
+import { SleepTimeScheduler } from "./sleepTimeScheduler.js";
 import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyAgent } from "../rl/agents/keyAgent.js";
 import { sleep } from "../utils.js";
@@ -91,7 +91,7 @@ async function main(rlId) {
   const gameScreen = new GameScreen();
   const scorer = new Scorer();
   const timer = new Timer(60);
-  const scheduler = new Scheduler();
+  const sleepTimeScheduler = new SleepTimeScheduler();
 
   // draw init state
   let state = env.reset();
@@ -110,7 +110,7 @@ async function main(rlId) {
   gameScreen.draw(InitState);
   timer.draw();
   timer.start();
-  await scheduler.reset();
+  await sleepTimeScheduler.reset();
   while (true) {
     // monitor running flag
     if ($.inArray(gameRunningState, [0, 1]) != -1 || timer.getRemTime() == 0) {
@@ -127,17 +127,17 @@ async function main(rlId) {
     timer.draw();
 
     if (res.done) {
-      await scheduler.end();
+      await sleepTimeScheduler.end();
       timer.stop();
 
       state = env.reset();
       gameScreen.draw(state);
       scorer.step_and_draw(res.state.winner);
-      await scheduler.reset();
+      await sleepTimeScheduler.reset();
       timeStep = 0;
       timer.start();
     } else {
-      await scheduler.step();
+      await sleepTimeScheduler.step();
       state = res.state;
       timeStep += 1;
     }

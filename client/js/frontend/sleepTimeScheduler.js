@@ -1,7 +1,7 @@
 import { sleep } from "../utils.js";
 
 // Decide how much time to sleep
-export class Scheduler {
+export class SleepTimeScheduler {
   constructor(
     stepInterval = 1000 / 60,
     matchInterval = 500,
