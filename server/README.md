@@ -28,6 +28,6 @@ export DATABASE_URL="postgresql://..."
 以下のコマンドでデータベースを更新できる.
 ```bash
 cd server/db
-npx sequelize-cli db:migrate  # スキーマ情報を更新
-npx sequelize-cli db:seed:all  # テストデータを更新
+npx sequelize-cli db:migrate  # db/migrations の情報をもとにスキーマを更新
+npx sequelize-cli db:seed:all  # db/seeders の情報をもとにテストデータを更新
 ```
