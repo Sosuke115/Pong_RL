@@ -1,118 +1,51 @@
 // ランキング画面の管理
 export class RankingManager {
   constructor() {
-      this.rankingInfo = {
-        "ranking": {
-          "0": [
-            {
-              "userName": "Ichiro",
-              "score": 10
-            },
-            {
-              "userName": "Ichiro",
-              "score": 10
-            },
-            {
-              "userName": "Saburo",
-              "score": 5
-            },
-            {
-              "userName": "Saburo",
-              "score": 5
-            },
-            {
-              "userName": "Jiro",
-              "score": 2
-            },
-          ],
-          "20000": [
-            {
-              "userName": "Saburo",
-              "score": 8
-            },
-            {
-              "userName": "Saburo",
-              "score": 8
-            },
-            {
-              "userName": "Jiro",
-              "score": 4
-            },
-            {
-              "userName": "Jiro",
-              "score": 4
-            },
-            {
-              "userName": "Ichiro",
-              "score": 3
-            },
-          ],
-          "50000": [
-            {
-              "userName": "Saburo",
-              "score": 5
-            },
-            {
-              "userName": "Saburo",
-              "score": 5
-            },
-            {
-              "userName": "Shiro",
-              "score": -1
-            },
-            {
-              "userName": "Shiro",
-              "score": -1
-            },
-            {
-              "userName": "Ichiro",
-              "score": -2
-            },
-          ],
-          "100000": [
-            {
-              "userName": "Jiro",
-              "score": -4
-            },
-            {
-              "userName": "Jiro",
-              "score": -4
-            },
-            {
-              "userName": "Ichiro",
-              "score": -5
-            },
-            {
-              "userName": "Ichiro",
-              "score": -5
-            }
-          ]
-        },
-        "avg": {
-          "0": "2.6000000000000000",
-          "20000": "1.8000000000000000",
-          "50000": "-0.25000000000000000000",
-          "100000": "-4.5000000000000000"
-        }
-      }
+    this.rankingInfo = {
+      ranking: {
+        "0": Array(5).fill({ score: "No data", userName: "No data" }),
+        "20000": Array(5).fill({ score: "No data", userName: "No data" }),
+        "50000": Array(5).fill({ score: "No data", userName: "No data" }),
+        "100000": Array(5).fill({ score: "No data", userName: "No data" }),
+      },
+      avg: {
+        "0": "No data",
+        "20000": "No data",
+        "50000": "No data",
+        "100000": "No data",
+      },
+    };
   }
 
-  updateRankingInfo() {
-      
+  async updateRankingInfo() {
+    const url = "/api/get_ranking";
+    try {
+      const rankingInfo = await $.ajax({
+        url: url,
+        type: "GET",
+        data: {
+          size: 5,
+        },
+      });
+      this.rankingInfo = rankingInfo;
+    //   console.log(rankingInfo);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   // rl stepに対応するランキング表を描画
   draw(rlStep) {
-    $('#result-subtitle-rlStep').text(String(rlStep).replace(/(.*)000/,"$1k"));
-    const average = this.rankingInfo["avg"][String(rlStep)];
+    $("#result-subtitle-rlStep").text(String(rlStep).replace(/(.*)000/, "$1k"));
+
     const rankingInfo = this.rankingInfo["ranking"][String(rlStep)];
-    for (let i = 0; i < rankingInfo.length ; i++) {
-        $(`#rank${i + 1}-score`).text(rankingInfo[i]["score"]);
-        $(`#rank${i + 1}-name`).text(rankingInfo[i]["userName"]);
+    for (let i = 0; i < rankingInfo.length; i++) {
+      $(`#rank${i + 1}-score`).text(rankingInfo[i]["score"]);
+      $(`#rank${i + 1}-name`).text(rankingInfo[i]["userName"]);
     }
 
-    $("#avg-score").text(Number(average).toPrecision(2));
+    let average = this.rankingInfo["avg"][String(rlStep)];
+    average = average != "No data" ?  Math.round(average * 10) / 10 : average;
+    $("#avg-score").text(average);
   }
 }
-
-

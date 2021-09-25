@@ -136,7 +136,7 @@ button {
   }
 
   .ranking-scores {
-    width: 10%;
+    width: 30%;
   }
 
   .result-title {
@@ -160,6 +160,7 @@ button {
   .result-ranking {
     margin-top: 40px;
     font-size: 40px;
+    padding-left: 80px;
   }
 
   .result-ranking {
@@ -402,7 +403,7 @@ button {
   }
 
   .ranking-scores {
-    width: 10%;
+    width: 20%;
   }
 
   .result-title {
@@ -422,6 +423,7 @@ button {
   .result-ranking {
     margin-top: 20px;
     font-size: 16px;
+    padding-left: 30px;
   }
 
   .result-your {

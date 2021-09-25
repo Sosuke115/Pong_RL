@@ -88,7 +88,7 @@ function getRlId() {
       rlId = parseInt($(element).text().replace(/k/, "000"));
     }
   });
-  return rlId
+  return rlId;
 }
 
 // main処理
@@ -172,6 +172,9 @@ $(document).ready(function () {
   // init game screen
   initGameScreen.draw(new PongRLEnv().reset());
 
+  // update ranking info
+  rankingManager.updateRankingInfo();
+
   // load worker bundle in advance for better performance
   worker = new Worker("/public/worker.bundle.js");
 });
@@ -201,6 +204,8 @@ $("#start-button").on("click", async function () {
   // start game
   gameRunningState = 2;
   await main(rlId);
+  // update ranking info
+  rankingManager.updateRankingInfo();
   $("#ranking-button").click();
 });
 
@@ -231,8 +236,6 @@ $("#ranking-button").on("click", async function () {
 
   $(".start-screen").fadeOut();
   $(".result-screen").fadeIn();
-
-
 });
 
 //game and ranking button color
