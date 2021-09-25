@@ -29,6 +29,7 @@
     "babel-loader": "^8.2.2",
     "core-js": "^3.16.4",
     "jquery": "^3.6.0",
+    "sequelize-cli": "^6.2.0",
     "webpack": "^5.51.1",
     "webpack-bundle-analyzer": "^4.4.2",
     "webpack-cli": "^4.8.0",
@@ -38,6 +39,9 @@
     "node": "14.8.0"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.6.5"
   }
 }
