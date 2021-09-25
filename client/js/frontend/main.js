@@ -172,9 +172,6 @@ $(document).ready(function () {
   // init game screen
   initGameScreen.draw(new PongRLEnv().reset());
 
-  // update ranking info
-  rankingManager.updateRankingInfo();
-
   // load worker bundle in advance for better performance
   worker = new Worker("/public/worker.bundle.js");
 });
@@ -204,8 +201,6 @@ $("#start-button").on("click", async function () {
   // start game
   gameRunningState = 2;
   await main(rlId);
-  // update ranking info
-  rankingManager.updateRankingInfo();
   $("#ranking-button").click();
 });
 
@@ -225,8 +220,12 @@ $("#game-button").on("click", async function () {
 $("#ranking-button").on("click", async function () {
   $("#ranking-button").prop("disabled", true);
   $("#game-button").prop("disabled", false);
+
   // wait until the game is over
   await stopGame();
+
+  // update ranking info
+  await rankingManager.updateRankingInfo();
 
   // clear game screen
   initGameScreen.clearInsideCanvas();
