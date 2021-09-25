@@ -1,7 +1,7 @@
 const path = require("path");
 const express = require("express");
 const app = express();
-const sequelize = require("sequelize");
+const Sequelize = require("sequelize");
 const db = require("./db/models/index.js");
 
 app.get("/", (req, res) => {
@@ -44,7 +44,7 @@ app.get("/api/get_ranking", (req, res) => {
   promises.push(db.Game.findAll({
     attributes: [
       "trainingStep",
-      [sequelize.fn("AVG", sequelize.col("score")), "avgScore"],
+      [Sequelize.fn("AVG", Sequelize.col("score")), "avgScore"],
     ],
     group: "trainingStep",
   }));
