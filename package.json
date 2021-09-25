@@ -9,7 +9,7 @@
     "watch-rl": "npx webpack --watch --config client/js/rl/webpack.config.js",
     "start": "node ./server/main.js",
     "start-local": "node ./server/main.js local",
-    "heroku-postbuild": "npx webpack --config client/webpack.prod.js"
+    "heroku-postbuild": "npx webpack --config client/webpack.prod.js && cd server/db && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:undo && npx sequelize-cli db:seed:all"
   },
   "repository": {
     "type": "git",
