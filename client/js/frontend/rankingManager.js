@@ -97,6 +97,10 @@ export class RankingManager {
       }
   }
 
+  updateRankingInfo() {
+      
+  }
+
   // rl stepに対応するランキング表を描画
   draw(rlStep) {
     $('#result-subtitle-rlStep').text(String(rlStep).replace(/(.*)000/,"$1k"));
