@@ -3,16 +3,16 @@ export class RankingManager {
   constructor() {
     this.rankingInfo = {
       ranking: {
-        "0": Array(5).fill({ score: "No data", userName: "No data" }),
-        "20000": Array(5).fill({ score: "No data", userName: "No data" }),
-        "50000": Array(5).fill({ score: "No data", userName: "No data" }),
-        "100000": Array(5).fill({ score: "No data", userName: "No data" }),
+        0: Array(5).fill({ score: "No data", userName: "No data" }),
+        20000: Array(5).fill({ score: "No data", userName: "No data" }),
+        50000: Array(5).fill({ score: "No data", userName: "No data" }),
+        100000: Array(5).fill({ score: "No data", userName: "No data" }),
       },
       avg: {
-        "0": "No data",
-        "20000": "No data",
-        "50000": "No data",
-        "100000": "No data",
+        0: "No data",
+        20000: "No data",
+        50000: "No data",
+        100000: "No data",
       },
     };
   }
@@ -28,7 +28,7 @@ export class RankingManager {
         },
       });
       this.rankingInfo = rankingInfo;
-    //   console.log(rankingInfo);
+      //   console.log(rankingInfo);
     } catch (error) {
       console.error(error);
     }
@@ -38,14 +38,27 @@ export class RankingManager {
   draw(rlStep) {
     $("#result-subtitle-rlStep").text(String(rlStep).replace(/(.*)000/, "$1k"));
 
-    const rankingInfo = this.rankingInfo["ranking"][String(rlStep)];
+    let rankingInfo = this.rankingInfo["ranking"][String(rlStep)];
+
+    let padArray = function (arr, len, fill) {
+      return arr.concat(Array(len).fill(fill)).slice(0, len);
+    };
+
+    rankingInfo = padArray(rankingInfo.slice(), 5, {
+      score: "No data",
+      userName: "No data",
+    });
+
     for (let i = 0; i < rankingInfo.length; i++) {
       $(`#rank${i + 1}-score`).text(rankingInfo[i]["score"]);
       $(`#rank${i + 1}-name`).text(rankingInfo[i]["userName"]);
     }
 
     let average = this.rankingInfo["avg"][String(rlStep)];
-    average = average != "No data" ?  Math.round(average * 10) / 10 : average;
+    average =
+      average == "No data" || typeof average === "undefined"
+        ? "No data"
+        : Math.round(average * 10) / 10;
     $("#avg-score").text(average);
   }
 }
