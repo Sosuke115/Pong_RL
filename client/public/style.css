@@ -56,13 +56,6 @@ button {
   display: none;
 }
 
-.ranks {
-  display: inline-block;
-}
-.nicknames {
-  display: inline-block;
-  margin-right: 40px;
-}
 .threshold {
   display: inline-block;
   margin-right: 10px;
@@ -130,22 +123,45 @@ button {
     font-size: 40px;
   }
 
+  .nicknames {
+    display: inline-block;
+    margin-left: 0px;
+    text-align: left;
+    width: 30%;
+  }
+
+  .ranks {
+    display: inline-block;
+    width: 10%;
+  }
+
+  .ranking-scores {
+    width: 10%;
+  }
 
   .result-title {
     margin-top: 20px;
     font-size: 70px;
   }
+
   .result-subtitle {
     font-size: 40px;
   }
+
+  #result-subtitle-rlStep {
+    display: inline-block;
+    width: 15%;
+  }
+
+  #result-subtitle-rlStep {
+    width: 20%;
+  }
+
   .result-ranking {
     margin-top: 40px;
     font-size: 40px;
   }
 
-  .ranks {
-    display: inline-block;
-  }
   .result-ranking {
     margin-top: 40px;
     font-size: 40px;
@@ -158,8 +174,8 @@ button {
 
   .your-result-index {
     display: inline-block;
-    margin-left: 100px;
-    margin-right: 35px;
+    margin-left: 50px;
+    margin-right: 105px;
     text-align: left;
   }
 
@@ -373,6 +389,21 @@ button {
     font-size: 20px;
   }
 
+  .nicknames {
+    display: inline-block;
+    margin-left: 0px;
+    text-align: left;
+    width: 30%;
+  }
+
+  .ranks {
+    display: inline-block;
+    width: 10%;
+  }
+
+  .ranking-scores {
+    width: 10%;
+  }
 
   .result-title {
     margin-top: 25px;
@@ -382,6 +413,12 @@ button {
   .result-subtitle {
     font-size: 20px;
   }
+
+  #result-subtitle-rlStep {
+    display: inline-block;
+    width: 15%;
+  }
+
   .result-ranking {
     margin-top: 20px;
     font-size: 16px;
