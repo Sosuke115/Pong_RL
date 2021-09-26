@@ -7,8 +7,6 @@ body {
   overflow-x: hidden;
   overflow-y: scroll;
   background-color: #262544;
-  margin: 10;
-  padding: 10;
   color: white;
   font-weight: 100;
   font-family: "Quicksand", sans-serif;
@@ -32,6 +30,13 @@ button {
   margin: 0 auto;
 }
 
+.title {
+  display: inline-block;
+  position: relative;
+  font-size: 4em;
+  margin-bottom: 0.5%;
+}
+
 .title:before {
   content: "";
   position: absolute;
@@ -47,6 +52,23 @@ button {
   background-color: #628da5; /*下線の色*/
 }
 
+.rl-selection-button-container {
+  margin: 10px 0;
+}
+
+
+/* スタート画面 */
+.start-screen{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin-top: 0;
+  background-color: rgba(255,255,255, 0.15);
+}
+
+
+
+
 
 /* リザルト画面 */
 .result-screen {
@@ -58,7 +80,7 @@ button {
 
 .threshold {
   display: inline-block;
-  margin-right: 10px;
+  margin-right: 5%;
 }
 .ranking-scores {
   display: inline-block;
@@ -70,40 +92,57 @@ button {
   text-align: left;
 }
 
+.nicknames {
+  display: inline-block;
+  margin-left: 0;
+  text-align: left;
+  width: 30%;
+}
+
+.ranks {
+  display: inline-block;
+  width: 15%;
+}
+
+#result-subtitle-rlStep {
+  display: inline-block;
+  width: 15%;
+}
+
+.register-area {
+  margin-top: 8%;
+}
+
+
 /* key-area */
 .key-area {
   display: inline-block;
   margin: 10px 0;
-  margin-top: 0px;
+  margin-top: 0;
 }
+
+.game {
+  margin: 10px 0;
+  display: inline-block;
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  z-index: 0;
+}
+
 
 @media screen{
   /*　for iPhone */
 
-  .title {
-    display: inline-block;
-    position: relative;
-    font-size: 80px;
-    margin-bottom: 5px;
-  }
   .button-description {
-    margin-top: 5px;
-    font-size: 30px;
-  }
-
-  .start-screen{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    margin-top: 0px;
-    background-color: rgba(255,255,255, 0.15);
+    font-size: 1.5em;
+    margin-top: 0.5%;
   }
 
   #start-button{
-    font-size: 80px;
-    font-weight: 700;
+    font-size: 5em;
+    font-weight: 500;
     border: 2px solid #FFFFFF;
-    font-weight: lighter;
     border-radius: 50px;
     width: 50%;
     color: #262544;
@@ -120,19 +159,7 @@ button {
     height: 50%;
     margin-top: 3%;
     margin-left: 60%;
-    font-size: 40px;
-  }
-
-  .nicknames {
-    display: inline-block;
-    margin-left: 0px;
-    text-align: left;
-    width: 30%;
-  }
-
-  .ranks {
-    display: inline-block;
-    width: 10%;
+    font-size: 2.5em;
   }
 
   .ranking-scores {
@@ -140,60 +167,46 @@ button {
   }
 
   .result-title {
-    margin-top: 20px;
-    font-size: 70px;
+    margin-top: 3%;
+    font-size: 4.5em;
   }
 
   .result-subtitle {
-    font-size: 40px;
-  }
-
-  #result-subtitle-rlStep {
-    display: inline-block;
-    width: 15%;
-  }
-
-  #result-subtitle-rlStep {
-    width: 20%;
+    font-size: 2.5em;
   }
 
   .result-ranking {
-    margin-top: 40px;
-    font-size: 40px;
-    padding-left: 80px;
-  }
-
-  .result-ranking {
-    margin-top: 40px;
-    font-size: 40px;
+    margin-top: 5%;
+    font-size: 2.5em;
+    margin-left: 20%;
   }
 
   .result-your {
     margin-top: 20px;
-    font-size: 40px;
+    font-size: 2.5em;
   }
 
   .your-result-index {
     display: inline-block;
-    margin-left: 50px;
-    margin-right: 105px;
+    margin-left: 12%;
+    margin-right: 12%;
     text-align: left;
   }
 
   .input-nickname {
-    width: 300px;
+    width: 40%;
     height: 80px;
-    font-size: 25px;
-    border-radius: 15px;
+    font-size: 1.5em;
+    border-radius: 10px;
     text-align: center;
-    margin-right: 20px;
+    margin-right: 3%;
   }
 
   .register-button {
-    font-size: 25px;
-    width: 150px;
+    font-size: 1.5em;
+    width: 20%;
     height: 80px;
-    border-radius: 25px;    
+    border-radius: 25px;   
     color: #262544;
     background-color: #FFFFFF;
     border-color: #FFFFFF;
@@ -201,28 +214,13 @@ button {
     margin-left: 20px;
   }
 
-  .register-area {
-    margin-top: 40px;
-  }
-
-  .game {
-    margin: 10px 0;
-    display: inline-block;
-    position: relative;
-    margin-top: 10px;
-    margin-bottom: 0px;
-    z-index: 0;
-  }
-
   #game-canvas {
-    width: 700px;
-    height: 800px;
+    width: 714px;
+    height: 816px;
   }
-  .rl-selection-button-container {
-    margin: 10px 0;
-  }
+
   .rl-selection-button-container button {
-    font-size: 30px;
+    font-size: 1.8em;
     color: #FFFFFF;
     border: 2px solid #FFFFFF;
     border-width: 5px;
@@ -244,16 +242,16 @@ button {
     vertical-align: top;
     margin-right: 45px;
     margin-top: 20px;
-    width: 40px;
+    width: 5%;
   }
 
   .time-area .time-description {
-    font-size: 30px;
+    font-size: 2em;
   }
 
   .time-area .time {
     margin-top: 300px;
-    font-size: 70px;
+    font-size: 4em;
   }
 
   .score-area {
@@ -261,27 +259,27 @@ button {
     vertical-align: top;
     margin-left: 10px;
     margin-top: 20px;
-    width: 80px;
+    width: 8%;
   }
 
   .score-area .score-description {
-    font-size: 30px;
+    font-size: 2em;
   }
 
   .score-area .score {
     text-align: left;
     margin-top: 200px;
-    font-size: 60px;
+    font-size: 4em;
   }
 
   #game-button {
-    font-size: 30px;
+    font-size: 2em;
     color: #FFFFFF;
     border: 5px solid #FFFFFF;
     background-color: #262544;
     display: block;
     width: 190px;
-    height: 80px;
+    height: 100px;
     line-height: 35px;
     border-radius: 20px;
     margin-top: 5px;
@@ -294,14 +292,14 @@ button {
   }
 
   #ranking-button {
-    font-size: 30px;
+    font-size: 2em;
     color: #FFFFFF;
     border: 5px solid #FFFFFF;
     border-width:0px 5px 5px 5px;
     background-color: #262544;
     display: block;
     width: 190px;
-    height: 80px;
+    height: 100px;
     line-height: 35px;
     border-radius: 20px;
     /* margin-top: 40px; */
@@ -321,8 +319,8 @@ button {
     width: 0;
     height: 0;
     border-left: 200px solid white;
-    border-top: 80px solid transparent;
-    border-bottom: 80px solid transparent;
+    border-top: 100px solid transparent;
+    border-bottom: 100px solid transparent;
     float: left;
     margin-top: 5px;
     margin-left: 50px;
@@ -335,8 +333,8 @@ button {
     width: 0;
     height: 0;
     border-right: 200px solid white;
-    border-top: 80px solid transparent;
-    border-bottom: 80px solid transparent;
+    border-top: 100px solid transparent;
+    border-bottom: 100px solid transparent;
     float: left;
     margin-top: 5px;
     margin-right: 50px;
@@ -350,26 +348,12 @@ button {
 @media screen and (min-width: 1024px) {
   /*　for PC　*/
 
-  .title {
-    display: inline-block;
-    position: relative;
-    font-size: 65px;
-    margin-bottom: 10px;
-  }
   .button-description {
-    font-size: 18px;
-  }
-
-  .start-screen{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    margin-top: 0px;
-    background-color: rgba(255,255,255, 0.15);
+    font-size: 1.0em;
   }
 
   #start-button{
-    font-size: 35px;
+    font-size: 2em;
     font-weight: 500;
     border-radius: 20px;
     width: 45%;
@@ -387,19 +371,7 @@ button {
     height: 50%;
     margin-top: 3%;
     margin-left: 60%;
-    font-size: 20px;
-  }
-
-  .nicknames {
-    display: inline-block;
-    margin-left: 0px;
-    text-align: left;
-    width: 30%;
-  }
-
-  .ranks {
-    display: inline-block;
-    width: 10%;
+    font-size: 1.2em;
   }
 
   .ranking-scores {
@@ -407,74 +379,55 @@ button {
   }
 
   .result-title {
-    margin-top: 25px;
-    font-size: 30px;
+    margin-top: 8%;
+    font-size: 2em;
   }
 
   .result-subtitle {
-    font-size: 20px;
-  }
-
-  #result-subtitle-rlStep {
-    display: inline-block;
-    width: 15%;
+    font-size: 1em;
   }
 
   .result-ranking {
-    margin-top: 20px;
-    font-size: 16px;
-    padding-left: 30px;
+    margin-top: 5%;
+    font-size: 1em;
+    margin-left: 0;
   }
 
   .result-your {
-    margin-top: 20px;
-    font-size: 16px;
+    margin-top: 5%;
+    font-size: 1em;
   }
 
   .your-result-index {
     display: inline-block;
-    margin-left: 40px;
-    margin-right: 38px;
+    margin-left: 10%;
+    margin-right: 10%;
     text-align: left;
   }
 
   .input-nickname {
     width: 40%;
     height: 40px;
-    font-size: 12px;
+    font-size: 0.8em;
     border-radius: 10px;
     text-align: center;
-    margin-right: 20px;
+    margin-right: 0;
   }
 
   .register-button {
-    font-size: 12px;
-    width: 70px;
-    border-radius: 20px;
+    font-size: 0.8em;
+    width: 20%;
     height: 40px;
-  }
-
-  .register-area {
-    margin-top: 30px;
-  }
-
-  .game {
-    margin: 10px 0;
-    display: inline-block;
-    position: relative;
-    margin-top: 10px;
-    z-index: 0;
+    border-radius: 10px;
   }
 
   #game-canvas {
     width: 350px;
     height: 400px;
   }
-  .rl-selection-button-container {
-    margin: 10px 0;
-  }
+
   .rl-selection-button-container button {
-    font-size: 14px;
+    font-size: 0.8em;
     color: #FFFFFF;
     border: 3px solid #FFFFFF;
     background-color: #262544;
@@ -486,7 +439,7 @@ button {
 
   table {
     margin: auto;
-    width: 250px;
+    width: 15%;
     height: 110px;
   }
 
@@ -499,12 +452,12 @@ button {
   }
 
   .time-area .time-description {
-    font-size: 20px;
+    font-size: 1.5em;
   }
 
   .time-area .time {
     margin-top: 130px;
-    font-size: 45px;
+    font-size: 2em;
   }
 
   .score-area {
@@ -516,16 +469,16 @@ button {
   }
 
   .score-area .score-description {
-    font-size: 20px;
+    font-size: 1.5em;
   }
 
   .score-area .score {
     margin-top: 80px;
-    font-size: 45px;
+    font-size: 2em;
   }
 
   #game-button {
-    font-size: 14px;
+    font-size: 0.8em;
     color: #FFFFFF;
     border: 2px solid #FFFFFF;
     border-width:3px 0px 3px 3px;
@@ -544,7 +497,7 @@ button {
   }
 
   #ranking-button {
-    font-size: 14px;
+    font-size: 0.8em;
     color: #FFFFFF;
     border: 2px solid #FFFFFF;
     border-width: 3px;
@@ -569,7 +522,7 @@ button {
     border-top: 25px solid transparent;
     border-bottom: 25px solid transparent;
     float: left;
-    margin-top: 0px;
+    margin-top: 0;
     margin-left: 40px;
   }
   .right-key-color {
