@@ -1,6 +1,7 @@
 import { GameScreen } from "./gameScreen.js";
 import { Scorer } from "./scorer.js";
 import { Timer } from "./timer.js";
+import { RankingManager } from "./rankingManager.js";
 import { SleepTimeScheduler } from "./sleepTimeScheduler.js";
 import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyAgent } from "../rl/agents/keyAgent.js";
@@ -9,6 +10,7 @@ import { sleep } from "../utils.js";
 let worker;
 let gameRunningState = 0; //0: pending, 1: trying to stop, 2: running
 const initGameScreen = new GameScreen();
+const rankingManager = new RankingManager();
 
 class RLController {
   constructor(input) {
@@ -77,6 +79,16 @@ async function stopGame() {
     gameRunningState = 1;
     while (gameRunningState == 1) await sleep(80);
   }
+}
+
+function getRlId() {
+  let rlId = undefined;
+  $(".rl-selection-button").each(function (index, element) {
+    if ($(element).prop("disabled")) {
+      rlId = parseInt($(element).text().replace(/k/, "000"));
+    }
+  });
+  return rlId;
 }
 
 // main処理
@@ -172,6 +184,9 @@ $(".rl-selection-button").on("click", function () {
   $(".rl-selection-button").removeClass("pressed-buttons-color");
   $("#" + buttonId).addClass("pressed-buttons-color");
   $("#" + buttonId).prop("disabled", true);
+
+  // draw ranking score
+  rankingManager.draw(getRlId());
 });
 
 // process for start button
@@ -181,12 +196,7 @@ $("#start-button").on("click", async function () {
   $("#ranking-button").prop("disabled", false);
   $(".start-screen").fadeOut();
 
-  let rlId = undefined;
-  $(".rl-selection-button").each(function (index, element) {
-    if ($(element).prop("disabled")) {
-      rlId = parseInt($(element).text().replace(/k/, "000"));
-    }
-  });
+  const rlId = getRlId();
 
   // start game
   gameRunningState = 2;
@@ -210,11 +220,19 @@ $("#game-button").on("click", async function () {
 $("#ranking-button").on("click", async function () {
   $("#ranking-button").prop("disabled", true);
   $("#game-button").prop("disabled", false);
+
   // wait until the game is over
   await stopGame();
 
+  // update ranking info
+  await rankingManager.updateRankingInfo();
+
   // clear game screen
   initGameScreen.clearInsideCanvas();
+
+  // draw ranking score
+  rankingManager.draw(getRlId());
+
   $(".start-screen").fadeOut();
   $(".result-screen").fadeIn();
 });
