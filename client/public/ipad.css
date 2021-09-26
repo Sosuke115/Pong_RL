@@ -1,0 +1,334 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap");
+
+* {
+    margin: 0px;
+    padding: 0px;
+    margin-top: 0;
+  }
+
+body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background-color: #262544;
+  color: white;
+  font-weight: 100;
+  font-family: "Quicksand", sans-serif;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-touch-callout: none; /* リンク長押しのポップアップを無効化 */
+  -webkit-user-select: none; /* テキスト長押しの選択ボックスを無効化 */
+}
+
+button {
+  font-family: "Quicksand", sans-serif;
+  font-weight: medium;
+}
+
+.pressed-buttons-color {
+  background-color: #ceb845 !important;
+}
+
+.container {
+  text-align: center;
+  margin: -20px auto;
+}
+
+.title {
+  display: inline-block;
+  position: relative;
+  font-size: 3em;
+  margin-bottom: 0.5%;
+}
+
+.title:before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px; /*下線の上下位置調整*/
+  display: inline-block;
+  width: 150%; /*下線の幅*/
+  height: 2px; /*下線の太さ*/
+  -moz-transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translate(-50%); /*位置調整*/
+  background-color: #628da5; /*下線の色*/
+}
+
+.rl-selection-button-container {
+  margin: 10px 0;
+}
+
+/* スタート画面 */
+.start-screen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin-top: 0;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* リザルト画面 */
+.result-screen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.threshold {
+  display: inline-block;
+  margin-right: 5%;
+}
+.ranking-scores {
+  display: inline-block;
+  text-align: left;
+}
+
+.your-scores {
+  display: inline-block;
+  text-align: left;
+}
+
+.nicknames {
+  display: inline-block;
+  margin-left: 0;
+  text-align: left;
+  width: 30%;
+}
+
+.ranks {
+  display: inline-block;
+  width: 15%;
+}
+
+#result-subtitle-rlStep {
+  display: inline-block;
+  width: 15%;
+}
+
+.register-area {
+  margin-top: 8%;
+}
+
+/* key-area */
+.key-area {
+  display: inline-block;
+  margin: 10px 0;
+  margin-top: 0;
+}
+
+.game {
+  margin: 10px 0;
+  display: inline-block;
+  position: relative;
+  margin-top: 5px;
+  margin-bottom: 0px;
+  z-index: 0;
+}
+
+.game_ranking_buttons {
+  float: left;
+}
+
+.button-description {
+  font-size: 1em;
+}
+
+#start-button {
+  font-size: 2em;
+  font-weight: 500;
+  border-radius: 20px;
+  width: 45%;
+  color: #262544;
+  background-color: #ffffff;
+  border-color: #ffffff;
+  border-width: 1px;
+  margin-top: 50%;
+}
+
+.loading-screen {
+  position: absolute;
+  display: none;
+  width: 50%;
+  height: 50%;
+  margin-top: 3%;
+  margin-left: 60%;
+  font-size: 1.2em;
+}
+
+.ranking-scores {
+  width: 20%;
+}
+
+.result-title {
+  margin-top: 5%;
+  font-size: 2em;
+}
+
+.result-subtitle {
+  font-size: 1em;
+}
+
+.result-ranking {
+  margin-top: 5%;
+  font-size: 1em;
+  margin-left: 0;
+}
+
+.result-your {
+  margin-top: 5%;
+  font-size: 1em;
+}
+
+.your-result-index {
+  display: inline-block;
+  margin-left: 7%;
+  margin-right: 10%;
+  text-align: left;
+}
+
+.input-nickname {
+  width: 40%;
+  height: 40px;
+  font-size: 0.7em;
+  border-radius: 10px;
+  text-align: center;
+  margin-right: 0;
+}
+
+.register-button {
+    font-size: 0.7em;
+    width: 25%;
+    height: 40px;
+    border-radius: 10px;
+    color: #262544;
+    background-color: #ffffff;
+    border-color: #ffffff;
+    border-width: 1px;
+    margin-left: 10px;
+  }
+
+#game-canvas {
+  width: 315px;
+  height: 360px;
+}
+
+.rl-selection-button-container button {
+  font-size: 0.8em;
+  color: #ffffff;
+  border: 3px solid #ffffff;
+  background-color: #262544;
+  width: 80px;
+  height: 40px;
+  line-height: 35px;
+  border-radius: 10px;
+}
+
+table {
+  margin: auto;
+  width: 25%;
+  height: 110px;
+}
+
+.time-area {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 20px;
+  margin-top: 20px;
+  width: 40px;
+}
+
+.time-area .time-description {
+  font-size: 1.5em;
+}
+
+.time-area .time {
+  margin-top: 130px;
+  font-size: 2em;
+}
+
+.score-area {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 20px;
+  margin-top: 20px;
+  width: 40px;
+}
+
+.score-area .score-description {
+  font-size: 1.5em;
+}
+
+.score-area .score {
+  margin-top: 80px;
+  font-size: 2em;
+}
+
+#game-button {
+  font-size: 0.8em;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-width: 3px 0px 3px 3px;
+  background-color: #262544;
+  width: 85px;
+  height: 45px;
+  line-height: 35px;
+  float: left;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-top: 8px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+#ranking-button {
+  font-size: 0.8em;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-width: 3px;
+  background-color: #262544;
+  width: 85px;
+  height: 45px;
+  line-height: 35px;
+  float: left;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-top: 8px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.right-key {
+  width: 0;
+  height: 0;
+  border-left: 65px solid white;
+  border-top: 45px solid transparent;
+  border-bottom: 45px solid transparent;
+  float: left;
+  margin-top: -10px;
+  margin-left: 30px;
+}
+.right-key-color {
+  border-left: 65px solid #628da5;
+}
+
+.left-key {
+  width: 0;
+  height: 0;
+  border-right: 65px solid white;
+  border-top: 45px solid transparent;
+  border-bottom: 45px solid transparent;
+  float: left;
+  margin-top: -10px;
+  margin-right: 30px;
+}
+.left-key-color {
+  border-right: 65px solid #628da5;
+}
