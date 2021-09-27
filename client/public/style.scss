@@ -1,0 +1,427 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap");
+
+$pc: 1024px; // PC
+$tab: 680px; // tablet
+$sp: 480px; // smartphone
+$white: #ffffff;
+$neon-blue: #262544;
+$pastel-blue: #628da5;
+$pastel-yellow: #ceb845;
+$transparent-white: rgba(255, 255, 255, 0.15);
+
+@mixin pc {
+  @media (max-width: ($pc)) {
+    @content;
+  }
+}
+@mixin tab {
+  @media (max-width: ($tab)) {
+    @content;
+  }
+}
+@mixin sp {
+  @media (max-width: ($sp)) {
+    @content;
+  }
+}
+
+* {
+  margin: 0px;
+  padding: 0px;
+  margin-top: 0;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background-color: #262544;
+  color: white;
+  font-weight: 100;
+  font-family: "Quicksand", sans-serif;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-touch-callout: none; /* リンク長押しのポップアップを無効化 */
+  -webkit-user-select: none; /* テキスト長押しの選択ボックスを無効化 */
+}
+
+body {
+  @include pc {
+    font-size: 1rem;
+  }
+  @include tab {
+    font-size: 1rem;
+  }
+  @include sp {
+    font-size: 0.6rem;
+  }
+}
+
+button {
+  font-family: "Quicksand", sans-serif;
+  font-weight: medium;
+}
+
+.pressed-buttons-color {
+  background-color: $pastel-yellow !important;
+}
+
+.container {
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* header */
+
+.title {
+  display: inline-block;
+  position: relative;
+  font-size: 3em;
+  margin-bottom: 0.5%;
+  &:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -5px; /*下線の上下位置調整*/
+    display: inline-block;
+    width: 150%; /*下線の幅*/
+    height: 2px; /*下線の太さ*/
+    -moz-transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translate(-50%); /*位置調整*/
+    background-color: $pastel-blue; /*下線の色*/
+  }
+}
+
+/* rl selection button area */
+
+.rl-selection-button-container {
+  margin: 0.5em 0;
+
+  button {
+    font-size: 0.8em;
+    color: $white;
+    border: 2px solid $white;
+    background-color: $neon-blue;
+    width: 5.5em;
+    @include sp {
+      width: 8em;
+    }
+    height: 3em;
+    line-height: 2.5em;
+    border-radius: 1em;
+  }
+
+  table {
+    margin: auto;
+    width: 12em;
+    height: 6em;
+    @include sp {
+      width: 18em;
+      height: 7em;
+    }
+  }
+}
+
+.button-description {
+  font-size: 1em;
+  margin-top: 1%;
+}
+
+/* start screen */
+.start-screen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin-top: 0;
+  background-color: $transparent-white;
+
+  #start-button {
+    font-size: 2em;
+    @include sp {
+      font-size: 3em;
+    }
+    font-weight: 500;
+    border-radius: 20px;
+    width: 45%;
+    color: $neon-blue;
+    background-color: $white;
+    border-color: $white;
+    border-width: 1px;
+    margin-top: 50%;
+  }
+}
+
+/* result screen */
+.result-screen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: none;
+  @include sp{
+      font-size: 0.8rem;
+  }
+
+  .result-title {
+    margin-top: 0.5em;
+    font-size: 2em;
+  }
+  .result-subtitle {
+    font-size: 1em;
+    &-rlStep {
+      display: inline-block;
+      width: 15%;
+    }
+  }
+  .result-ranking {
+    margin-top: 5%;
+    font-size: 1em;
+    margin-left: 0;
+    .ranks {
+      display: inline-block;
+      width: 15%;
+    }
+    .nicknames {
+      display: inline-block;
+      margin-left: 0;
+      text-align: left;
+      width: 30%;
+    }
+    .ranking-scores {
+      display: inline-block;
+      text-align: left;
+      width: 20%;
+    }
+  }
+  .result-your {
+    margin-top: 5%;
+    font-size: 1em;
+    .your-result-index {
+      display: inline-block;
+      margin-left: 8%;
+      margin-right: 10%;
+      text-align: left;
+    }
+    .your-scores {
+      display: inline-block;
+      text-align: left;
+    }
+  }
+  .register-area {
+    margin-top: 1.5em;
+    @include sp{
+        margin-top: 1em;
+    }
+    .input-nickname {
+      width: 15em;
+      height: 4em;
+      font-size: 0.8em;
+      border-radius: 10px;
+      text-align: center;
+      margin-right: 0;
+    }
+    .register-button {
+      font-size: 0.8em;
+      width: 6em;
+      height: 4em;
+      border-radius: 10px;
+      color: $neon-blue;
+      background-color: $white;
+      border-color: $white;
+      border-width: 1px;
+      margin-left: 10px;
+    }
+  }
+}
+
+.threshold {
+  display: inline-block;
+  margin-right: 5%;
+}
+
+/* game area */
+
+#game-canvas {
+  width: 350px;
+  height: 400px;
+  @include sp {
+    width: 266px;
+    height: 304px;
+  }
+}
+
+.loading-screen {
+  position: absolute;
+  display: none;
+  width: 50%;
+  height: 50%;
+  margin-top: 3%;
+  margin-left: 60%;
+  font-size: 1.2em;
+}
+
+.time-area {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 1em;
+  margin-top: 1em;
+  width: 3em;
+  .time-description {
+    font-size: 1.5em;
+  }
+  .time {
+    margin-top: 4.5em;
+    @include sp {
+      margin-top: 6em;
+    }
+    font-size: 2em;
+  }
+}
+
+.game {
+  margin: 10px 0;
+  display: inline-block;
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  z-index: 0;
+}
+
+.score-area {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 1em;
+  margin-top: 1em;
+  width: 3em;
+  .score-description {
+    font-size: 1.5em;
+  }
+  .score {
+    margin-top: 3em;
+    @include sp {
+      margin-top: 3.5em;
+    }
+    font-size: 2em;
+  }
+}
+
+/* key-area */
+.key-area {
+  display: inline-block;
+  margin: 10px 0;
+  margin-top: 0;
+
+  .left-key {
+    width: 0;
+    height: 0;
+    border-right: 2.5em solid $white;
+    border-top: 1.8em solid transparent;
+    border-bottom: 1.8em solid transparent;
+    float: left;
+    margin-top: 0px;
+    margin-right: 40px;
+    @include sp {
+        border-right: 9em solid $white;
+        border-top: 5em solid transparent;
+        border-bottom: 5em solid transparent;
+      }
+  }
+  .left-key-color {
+    border-right: 2.5em solid $pastel-blue;
+    @include sp {
+        border-right: 9em solid $pastel-blue;
+      }
+  }
+
+  .right-key {
+
+    width: 0;
+    height: 0;
+    border-left: 2.5em solid $white;
+    border-top: 1.8em solid transparent;
+    border-bottom: 1.8em solid transparent;
+    float: left;
+    margin-top: 0;
+    margin-left: 2em;
+    @include sp {
+      border-left: 9em solid $white;
+      border-top: 5em solid transparent;
+      border-bottom: 5em solid transparent;
+    }
+  }
+  .right-key-color {
+    border-left: 2.5em solid $pastel-blue;
+    @include sp {
+      border-left: 9em solid $pastel-blue;
+    }
+  }
+  
+  .game-ranking-buttons {
+    float: left;
+    @include sp {
+       margin-right: 2.5em;
+    }
+
+
+    #game-button {
+      font-size: 0.8em;
+      color: $white;
+      border: 2px solid $white;
+      border-width: 2px 0px 2px 2px;
+      background-color: $neon-blue;
+      width: 6em;
+      height: 3.5em;
+      line-height: 3em;
+      float: left;
+      margin-right: 0;
+      margin-left: 0;
+      margin-top: 0.2em;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+      border-top-right-radius: 0px;
+      border-bottom-right-radius: 0px;
+      @include sp {
+        display: block;
+        float: none;
+        width: 8em;
+        border-width: 2px 2px 0px 2px;
+        // margin-left: -3em;
+        margin-top: 2em;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 0px;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 0px;
+      }
+    }
+
+    #ranking-button {
+      font-size: 0.8em;
+      color: $white;
+      border: 2px solid $white;
+      border-width: 2px;
+      background-color: $neon-blue;
+      width: 6em;
+      height: 3.5em;
+      line-height: 3em;
+      margin-right: 0;
+      margin-left: 0;
+      margin-top: 0.2em;
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+      @include sp {
+        float: left;
+        display: block;
+        width: 8em;
+        margin-top: 0;
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 5px;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 5px;
+      }
+    }
+  }
+}
