@@ -4,6 +4,8 @@ const router = express.Router();
 const Sequelize = require("sequelize");
 const db = require("../db/models/index.js");
 
+const { uniqueNamesGenerator, adjectives, colors, animals } = require('unique-names-generator');
+
 
 // Settings to receive POST body
 router.use(express.json());
@@ -59,7 +61,14 @@ router.get("/get_ranking", (req, res) => {
 });
 
 router.post("/register_game", (req, res) => {
-  const tempName = "dummy name";
+  // Generate a random name using adjectives, colors, and animals (e.g. big-red-donkey)
+  // Other dictionaries can also be used
+  // cf. https://github.com/andreasonny83/unique-names-generator#dictionaries-available
+  const tempName = uniqueNamesGenerator({
+    dictionaries: [adjectives, colors, animals],
+    separator: "-",
+  });
+
   db.Game.create({
     token: req.body.token,
     trainingStep: req.body.trainingStep,
