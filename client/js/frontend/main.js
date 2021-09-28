@@ -103,7 +103,7 @@ async function main(rlId) {
   // const betweenMatchInterval = 500;
   const gameScreen = new GameScreen();
   const scorer = new Scorer();
-  const timer = new Timer(60);
+  const timer = new Timer(5);
   const sleepTimeScheduler = new SleepTimeScheduler();
 
   // draw init state
@@ -202,6 +202,7 @@ $("#start-button").on("click", async function () {
   // start game
   gameRunningState = 2;
   await main(rlId);
+  $('.popup').fadeIn();
   $("#ranking-button").click();
 });
 
@@ -244,10 +245,7 @@ $("#game-button, #ranking-button").on("click", function () {
   $(this).addClass("pressed-buttons-color");
 });
 
-$('#popup-start').on('click',function(){
-  $('.popup').fadeIn();
-});
-
+// for popup
 $('.batsu-button').on('click',function(){
   $('.popup').fadeOut();
 });
