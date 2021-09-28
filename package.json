@@ -28,8 +28,12 @@
     "@tensorflow/tfjs": "3.0",
     "babel-loader": "^8.2.2",
     "core-js": "^3.16.4",
+    "css-loader": "^6.3.0",
     "jquery": "^3.6.0",
+    "node-sass": "^6.0.1",
+    "sass-loader": "^12.1.0",
     "sequelize-cli": "^6.2.0",
+    "style-loader": "^3.3.0",
     "webpack": "^5.51.1",
     "webpack-bundle-analyzer": "^4.4.2",
     "webpack-cli": "^4.8.0",
@@ -39,13 +43,9 @@
     "node": "14.8.0"
   },
   "dependencies": {
-    "css-loader": "^6.3.0",
     "express": "^4.17.1",
-    "node-sass": "^6.0.1",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
-    "sass-loader": "^10.0.5",
-    "sequelize": "^6.6.5",
-    "style-loader": "^3.3.0"
+    "sequelize": "^6.6.5"
   }
 }
