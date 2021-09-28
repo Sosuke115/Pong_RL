@@ -73,4 +73,17 @@ router.post("/register_game", (req, res) => {
   });
 });
 
+router.post("/update_name", async (req, res) => {
+  const game = await db.Game.findOne({
+    where: {
+      token: req.body.token,
+    }
+  });
+  game.userName = req.body.userName;
+  await game.save();
+  res.json({
+
+  });
+});
+
 module.exports = router;
