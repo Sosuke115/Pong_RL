@@ -243,3 +243,11 @@ $("#game-button, #ranking-button").on("click", function () {
   $("#game-button, #ranking-button").removeClass("pressed-buttons-color");
   $(this).addClass("pressed-buttons-color");
 });
+
+$('#popup-start').on('click',function(){
+  $('.popup').fadeIn();
+});
+
+$('.batsu-button').on('click',function(){
+  $('.popup').fadeOut();
+});

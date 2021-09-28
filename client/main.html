@@ -4,7 +4,10 @@
     <meta charset="utf-8" />
     <title>Pong RL</title>
     <meta name="description" content="ディスクリプションを入力" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
   </head>
   <body>
     <div class="container">
@@ -40,15 +43,31 @@
         </div>
 
         <div class="game">
-          <div class="loading-screen">
-            Loading...
+          <div class="popup">
+            <div class="popup-content">
+              <div class="batsu-button">×</div>
+              <p>Your score: 5 (8-3)</p>
+              <p>Your Rank: 5 / 104</p>
+              <div class="popup-content-description">You ranked in the top 10!</div>
+              <input
+                class="input-nickname"
+                name="telNumber"
+                placeholder="Fill in your nick name"
+              />
+              <button class="register-button">Register</button>
+            </div>
           </div>
+          <div class="loading-screen">Loading...</div>
           <div class="start-screen">
             <button id="start-button">Start</button>
           </div>
           <div class="result-screen">
             <div class="result-title">Ranking</div>
-            <div class="result-subtitle">(<div class="result-subtitle-rlStep">10,000</div> step)</div>
+            <div class="result-subtitle">
+              (
+              <div class="result-subtitle-rlStep">10,000</div>
+              step)
+            </div>
             <div class="result-ranking">
               <div class="ranks">
                 <div>1</div>
@@ -56,6 +75,11 @@
                 <div>3</div>
                 <div>4</div>
                 <div>5</div>
+                <div>6</div>
+                <div>7</div>
+                <div>8</div>
+                <div>9</div>
+                <div>10</div>
                 <div>Avg.</div>
               </div>
               <div class="nicknames">
@@ -64,9 +88,19 @@
                 <div id="rank3-name">No data</div>
                 <div id="rank4-name">No data</div>
                 <div id="rank5-name">No data</div>
+                <div id="rank6-name">No data</div>
+                <div id="rank7-name">No data</div>
+                <div id="rank8-name">No data</div>
+                <div id="rank9-name">No data</div>
+                <div id="rank10-name">No data</div>
                 <div id="avg">score</div>
               </div>
               <div class="threshold">
+                <div>:</div>
+                <div>:</div>
+                <div>:</div>
+                <div>:</div>
+                <div>:</div>
                 <div>:</div>
                 <div>:</div>
                 <div>:</div>
@@ -80,6 +114,11 @@
                 <div id="rank3-score">No data</div>
                 <div id="rank4-score">No data</div>
                 <div id="rank5-score">No data</div>
+                <div id="rank6-score">No data</div>
+                <div id="rank7-score">No data</div>
+                <div id="rank8-score">No data</div>
+                <div id="rank9-score">No data</div>
+                <div id="rank10-score">No data</div>
                 <div id="avg-score">No data</div>
               </div>
             </div>
@@ -97,14 +136,14 @@
                 <div id="your-rank">5 / 104</div>
               </div>
             </div>
-            <div class="register-area">
+            <!-- <div class="register-area">
               <input
                 class="input-nickname"
                 name="telNumber"
                 placeholder="Fill in your nick name"
               />
               <button class="register-button">Register</button>
-            </div>
+            </div> -->
           </div>
           <div id="canvas-wrapper">
             <canvas id="game-canvas" width="350" height="400"></canvas>
@@ -129,6 +168,9 @@
         <div class="right-key"></div>
       </div>
     </div>
+    <!-- popup -->
+    <button id="popup-start">ポップアップ表示</button>
+
     <!----- /main ----->
     <script src="/public/app.bundle.js" type="module"></script>
   </body>
