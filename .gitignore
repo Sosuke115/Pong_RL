@@ -22,3 +22,8 @@ client/js/rl/public/*.bundle.js
 /node_modules
 npm-debug.log
 /*.env
+
+# css生成ファイル
+client/public/*.css
+client/public/*.css.map
+

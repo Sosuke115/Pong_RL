@@ -6,6 +6,7 @@ import { SleepTimeScheduler } from "./sleepTimeScheduler.js";
 import { PongRLEnv } from "../rl/pongRLEnv.js";
 import { KeyAgent } from "../rl/agents/keyAgent.js";
 import { sleep } from "../utils.js";
+import "../../scss/style.scss";
 
 let worker;
 let gameRunningState = 0; //0: pending, 1: trying to stop, 2: running
