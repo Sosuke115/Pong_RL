@@ -31,3 +31,38 @@ cd server/db
 npx sequelize-cli db:migrate  # db/migrations の情報をもとにスキーマを更新
 npx sequelize-cli db:seed:all  # db/seeders の情報をもとにテストデータを更新
 ```
+
+### API
+
+- /api/get_ranking
+
+    全 trainingStep に関するランキングデータと平均スコアを取得する.
+
+    - メソッド: GET
+    - パラメータ
+        - size (Optional, default=5): 上位何位まで取得するか
+    - 返り値
+        - ranking: "trainingStep => (token, userName, score) のリスト" の Object
+        - avgScore: "trainingStep => 平均スコア" の Object
+
+- /api/register_game
+
+    新しいゲームを登録する.
+
+    - メソッド: POST
+    - パラメータ
+        - token: ゲームのトークン
+        - trainingStep: 学習ステップ
+        - score: ゲームのスコア
+    - 返り値
+        - userName: 仮作成したユーザ名
+
+- /api/update_name
+
+    ユーザ名を更新する.
+
+    - メソッド: POST
+    - パラメータ
+        - token: ゲームのトークン
+        - userName: 新しいユーザ名
+    - 返り値
