@@ -5,6 +5,10 @@ const Sequelize = require("sequelize");
 const db = require("../db/models/index.js");
 
 
+// Settings to receive POST body
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
+
 router.get("/get_ranking", (req, res) => {
   const size = req.query.size || 5;
   const trainingStepList = [0, 20000, 50000, 100000];
@@ -50,6 +54,21 @@ router.get("/get_ranking", (req, res) => {
     res.json({
       ranking: rankingData,
       avg: avgData,
+    });
+  });
+});
+
+router.post("/register_game", (req, res) => {
+  const tempName = "dummy name";
+  db.Game.create({
+    token: req.body.token,
+    trainingStep: req.body.trainingStep,
+    score: req.body.score,
+    userName: tempName,
+  })
+  .then((game) => {
+    res.json({
+      "userName": tempName,
     });
   });
 });
