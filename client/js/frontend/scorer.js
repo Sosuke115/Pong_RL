@@ -25,8 +25,12 @@ export class Scorer {
     $("#human-score").text(this.humanScore.toString());
   }
 
-  step_and_draw(humanOrRl) {
+  stepAndDraw(humanOrRl) {
     this.step(humanOrRl);
     this.draw();
+  }
+
+  getScore(){
+    return this.humanScore - this.rlScore;
   }
 }

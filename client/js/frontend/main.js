@@ -92,6 +92,25 @@ function getRlId() {
   return rlId;
 }
 
+function registerGame(myScore, trainingStep, matchToken) {
+  const url = "/api/register_game";
+  let response;
+  try {
+    response = $.ajax({
+      url: url,
+      type: "POST",
+      data: {
+        token: matchToken,
+        trainingStep: trainingStep,
+        score: myScore
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 // main処理
 async function main(rlId) {
   // 環境
@@ -100,10 +119,9 @@ async function main(rlId) {
   console.log(`Start  RL: "${rlId}"`);
 
   // load game screen
-  // const betweenMatchInterval = 500;
   const gameScreen = new GameScreen();
   const scorer = new Scorer();
-  const timer = new Timer(60);
+  const timer = new Timer(5);
   const sleepTimeScheduler = new SleepTimeScheduler();
 
   // draw init state
@@ -145,7 +163,7 @@ async function main(rlId) {
 
       state = env.reset();
       gameScreen.draw(state);
-      scorer.step_and_draw(res.state.winner);
+      scorer.stepAndDraw(res.state.winner);
       await sleepTimeScheduler.reset();
       timeStep = 0;
       timer.start();
@@ -157,6 +175,7 @@ async function main(rlId) {
   }
   console.log("game end");
   gameScreen.clearInsideCanvas();
+  return scorer.getScore();
 }
 
 // init process
@@ -198,11 +217,14 @@ $("#start-button").on("click", async function () {
   $(".start-screen").fadeOut();
 
   const rlId = getRlId();
+  const matchToken = Math.random().toString(32).substring(2);
 
   // start game
   gameRunningState = 2;
-  await main(rlId);
-  $('.popup').fadeIn();
+  const myScore = await main(rlId);
+  const registerInfo = await registerGame(myScore, rlId, matchToken);
+  console.log(registerInfo);
+  $(".popup").fadeIn();
   $("#ranking-button").click();
 });
 
@@ -246,6 +268,6 @@ $("#game-button, #ranking-button").on("click", function () {
 });
 
 // for popup
-$('.batsu-button').on('click',function(){
-  $('.popup').fadeOut();
+$(".batsu-button").on("click", function () {
+  $(".popup").fadeOut();
 });
