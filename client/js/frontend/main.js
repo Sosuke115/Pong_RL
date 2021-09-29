@@ -224,8 +224,9 @@ $("#start-button").on("click", async function () {
   const myScore = await main(rlId);
   const registerInfo = await registerGame(myScore, rlId, matchToken);
   console.log(registerInfo);
-  $(".popup").fadeIn();
+  // $(".popup").fadeIn();
   $("#ranking-button").click();
+  console.log("test");
 });
 
 // process for game button
@@ -250,6 +251,7 @@ $("#ranking-button").on("click", async function () {
 
   // update ranking info
   await rankingManager.updateRankingInfo();
+  console.log("ranking end");
 
   // clear game screen
   initGameScreen.clearInsideCanvas();

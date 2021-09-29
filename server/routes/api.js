@@ -34,12 +34,14 @@ router.get("/get_ranking", (req, res) => {
     attributes: [
       "trainingStep",
       [Sequelize.fn("AVG", Sequelize.col("score")), "avgScore"],
+      [Sequelize.fn("COUNT", Sequelize.col("score")), "count"],
     ],
     group: "trainingStep",
   }));
   
   Promise.all(promises)
   .then((data) => {
+    // console.log("data", data[data.length-1])
     const rankingData = {};
     for (let i = 0; i < data.length - 1; i++) {
       const trainingStep = trainingStepList[i];
@@ -47,15 +49,18 @@ router.get("/get_ranking", (req, res) => {
     }
 
     const avgData = {};
+    const countData = {};
     for (let row of data[data.length-1]) {
       // TODO: Aggregated values cannot be accessed by <model>.<attribute>
       //       There might be a cleaner way
       avgData[row.trainingStep] = row.dataValues.avgScore;
+      countData[row.trainingStep] = row.dataValues.count;
     }
 
     res.json({
       ranking: rankingData,
       avg: avgData,
+      count: countData
     });
   });
 });
@@ -70,7 +75,6 @@ router.post("/register_game", (req, res) => {
     length: 2,
     separator: "",
   });
-
   db.Game.create({
     token: req.body.token,
     trainingStep: req.body.trainingStep,

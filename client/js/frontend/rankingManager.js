@@ -29,7 +29,7 @@ export class RankingManager {
         },
       });
       this.rankingInfo = rankingInfo;
-      //   console.log(rankingInfo);
+        console.log(rankingInfo);
     } catch (error) {
       console.error(error);
     }
