@@ -16,7 +16,7 @@ class Controller {
       this.rlConfig = null;
       this.action = null;
       this.nextAction = null;
-      this.worker = new Worker("/public-rl/worker.bundle.js");
+      this.worker = new Worker("/rl/public/worker.bundle.js");
       this.worker.postMessage({
         command: "buildController",
         input: input,

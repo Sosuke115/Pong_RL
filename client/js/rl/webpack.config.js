@@ -12,7 +12,7 @@ module.exports = {
     },
     output: {
         path: path.join(__dirname, 'public'),
-        publicPath: '/public-rl',
+        publicPath: '/rl/public/',
         filename: `[name].bundle.js`,
     },
     module: {
