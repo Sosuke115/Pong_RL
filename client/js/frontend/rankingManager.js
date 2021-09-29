@@ -1,12 +1,13 @@
 // ランキング画面の管理
 export class RankingManager {
-  constructor() {
+  constructor(size=10) {
+    this.size = size;
     this.rankingInfo = {
       ranking: {
-        0: Array(5).fill({ score: "No data", userName: "No data" }),
-        20000: Array(5).fill({ score: "No data", userName: "No data" }),
-        50000: Array(5).fill({ score: "No data", userName: "No data" }),
-        100000: Array(5).fill({ score: "No data", userName: "No data" }),
+        0: Array(size).fill({ score: "No data", userName: "No data" }),
+        20000: Array(size).fill({ score: "No data", userName: "No data" }),
+        50000: Array(size).fill({ score: "No data", userName: "No data" }),
+        100000: Array(size).fill({ score: "No data", userName: "No data" }),
       },
       avg: {
         0: "No data",
@@ -24,7 +25,7 @@ export class RankingManager {
         url: url,
         type: "GET",
         data: {
-          size: 5,
+          size: this.size,
         },
       });
       this.rankingInfo = rankingInfo;
@@ -36,7 +37,7 @@ export class RankingManager {
 
   // rl stepに対応するランキング表を描画
   draw(rlStep) {
-    $("#result-subtitle-rlStep").text(String(rlStep).replace(/(.*)000/, "$1k"));
+    $(".result-subtitle-rlStep").text(String(rlStep).replace(/(.*)000/, "$1k"));
 
     let rankingInfo = this.rankingInfo["ranking"][String(rlStep)];
 
@@ -44,7 +45,7 @@ export class RankingManager {
       return arr.concat(Array(len).fill(fill)).slice(0, len);
     };
 
-    rankingInfo = padArray(rankingInfo.slice(), 5, {
+    rankingInfo = padArray(rankingInfo.slice(), this.size, {
       score: "No data",
       userName: "No data",
     });

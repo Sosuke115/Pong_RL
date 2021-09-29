@@ -3,6 +3,7 @@
 $pc: 1024px; // PC
 $tab: 680px; // tablet
 $sp: 480px; // smartphone
+$minsp: 350px; // small smartphone
 $white: #ffffff;
 $neon-blue: #262544;
 $pastel-blue: #628da5;
@@ -21,6 +22,11 @@ $transparent-white: rgba(255, 255, 255, 0.15);
 }
 @mixin sp {
   @media (max-width: ($sp)) {
+    @content;
+  }
+}
+@mixin minsp {
+  @media (max-width: ($minsp)) {
     @content;
   }
 }
@@ -160,13 +166,19 @@ button {
   width: 100%;
   height: 100%;
   display: none;
-  @include sp{
-      font-size: 0.8rem;
+  @include sp {
+    font-size: 0.75rem;
+  }
+  @include minsp{
+    font-size: 0.60rem;
   }
 
   .result-title {
     margin-top: 0.5em;
     font-size: 2em;
+    @include sp {
+      font-size: 1.5rem;
+    }
   }
   .result-subtitle {
     font-size: 1em;
@@ -209,31 +221,6 @@ button {
       text-align: left;
     }
   }
-  .register-area {
-    margin-top: 1.5em;
-    @include sp{
-        margin-top: 1em;
-    }
-    .input-nickname {
-      width: 15em;
-      height: 4em;
-      font-size: 0.8em;
-      border-radius: 10px;
-      text-align: center;
-      margin-right: 0;
-    }
-    .register-button {
-      font-size: 0.8em;
-      width: 6em;
-      height: 4em;
-      border-radius: 10px;
-      color: $neon-blue;
-      background-color: $white;
-      border-color: $white;
-      border-width: 1px;
-      margin-left: 10px;
-    }
-  }
 }
 
 .threshold {
@@ -249,6 +236,10 @@ button {
   @include sp {
     width: 266px;
     height: 304px;
+  }
+  @include minsp{
+    width: 210px;
+    height: 240px;
   }
 }
 
@@ -323,20 +314,19 @@ button {
     margin-top: 0px;
     margin-right: 40px;
     @include sp {
-        border-right: 9em solid $white;
-        border-top: 5em solid transparent;
-        border-bottom: 5em solid transparent;
-      }
+      border-right: 9em solid $white;
+      border-top: 5em solid transparent;
+      border-bottom: 5em solid transparent;
+    }
   }
   .left-key-color {
     border-right: 2.5em solid $pastel-blue;
     @include sp {
-        border-right: 9em solid $pastel-blue;
-      }
+      border-right: 9em solid $pastel-blue;
+    }
   }
 
   .right-key {
-
     width: 0;
     height: 0;
     border-left: 2.5em solid $white;
@@ -357,13 +347,12 @@ button {
       border-left: 9em solid $pastel-blue;
     }
   }
-  
+
   .game-ranking-buttons {
     float: left;
     @include sp {
-       margin-right: 2.5em;
+      margin-right: 2.5em;
     }
-
 
     #game-button {
       font-size: 0.8em;
@@ -421,6 +410,77 @@ button {
         border-top-right-radius: 0px;
         border-bottom-right-radius: 5px;
       }
+    }
+  }
+}
+
+/* popup screen */
+.popup {
+  display: none;
+  height: 100%;
+  width: 100%;
+  background-color: rgba($neon-blue, 0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  font-weight: 500;
+  &-content {
+    background: $white;
+    color: $neon-blue;
+    width: 75%;
+    height: 60%;
+    margin: auto;
+    margin-top: 20%;
+    z-index: 5;
+    &-description{
+      font-size: 1.3em;
+      margin-top: 5%;
+
+    }
+
+    .batsu-button {
+      font-size: 100%; /*ばつボタンの大きさ*/
+      font-weight: bold;
+      border: 1px solid #999;
+      color: #999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 100%;
+      width: 1.3em;
+      line-height: 1.3em;
+      cursor: pointer;
+      transition: 0.2s;
+
+      &:hover {
+        background: #333;
+        border-color: #333;
+        color: #fff;
+      }
+    }
+    .input-nickname {
+      display: block;
+      width: 15em;
+      height: 4em;
+      font-size: 0.8em;
+      border-radius: 10px;
+      text-align: center;
+      margin: auto;
+      margin-top: 5%;
+    }
+    .register-button {
+      display: block;
+      font-size: 0.8em;
+      width: 6em;
+      height: 4em;
+      border-radius: 10px;
+      color: $neon-blue;
+      background-color: $white;
+      border-color: $neon-blue;
+      border-width: 1px;
+      margin: auto;
+      margin-top: 5%;
     }
   }
 }

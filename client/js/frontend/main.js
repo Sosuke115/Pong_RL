@@ -202,6 +202,7 @@ $("#start-button").on("click", async function () {
   // start game
   gameRunningState = 2;
   await main(rlId);
+  $('.popup').fadeIn();
   $("#ranking-button").click();
 });
 
@@ -242,4 +243,9 @@ $("#ranking-button").on("click", async function () {
 $("#game-button, #ranking-button").on("click", function () {
   $("#game-button, #ranking-button").removeClass("pressed-buttons-color");
   $(this).addClass("pressed-buttons-color");
+});
+
+// for popup
+$('.batsu-button').on('click',function(){
+  $('.popup').fadeOut();
 });
