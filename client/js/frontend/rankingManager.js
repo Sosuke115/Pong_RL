@@ -37,7 +37,7 @@ export class RankingManager {
 
   // rl stepに対応するランキング表を描画
   draw(rlStep) {
-    $("#result-subtitle-rlStep").text(String(rlStep).replace(/(.*)000/, "$1k"));
+    $(".result-subtitle-rlStep").text(String(rlStep).replace(/(.*)000/, "$1k"));
 
     let rankingInfo = this.rankingInfo["ranking"][String(rlStep)];
 
