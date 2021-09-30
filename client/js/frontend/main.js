@@ -12,6 +12,7 @@ let worker;
 let gameRunningState = 0; //0: pending, 1: trying to stop, 2: running
 const initGameScreen = new GameScreen();
 const rankingManager = new RankingManager();
+let matchToken;
 
 class RLController {
   constructor(input) {
@@ -109,6 +110,10 @@ function registerGame(myScore, trainingStep, matchToken) {
   } catch (error) {
     console.error(error);
   }
+}
+
+function checkRankedIn(){
+
 }
 
 // main処理
@@ -217,16 +222,22 @@ $("#start-button").on("click", async function () {
   $(".start-screen").fadeOut();
 
   const rlId = getRlId();
-  const matchToken = Math.random().toString(32).substring(2);
+  matchToken = Math.random().toString(32).substring(2);
 
   // start game
   gameRunningState = 2;
   const myScore = await main(rlId);
   const registerInfo = await registerGame(myScore, rlId, matchToken);
-  console.log(registerInfo);
-  // $(".popup").fadeIn();
+  await rankingManager.updateUserInfo(myScore, rlId, matchToken);
+  const myRank = rankingManager.getMyRank(rlId);
+  // TODO 同点を考慮した正確な順位
+  // TODO そもそもゲーム終了後しかpopupを出さないのは最適かどうか
+  $(".popup").show();
+  // if (myRank <= 10) {
+  //   $(".popup").show();
+  // }
+
   $("#ranking-button").click();
-  console.log("test");
 });
 
 // process for game button
@@ -251,13 +262,14 @@ $("#ranking-button").on("click", async function () {
 
   // update ranking info
   await rankingManager.updateRankingInfo();
-  console.log("ranking end");
 
   // clear game screen
   initGameScreen.clearInsideCanvas();
 
+  const rlId = getRlId();
+
   // draw ranking score
-  rankingManager.draw(getRlId());
+  rankingManager.draw(rlId);
 
   $(".start-screen").fadeOut();
   $(".result-screen").fadeIn();
@@ -269,7 +281,33 @@ $("#game-button, #ranking-button").on("click", function () {
   $(this).addClass("pressed-buttons-color");
 });
 
-// for popup
+// popup batsu button
 $(".batsu-button").on("click", function () {
-  $(".popup").fadeOut();
+  $(".popup").hide();
 });
+
+// process for register button
+$(".register-button").on("click", async function () {
+  const url = "/api/update_name";
+  const userName = $(".input-nickname").val();
+  try {
+    const response = await $.ajax({
+      url: url,
+      type: "POST",
+      data: {
+        token: matchToken,
+        userName: userName,
+      },
+    });
+    console.log("registered");
+  } catch (error) {
+    console.error(error);
+  }
+  // update ranking info
+  await rankingManager.updateRankingInfo();
+  // draw ranking score
+  rankingManager.draw(getRlId());
+
+  $(".popup").hide();
+});
+
