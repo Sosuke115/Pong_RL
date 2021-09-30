@@ -111,12 +111,12 @@ export class RankingManager {
     let myRank = this.myRankInfo[rlStep];
 
     // draw my info
-    $("#your-score").text(myScore);
+    $(".your-score").text(myScore);
 
     if (!(myRank == "No data")){
       myRank = String(myRank) + "/" + this.rankingInfo["count"][rlStep]
     }
     console.log(myRank);
-    $("#your-rank").text(myRank);
+    $(".your-rank").text(myRank);
   }
 }
