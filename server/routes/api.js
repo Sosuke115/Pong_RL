@@ -103,20 +103,20 @@ router.post("/update_name", async (req, res) => {
   res.json({});
 });
 
-router.post("/get_my_rank", async (req, res) => {
+router.get("/get_my_rank", async (req, res) => {
   const game = await db.Game.findOne({
     where: {
-      token: req.body.token,
+      token: req.query.token,
     },
   });
 
-  // TODO 同点を考慮した順位
+  // TODO 同点を考慮した正確な順位
   db.Game.count({
     where: {
       score: {
         [Op.gte]: game.score,
       },
-      trainingStep: game.trainingStep,
+      trainingStep: req.query.trainingStep,
     },
   }).then((myRank) => {
     res.json({
