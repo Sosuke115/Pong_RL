@@ -232,10 +232,9 @@ $("#start-button").on("click", async function () {
   const myRank = rankingManager.getMyRank(rlId);
   // TODO 同点を考慮した正確な順位
   // TODO そもそもゲーム終了後しかpopupを出さないのは最適かどうか
-  $(".popup").show();
-  // if (myRank <= 10) {
-  //   $(".popup").show();
-  // }
+  if (myRank <= 10) {
+    $(".popup").show();
+  }
 
   $("#ranking-button").click();
 });
