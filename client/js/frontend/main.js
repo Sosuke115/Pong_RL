@@ -126,7 +126,7 @@ async function main(rlId) {
   // load game screen
   const gameScreen = new GameScreen();
   const scorer = new Scorer();
-  const timer = new Timer(5);
+  const timer = new Timer(60);
   const sleepTimeScheduler = new SleepTimeScheduler();
 
   // draw init state
