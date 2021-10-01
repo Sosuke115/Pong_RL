@@ -204,7 +204,6 @@ $(document).ready(function () {
 // Process for rl selection button
 $(".rl-selection-button").on("click", function () {
   $(".rl-selection-button").prop("disabled", false);
-  $(".popup").hide();
   // color
   const buttonId = $(this).attr("id");
   $(".rl-selection-button").removeClass("pressed-buttons-color");
@@ -233,6 +232,7 @@ $("#start-button").on("click", async function () {
   const myRank = rankingManager.getMyRank(rlId);
   // TODO 同点を考慮した正確な順位
   // TODO そもそもゲーム終了後しかpopupを出さないのは最適かどうか
+  console.log(myRank);
   if (myRank <= 10) {
     $(".popup").show();
     $('.input-nickname').focus();
@@ -245,7 +245,6 @@ $("#game-button").on("click", async function () {
   $("#game-button").prop("disabled", true);
   $("#ranking-button").prop("disabled", false);
   $(".result-screen").fadeOut();
-  $(".popup").hide();
   // wait until the game is over
   await stopGame();
   // init game screen
@@ -282,11 +281,6 @@ $("#game-button, #ranking-button").on("click", function () {
   $(this).addClass("pressed-buttons-color");
 });
 
-// popup batsu button
-$(".batsu-button").on("click", function () {
-  $(".popup").hide();
-});
-
 // process for register button
 $(".register-button").on("click", async function () {
   const url = "/api/update_name";
@@ -307,7 +301,13 @@ $(".register-button").on("click", async function () {
   await rankingManager.updateRankingInfo();
   // draw ranking score
   rankingManager.draw(getRlId());
-
   $(".popup").hide();
+});
+
+// hide popup
+$(document).click(function(event) {
+  if($(".popup").is(":visible") && $(".result-screen").is(":visible") && !$(event.target).closest('.popup-content').length) {
+    $(".popup").hide();
+  }
 });
 
