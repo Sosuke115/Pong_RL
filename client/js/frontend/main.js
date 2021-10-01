@@ -126,7 +126,7 @@ async function main(rlId) {
   // load game screen
   const gameScreen = new GameScreen();
   const scorer = new Scorer();
-  const timer = new Timer(60);
+  const timer = new Timer(5);
   const sleepTimeScheduler = new SleepTimeScheduler();
 
   // draw init state
@@ -204,6 +204,7 @@ $(document).ready(function () {
 // Process for rl selection button
 $(".rl-selection-button").on("click", function () {
   $(".rl-selection-button").prop("disabled", false);
+  $(".popup").hide();
   // color
   const buttonId = $(this).attr("id");
   $(".rl-selection-button").removeClass("pressed-buttons-color");
@@ -243,6 +244,7 @@ $("#game-button").on("click", async function () {
   $("#game-button").prop("disabled", true);
   $("#ranking-button").prop("disabled", false);
   $(".result-screen").fadeOut();
+  $(".popup").hide();
   // wait until the game is over
   await stopGame();
   // init game screen
