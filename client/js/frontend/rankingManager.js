@@ -1,6 +1,6 @@
 // ランキング画面の管理
 export class RankingManager {
-  constructor(size=10) {
+  constructor(size = 10) {
     this.size = size;
     this.rankingInfo = {
       ranking: {
@@ -15,7 +15,47 @@ export class RankingManager {
         50000: "No data",
         100000: "No data",
       },
+      count: {
+        0: "No data",
+        20000: "No data",
+        50000: "No data",
+        100000: "No data",
+      },
     };
+    this.myRankInfo = {
+      0: "No data",
+      20000: "No data",
+      50000: "No data",
+      100000: "No data",
+    };
+    this.myScoreInfo = {
+      0: "No data",
+      20000: "No data",
+      50000: "No data",
+      100000: "No data",
+    };
+  }
+
+  getMyRank(trainingStep) {
+    return this.myRankInfo[trainingStep]
+  }
+
+  async updateUserInfo(myScore, trainingStep, matchToken) {
+    this.myScoreInfo[trainingStep] = myScore;    
+    const url = "/api/get_my_rank";
+    try {
+      const myRank = await $.ajax({
+        url: url,
+        type: "GET",
+        data: {
+          token: matchToken,
+          trainingStep: trainingStep,
+        },
+      });
+      this.myRankInfo[trainingStep] = myRank.rank;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async updateRankingInfo() {
@@ -29,7 +69,6 @@ export class RankingManager {
         },
       });
       this.rankingInfo = rankingInfo;
-      //   console.log(rankingInfo);
     } catch (error) {
       console.error(error);
     }
@@ -61,5 +100,16 @@ export class RankingManager {
         ? "No data"
         : Math.round(average * 10) / 10;
     $("#avg-score").text(average);
+
+    const myScore = this.myScoreInfo[rlStep];
+    let myRank = this.myRankInfo[rlStep];
+
+    // draw my info
+    $(".your-score").text(myScore);
+
+    if (!(myRank == "No data")){
+      myRank = String(myRank) + "/" + this.rankingInfo["count"][rlStep]
+    }
+    $(".your-rank").text(myRank);
   }
 }

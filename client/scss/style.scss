@@ -212,13 +212,15 @@ button {
     font-size: 1em;
     .your-result-index {
       display: inline-block;
-      margin-left: 8%;
-      margin-right: 10%;
+      margin-left: 5%;
+      margin-right: 4.5%;
+      width: 35%;
       text-align: left;
     }
     .your-scores {
       display: inline-block;
       text-align: left;
+      width: 18%;
     }
   }
 }
@@ -433,32 +435,31 @@ button {
     margin: auto;
     margin-top: 20%;
     z-index: 5;
+    &-result-your {
+      margin-top: 1%;
+      padding-top: 8%;
+      @include sp{
+        margin-top: 5%;
+      }
+      font-size: 1em;
+      .popup-content-your-result-index {
+        display: inline-block;
+        margin-left: 5%;
+        margin-right: 4.5%;
+        width: 35%;
+        text-align: left;
+      }
+      .popup-content-your-scores {
+        display: inline-block;
+        text-align: left;
+        width: 25%;
+      }
+    }
     &-description{
       font-size: 1.3em;
       margin-top: 5%;
-
     }
 
-    .batsu-button {
-      font-size: 100%; /*ばつボタンの大きさ*/
-      font-weight: bold;
-      border: 1px solid #999;
-      color: #999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 100%;
-      width: 1.3em;
-      line-height: 1.3em;
-      cursor: pointer;
-      transition: 0.2s;
-
-      &:hover {
-        background: #333;
-        border-color: #333;
-        color: #fff;
-      }
-    }
     .input-nickname {
       display: block;
       width: 15em;

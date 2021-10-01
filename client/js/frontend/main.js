@@ -12,6 +12,7 @@ let worker;
 let gameRunningState = 0; //0: pending, 1: trying to stop, 2: running
 const initGameScreen = new GameScreen();
 const rankingManager = new RankingManager();
+let matchToken;
 
 class RLController {
   constructor(input) {
@@ -92,6 +93,29 @@ function getRlId() {
   return rlId;
 }
 
+function registerGame(myScore, trainingStep, matchToken) {
+  const url = "/api/register_game";
+  let response;
+  try {
+    response = $.ajax({
+      url: url,
+      type: "POST",
+      data: {
+        token: matchToken,
+        trainingStep: trainingStep,
+        score: myScore
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function checkRankedIn(){
+
+}
+
 // main処理
 async function main(rlId) {
   // 環境
@@ -100,7 +124,6 @@ async function main(rlId) {
   console.log(`Start  RL: "${rlId}"`);
 
   // load game screen
-  // const betweenMatchInterval = 500;
   const gameScreen = new GameScreen();
   const scorer = new Scorer();
   const timer = new Timer(60);
@@ -145,7 +168,7 @@ async function main(rlId) {
 
       state = env.reset();
       gameScreen.draw(state);
-      scorer.step_and_draw(res.state.winner);
+      scorer.stepAndDraw(res.state.winner);
       await sleepTimeScheduler.reset();
       timeStep = 0;
       timer.start();
@@ -157,6 +180,7 @@ async function main(rlId) {
   }
   console.log("game end");
   gameScreen.clearInsideCanvas();
+  return scorer.getScore();
 }
 
 // init process
@@ -198,11 +222,21 @@ $("#start-button").on("click", async function () {
   $(".start-screen").fadeOut();
 
   const rlId = getRlId();
+  matchToken = Math.random().toString(32).substring(2);
 
   // start game
   gameRunningState = 2;
-  await main(rlId);
-  $('.popup').fadeIn();
+  const myScore = await main(rlId);
+  const registerInfo = await registerGame(myScore, rlId, matchToken);
+  await rankingManager.updateUserInfo(myScore, rlId, matchToken);
+  const myRank = rankingManager.getMyRank(rlId);
+  // TODO 同点を考慮した正確な順位
+  // TODO そもそもゲーム終了後しかpopupを出さないのは最適かどうか
+  console.log(myRank);
+  if (myRank <= 10) {
+    $(".popup").show();
+    $('.input-nickname').focus();
+  }
   $("#ranking-button").click();
 });
 
@@ -232,8 +266,10 @@ $("#ranking-button").on("click", async function () {
   // clear game screen
   initGameScreen.clearInsideCanvas();
 
+  const rlId = getRlId();
+
   // draw ranking score
-  rankingManager.draw(getRlId());
+  rankingManager.draw(rlId);
 
   $(".start-screen").fadeOut();
   $(".result-screen").fadeIn();
@@ -245,7 +281,33 @@ $("#game-button, #ranking-button").on("click", function () {
   $(this).addClass("pressed-buttons-color");
 });
 
-// for popup
-$('.batsu-button').on('click',function(){
-  $('.popup').fadeOut();
+// process for register button
+$(".register-button").on("click", async function () {
+  const url = "/api/update_name";
+  const userName = $(".input-nickname").val();
+  try {
+    const response = await $.ajax({
+      url: url,
+      type: "POST",
+      data: {
+        token: matchToken,
+        userName: userName,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+  }
+  // update ranking info
+  await rankingManager.updateRankingInfo();
+  // draw ranking score
+  rankingManager.draw(getRlId());
+  $(".popup").hide();
 });
+
+// hide popup
+$(document).click(function(event) {
+  if($(".popup").is(":visible") && $(".result-screen").is(":visible") && !$(event.target).closest('.popup-content').length) {
+    $(".popup").hide();
+  }
+});
+
