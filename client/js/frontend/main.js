@@ -126,7 +126,7 @@ async function main(rlId) {
   // load game screen
   const gameScreen = new GameScreen();
   const scorer = new Scorer();
-  const timer = new Timer(5);
+  const timer = new Timer(60);
   const sleepTimeScheduler = new SleepTimeScheduler();
 
   // draw init state
@@ -235,7 +235,6 @@ $("#start-button").on("click", async function () {
   if (myRank <= 10) {
     $(".popup").show();
   }
-
   $("#ranking-button").click();
 });
 
@@ -298,7 +297,6 @@ $(".register-button").on("click", async function () {
         userName: userName,
       },
     });
-    console.log("registered");
   } catch (error) {
     console.error(error);
   }

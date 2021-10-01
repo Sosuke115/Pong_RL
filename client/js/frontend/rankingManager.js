@@ -36,10 +36,6 @@ export class RankingManager {
     };
   }
 
-  getRankedUserNames(trainingStep) {
-    return this.rankingInfo["ranking"][trainingStep].map(item => item.userName)
-  }
-
   getMyRank(trainingStep) {
     return this.myRankInfo[trainingStep]
   }
@@ -57,7 +53,6 @@ export class RankingManager {
         },
       });
       this.myRankInfo[trainingStep] = myRank.rank;
-      console.log(myRank);
     } catch (error) {
       console.error(error);
     }
@@ -74,7 +69,6 @@ export class RankingManager {
         },
       });
       this.rankingInfo = rankingInfo;
-      // console.log(rankingInfo);
     } catch (error) {
       console.error(error);
     }
@@ -116,7 +110,6 @@ export class RankingManager {
     if (!(myRank == "No data")){
       myRank = String(myRank) + "/" + this.rankingInfo["count"][rlStep]
     }
-    console.log(myRank);
     $(".your-rank").text(myRank);
   }
 }
