@@ -126,7 +126,7 @@ async function main(rlId) {
   // load game screen
   const gameScreen = new GameScreen();
   const scorer = new Scorer();
-  const timer = new Timer(60);
+  const timer = new Timer(5);
   const sleepTimeScheduler = new SleepTimeScheduler();
 
   // draw init state
@@ -235,6 +235,7 @@ $("#start-button").on("click", async function () {
   // TODO そもそもゲーム終了後しかpopupを出さないのは最適かどうか
   if (myRank <= 10) {
     $(".popup").show();
+    $('.input-nickname').focus();
   }
   $("#ranking-button").click();
 });
