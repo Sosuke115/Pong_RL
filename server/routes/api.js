@@ -45,29 +45,36 @@ router.get("/get_ranking", (req, res) => {
     })
   );
 
-  Promise.all(promises).then((data) => {
-    // console.log("data", data[data.length-1])
-    const rankingData = {};
-    for (let i = 0; i < data.length - 1; i++) {
-      const trainingStep = trainingStepList[i];
-      rankingData[trainingStep] = data[i];
-    }
+  Promise.all(promises)
+    .then((data) => {
+      // console.log("data", data[data.length-1])
+      const rankingData = {};
+      for (let i = 0; i < data.length - 1; i++) {
+        const trainingStep = trainingStepList[i];
+        rankingData[trainingStep] = data[i];
+      }
 
-    const avgData = {};
-    const countData = {};
-    for (let row of data[data.length - 1]) {
-      // TODO: Aggregated values cannot be accessed by <model>.<attribute>
-      //       There might be a cleaner way
-      avgData[row.trainingStep] = row.dataValues.avgScore;
-      countData[row.trainingStep] = row.dataValues.count;
-    }
+      const avgData = {};
+      const countData = {};
+      for (let row of data[data.length - 1]) {
+        // TODO: Aggregated values cannot be accessed by <model>.<attribute>
+        //       There might be a cleaner way
+        avgData[row.trainingStep] = row.dataValues.avgScore;
+        countData[row.trainingStep] = row.dataValues.count;
+      }
 
-    res.json({
-      ranking: rankingData,
-      avg: avgData,
-      count: countData,
+      res.json({
+        error: null,
+        ranking: rankingData,
+        avg: avgData,
+        count: countData,
+      });
+    })
+    .catch((error) => {
+      res.json({
+        error: error.toString(),
+      });
     });
-  });
 });
 
 router.post("/register_game", (req, res) => {
@@ -85,30 +92,63 @@ router.post("/register_game", (req, res) => {
     trainingStep: req.body.trainingStep,
     score: req.body.score,
     userName: tempName,
-  }).then((game) => {
-    res.json({
-      userName: tempName,
+  })
+    .then((game) => {
+      res.json({
+        error: null,
+        userName: tempName,
+      });
+    })
+    .catch((error) => {
+      res.json({
+        error: error.toString(),
+      });
     });
-  });
 });
 
 router.post("/update_name", async (req, res) => {
-  const game = await db.Game.findOne({
-    where: {
-      token: req.body.token,
-    },
-  });
+  let game;
+  try {
+    game = await db.Game.findOne({
+      where: {
+        token: req.body.token,
+      },
+    });
+  } catch (error) {
+    res.json({
+      error: error.toString(),
+    });
+    return;
+  }
+
   game.userName = req.body.userName;
-  await game.save();
-  res.json({});
+  game.save()
+    .then((game) => {
+      res.json({
+        error: null,
+      })
+    })
+    .catch((error) => {
+      res.json({
+        error: error.toString(),
+      });
+    });
 });
 
 router.get("/get_my_rank", async (req, res) => {
-  const game = await db.Game.findOne({
-    where: {
-      token: req.query.token,
-    },
-  });
+  let game;
+  try {
+    game = await db.Game.findOne({
+      where: {
+        token: req.query.token,
+      },
+    });
+  } catch (error) {
+    res.json({
+      error: error.toString(),
+    });
+    return;
+  }
 
   // TODO 同点を考慮した正確な順位
   db.Game.count({
@@ -118,11 +158,17 @@ router.get("/get_my_rank", async (req, res) => {
       },
       trainingStep: req.query.trainingStep,
     },
-  }).then((myRank) => {
-    res.json({
-      rank: myRank,
+  })
+    .then((myRank) => {
+      res.json({
+        rank: myRank,
+      });
+    })
+    .catch((error) => {
+      res.json({
+        error: error.toString(),
+      });
     });
-  });
 });
 
 module.exports = router;
