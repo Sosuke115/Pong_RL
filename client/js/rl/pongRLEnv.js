@@ -250,6 +250,7 @@ export class PongRLEnv {
     this.moveObject(this.rlPaddle, false);
     this.moveObject(this.humanPaddle, false);
     const ballWasHit = this.moveObject(this.ball, true);
+    let ballHitter = null;
 
     if (ballWasHit) {
       // Increase ball speed
@@ -257,6 +258,7 @@ export class PongRLEnv {
         this.ballSpeedMax,
         this.ball.speed + this.ballSpeedIncrease
       );
+      ballHitter = this.ball.forceY > 0 ? "human" : "rl";
     }
 
     this.currentFrame += 1;
@@ -268,7 +270,6 @@ export class PongRLEnv {
       reward = winner === "rl" ? 1.0 : -1.0;
       done = true;
     }
-
-    return { state: this.getState(), reward: reward, done: done };
+    return { state: this.getState(), reward: reward, done: done, ballHitter: ballHitter};
   }
 }

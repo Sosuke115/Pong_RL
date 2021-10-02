@@ -10,6 +10,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/public", express.static(path.resolve(__dirname + "/../client/public")));
+app.use("/media", express.static(path.resolve(__dirname + "/../client/media")));
 
 const isLocal = process.argv.length > 2 && process.argv[2] === "local";
 if (isLocal) {

@@ -1,6 +1,7 @@
 import { GameScreen } from "./gameScreen.js";
 import { Scorer } from "./scorer.js";
 import { Timer } from "./timer.js";
+import { AudioController} from "./audioController.js";
 import { RankingManager } from "./rankingManager.js";
 import { SleepTimeScheduler } from "./sleepTimeScheduler.js";
 import { PongRLEnv } from "../rl/pongRLEnv.js";
@@ -13,6 +14,7 @@ let gameRunningState = 0; //0: pending, 1: trying to stop, 2: running
 const initGameScreen = new InitGameScreen();
 const rankingManager = new RankingManager();
 const limitTime = 60;
+const audioController = new AudioController();
 let matchToken;
 
 function InitGameScreen() {
@@ -178,6 +180,7 @@ async function main(rlId) {
     timer.draw();
 
     if (res.done) {
+      audioController.playGoalAudio(res.state.winner);
       await sleepTimeScheduler.end();
       timer.stop();
 
@@ -188,6 +191,7 @@ async function main(rlId) {
       timeStep = 0;
       timer.start();
     } else {
+      audioController.playHitAudio(res.ballHitter);
       await sleepTimeScheduler.step();
       state = res.state;
       timeStep += 1;
