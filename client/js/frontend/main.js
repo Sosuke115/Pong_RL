@@ -10,9 +10,24 @@ import "../../scss/style.scss";
 
 let worker;
 let gameRunningState = 0; //0: pending, 1: trying to stop, 2: running
-const initGameScreen = new GameScreen();
+const initGameScreen = new InitGameScreen();
 const rankingManager = new RankingManager();
+const limitTime = 60;
 let matchToken;
+
+function InitGameScreen() {
+  const gameScreen = new GameScreen();
+  this.clear = () => {
+    gameScreen.clearInsideCanvas();
+    new Scorer().draw();
+    new Timer(limitTime).draw();
+  };
+  this.draw = () => {
+    gameScreen.draw(new PongRLEnv().reset());
+    new Scorer().draw();
+    new Timer(limitTime).draw();
+  };
+}
 
 class RLController {
   constructor(input) {
@@ -122,7 +137,7 @@ async function main(rlId) {
   // load game screen
   const gameScreen = new GameScreen();
   const scorer = new Scorer();
-  const timer = new Timer(60);
+  const timer = new Timer(limitTime);
   const sleepTimeScheduler = new SleepTimeScheduler();
 
   // draw init state
@@ -147,7 +162,7 @@ async function main(rlId) {
   while (true) {
     // monitor running flag
     if ($.inArray(gameRunningState, [0, 1]) != -1 || timer.getRemTime() == 0) {
-      if (gameRunningState === 1){
+      if (gameRunningState === 1) {
         interruptedFlag = true;
       }
       gameRunningState = 0;
@@ -180,10 +195,9 @@ async function main(rlId) {
   }
   console.log("game end");
   gameScreen.clearInsideCanvas();
-  if (interruptedFlag){
+  if (interruptedFlag) {
     return null;
-  }
-  else{
+  } else {
     return scorer.getScore();
   }
 }
@@ -200,7 +214,7 @@ $(document).ready(function () {
   $("#game-button").prop("disabled", true);
 
   // init game screen
-  initGameScreen.draw(new PongRLEnv().reset());
+  initGameScreen.draw();
 
   // load worker bundle in advance for better performance
   worker = new Worker("/public/worker.bundle.js");
@@ -241,7 +255,7 @@ $("#start-button").on("click", async function () {
   const myScore = await main(rlId);
   gameRunningState = 0;
 
-  if (!(myScore === null)){
+  if (!(myScore === null)) {
     const registerInfo = await registerGame(myScore, rlId, matchToken);
     await rankingManager.updateUserInfo(myScore, rlId, matchToken);
     const myRank = rankingManager.getMyRank(rlId);
@@ -261,7 +275,7 @@ $("#game-button").on("click", async function () {
   // wait until the game is over
   await stopGame();
   // init game screen
-  initGameScreen.draw(new PongRLEnv().reset());
+  initGameScreen.draw();
   $(".start-screen").fadeIn();
 });
 
@@ -277,7 +291,7 @@ $("#ranking-button").on("click", async function () {
   await rankingManager.updateRankingInfo();
 
   // clear game screen
-  initGameScreen.clearInsideCanvas();
+  initGameScreen.clear();
 
   const rlId = getRlId();
 
