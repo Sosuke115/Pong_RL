@@ -12,6 +12,16 @@
   <body>
     <div class="container">
       <div class="title">Pong RL</div>
+      <!-- Place this tag where you want the button to render. -->
+      <div class="github-button-container">
+        <a
+          class="github-button"
+          href="https://github.com/Sosuke115/Pong_RL"
+          data-color-scheme="no-preference: dark_dimmed; light: dark_dimmed; dark: dark_high_contrast;"
+          aria-label="Star Sosuke115/Pong_RL on GitHub"
+          >Star</a
+        >
+      </div>
       <div class="button-area">
         <div class="button-description">~ Select training step ~</div>
         <div class="rl-selection-button-container">
@@ -47,8 +57,8 @@
             <div class="popup-content">
               <div class="popup-content-result-your">
                 <div class="popup-content-your-result-index">
-                  <div >Your score</div>
-                  <div >Your rank</div>
+                  <div>Your score</div>
+                  <div>Your rank</div>
                 </div>
                 <div class="threshold">
                   <div>:</div>
@@ -59,10 +69,12 @@
                   <div class="your-rank">No data</div>
                 </div>
               </div>
-              <div class="popup-content-description">You ranked in the top 10!</div>
+              <div class="popup-content-description">
+                You ranked in the top 10!
+              </div>
               <input
                 class="input-nickname"
-                maxlength='11'
+                maxlength="11"
                 placeholder="Fill in your nickname"
               />
               <button class="register-button">Register</button>
@@ -173,6 +185,8 @@
     </div>
 
     <!----- /main ----->
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="/public/app.bundle.js" type="module"></script>
   </body>
 </html>

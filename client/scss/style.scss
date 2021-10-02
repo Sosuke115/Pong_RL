@@ -78,20 +78,32 @@ button {
   margin: 0 auto;
 }
 
+
 /* header */
+
+.github-button-container{
+  display: inline-block;
+  @include sp{
+    transform: scale(0.8,0.8);
+  }
+}
 
 .title {
   display: inline-block;
   position: relative;
   font-size: 3em;
   margin-bottom: 0.5%;
+  margin-right: 0.5%;
   &:before {
     content: "";
     position: absolute;
-    left: 50%;
+    left: 65%;
+    @include sp{
+      left: 70%;
+    }
     bottom: -5px; /*下線の上下位置調整*/
     display: inline-block;
-    width: 150%; /*下線の幅*/
+    width: 160%; /*下線の幅*/
     height: 2px; /*下線の太さ*/
     -moz-transform: translateX(-50%);
     -webkit-transform: translateX(-50%);
@@ -133,7 +145,7 @@ button {
 
 .button-description {
   font-size: 1em;
-  margin-top: 1%;
+  margin-top: 0.5%;
 }
 
 /* start screen */
@@ -485,3 +497,4 @@ button {
     }
   }
 }
+

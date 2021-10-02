@@ -2,8 +2,8 @@
 export class Timer {
   // 現在時刻と残り時間数をinit
   constructor(limitTime) {
-    this.initLimitTime = (limitTime + 1) * 1000;
-    this.limitTime = (limitTime + 1) * 1000;
+    this.initLimitTime = (limitTime) * 1000;
+    this.limitTime = (limitTime) * 1000;
     this.previousTime = new Date().getTime();
     this.isRunning = false;
   }
@@ -19,7 +19,7 @@ export class Timer {
   }
 
   getRemTime() {
-    return parseInt(this.limitTime / 1000);
+    return Math.ceil(this.limitTime / 1000);
   }
 
   updateLimitTime() {
@@ -37,6 +37,6 @@ export class Timer {
       this.updateLimitTime();
     }
 
-    $(".time").text(parseInt(this.limitTime / 1000).toString());
+    $(".time").text(Math.ceil(this.limitTime / 1000).toString());
   }
 }
