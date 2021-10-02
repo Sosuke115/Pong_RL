@@ -10,9 +10,24 @@ import "../../scss/style.scss";
 
 let worker;
 let gameRunningState = 0; //0: pending, 1: trying to stop, 2: running
-const initGameScreen = new GameScreen();
+const initGameScreen = new InitGameScreen();
 const rankingManager = new RankingManager();
+const limitTime = 60;
 let matchToken;
+
+function InitGameScreen() {
+  const gameScreen = new GameScreen();
+  this.clear = () => {
+    gameScreen.clearInsideCanvas();
+    new Scorer().draw();
+    new Timer(limitTime).draw();
+  };
+  this.draw = () => {
+    gameScreen.draw(new PongRLEnv().reset());
+    new Scorer().draw();
+    new Timer(limitTime).draw();
+  };
+}
 
 class RLController {
   constructor(input) {
@@ -103,17 +118,13 @@ function registerGame(myScore, trainingStep, matchToken) {
       data: {
         token: matchToken,
         trainingStep: trainingStep,
-        score: myScore
+        score: myScore,
       },
     });
     return response;
   } catch (error) {
     console.error(error);
   }
-}
-
-function checkRankedIn(){
-
 }
 
 // main処理
@@ -126,7 +137,7 @@ async function main(rlId) {
   // load game screen
   const gameScreen = new GameScreen();
   const scorer = new Scorer();
-  const timer = new Timer(60);
+  const timer = new Timer(limitTime);
   const sleepTimeScheduler = new SleepTimeScheduler();
 
   // draw init state
@@ -142,6 +153,7 @@ async function main(rlId) {
   $(".loading-screen").fadeOut(50);
 
   let timeStep = 0;
+  let interruptedFlag = false;
 
   gameScreen.draw(InitState);
   timer.draw();
@@ -150,6 +162,9 @@ async function main(rlId) {
   while (true) {
     // monitor running flag
     if ($.inArray(gameRunningState, [0, 1]) != -1 || timer.getRemTime() == 0) {
+      if (gameRunningState === 1) {
+        interruptedFlag = true;
+      }
       gameRunningState = 0;
       break;
     }
@@ -180,7 +195,11 @@ async function main(rlId) {
   }
   console.log("game end");
   gameScreen.clearInsideCanvas();
-  return scorer.getScore();
+  if (interruptedFlag) {
+    return null;
+  } else {
+    return scorer.getScore();
+  }
 }
 
 // init process
@@ -195,14 +214,14 @@ $(document).ready(function () {
   $("#game-button").prop("disabled", true);
 
   // init game screen
-  initGameScreen.draw(new PongRLEnv().reset());
+  initGameScreen.draw();
 
   // load worker bundle in advance for better performance
   worker = new Worker("/public/worker.bundle.js");
 });
 
 // Process for rl selection button
-$(".rl-selection-button").on("click", function () {
+$(".rl-selection-button").on("click", async function () {
   $(".rl-selection-button").prop("disabled", false);
   // color
   const buttonId = $(this).attr("id");
@@ -212,6 +231,13 @@ $(".rl-selection-button").on("click", function () {
 
   // draw ranking score
   rankingManager.draw(getRlId());
+
+  if ($(".result-screen").is(":hidden")) {
+    // wait until the game is over
+    await stopGame();
+    $("#game-button").prop("disabled", false);
+    $("#game-button").click();
+  }
 });
 
 // process for start button
@@ -227,17 +253,18 @@ $("#start-button").on("click", async function () {
   // start game
   gameRunningState = 2;
   const myScore = await main(rlId);
-  const registerInfo = await registerGame(myScore, rlId, matchToken);
-  await rankingManager.updateUserInfo(myScore, rlId, matchToken);
-  const myRank = rankingManager.getMyRank(rlId);
-  // TODO 同点を考慮した正確な順位
-  // TODO そもそもゲーム終了後しかpopupを出さないのは最適かどうか
-  console.log(myRank);
-  if (myRank <= 10) {
-    $(".popup").show();
-    $('.input-nickname').focus();
+  gameRunningState = 0;
+
+  if (!(myScore === null)) {
+    const registerInfo = await registerGame(myScore, rlId, matchToken);
+    await rankingManager.updateUserInfo(myScore, rlId, matchToken);
+    const myRank = rankingManager.getMyRank(rlId);
+    if (myRank <= 10) {
+      $(".popup").show();
+      $(".input-nickname").focus();
+    }
+    $("#ranking-button").click();
   }
-  $("#ranking-button").click();
 });
 
 // process for game button
@@ -248,7 +275,7 @@ $("#game-button").on("click", async function () {
   // wait until the game is over
   await stopGame();
   // init game screen
-  initGameScreen.draw(new PongRLEnv().reset());
+  initGameScreen.draw();
   $(".start-screen").fadeIn();
 });
 
@@ -264,7 +291,7 @@ $("#ranking-button").on("click", async function () {
   await rankingManager.updateRankingInfo();
 
   // clear game screen
-  initGameScreen.clearInsideCanvas();
+  initGameScreen.clear();
 
   const rlId = getRlId();
 
@@ -305,9 +332,12 @@ $(".register-button").on("click", async function () {
 });
 
 // hide popup
-$(document).click(function(event) {
-  if($(".popup").is(":visible") && $(".result-screen").is(":visible") && !$(event.target).closest('.popup-content').length) {
+$(document).click(function (event) {
+  if (
+    $(".popup").is(":visible") &&
+    $(".result-screen").is(":visible") &&
+    !$(event.target).closest(".popup-content").length
+  ) {
     $(".popup").hide();
   }
 });
-
