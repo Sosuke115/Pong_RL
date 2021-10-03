@@ -1,10 +1,10 @@
 # Pong_RL
 
-<img src="img/pongrl.jpg" width="400px">
+<img src="img/pongrl.gif" width="350px">
 
 ## 😄 Introduction
 
-- A pong game where you can battle AI agent trained via reinforcement learning.
+- You can play against an AI agent trained by reinforcement learning.
 - Developed with [@TaiseiHashimoto](https://github.com/TaiseiHashimoto)
 - You can select the training steps.
 - You can register your score for the rankings.
