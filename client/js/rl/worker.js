@@ -10,7 +10,15 @@ onmessage = (message) => {
     agent.loadModel(`${message.data.origin}/public/models/model-${message.data.input}.json`)
       .then(() => {
         side = message.data.side;
-        self.postMessage({config: agent.config});
+        self.postMessage({
+          error: null,
+          config: agent.config,
+        });
+      })
+      .catch((error) => {
+        self.postMessage({
+          error: error.toString(),
+        });
       });
   } else if (message.data.command === "computeAction") {
     const action = agent.selectAction(message.data.state, prevAction, side, false);
