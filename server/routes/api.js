@@ -77,6 +77,43 @@ router.get("/get_ranking", (req, res) => {
     });
 });
 
+router.get("/get_my_rank", async (req, res) => {
+  let game;
+  try {
+    game = await db.Game.findOne({
+      where: {
+        token: req.query.token,
+      },
+    });
+  } catch (error) {
+    res.json({
+      error: error.toString(),
+    });
+    return;
+  }
+
+  // TODO 同点を考慮した正確な順位
+  db.Game.count({
+    where: {
+      score: {
+        [Op.gte]: game.score,
+      },
+      trainingStep: req.query.trainingStep,
+    },
+  })
+    .then((myRank) => {
+      res.json({
+        error: null,
+        rank: myRank,
+      });
+    })
+    .catch((error) => {
+      res.json({
+        error: error.toString(),
+      });
+    });
+});
+
 router.post("/register_game", (req, res) => {
   // Generate a random name using animals and numbers (e.g. donkey100)
   // Other dictionaries can also be used
@@ -126,42 +163,6 @@ router.post("/update_name", async (req, res) => {
     .then((game) => {
       res.json({
         error: null,
-      })
-    })
-    .catch((error) => {
-      res.json({
-        error: error.toString(),
-      });
-    });
-});
-
-router.get("/get_my_rank", async (req, res) => {
-  let game;
-  try {
-    game = await db.Game.findOne({
-      where: {
-        token: req.query.token,
-      },
-    });
-  } catch (error) {
-    res.json({
-      error: error.toString(),
-    });
-    return;
-  }
-
-  // TODO 同点を考慮した正確な順位
-  db.Game.count({
-    where: {
-      score: {
-        [Op.gte]: game.score,
-      },
-      trainingStep: req.query.trainingStep,
-    },
-  })
-    .then((myRank) => {
-      res.json({
-        rank: myRank,
       });
     })
     .catch((error) => {
