@@ -40,7 +40,7 @@ export class RankingManager {
     return this.myRankInfo[trainingStep]
   }
 
-  async updateUserInfo(myScore, trainingStep, matchToken) {
+  async updateUserInfo(myScore, trainingStep) {
     this.myScoreInfo[trainingStep] = myScore;    
     const url = "/api/get_my_rank";
     try {
@@ -48,7 +48,7 @@ export class RankingManager {
         url: url,
         type: "GET",
         data: {
-          token: matchToken,
+          score: myScore,
           trainingStep: trainingStep,
         },
       });
@@ -89,7 +89,14 @@ export class RankingManager {
       userName: "No data",
     });
 
+    let rank = 0;
+    let score = null;
     for (let i = 0; i < rankingInfo.length; i++) {
+      if (score === null || score > rankingInfo[i]["score"]) {
+        rank++;
+        score = rankingInfo[i]["score"];
+      }
+      $(`#rank${i + 1}-rank`).text(rank);
       $(`#rank${i + 1}-score`).text(rankingInfo[i]["score"]);
       $(`#rank${i + 1}-name`).text(rankingInfo[i]["userName"]);
     }
