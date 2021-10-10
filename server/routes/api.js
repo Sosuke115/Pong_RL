@@ -28,7 +28,10 @@ router.get("/get_ranking", (req, res) => {
         where: {
           trainingStep: trainingStep,
         },
-        order: [["score", "DESC"]],
+        order: [
+          ["score", "DESC"],
+          ["createdAt", "DESC"],
+        ],
         limit: size,
       })
     );
@@ -78,33 +81,19 @@ router.get("/get_ranking", (req, res) => {
 });
 
 router.get("/get_my_rank", async (req, res) => {
-  let game;
-  try {
-    game = await db.Game.findOne({
-      where: {
-        token: req.query.token,
-      },
-    });
-  } catch (error) {
-    res.json({
-      error: error.toString(),
-    });
-    return;
-  }
-
-  // TODO 同点を考慮した正確な順位
+  // same score => same rank
   db.Game.count({
     where: {
       score: {
-        [Op.gte]: game.score,
+        [Op.gt]: req.query.score,
       },
       trainingStep: req.query.trainingStep,
     },
   })
-    .then((myRank) => {
+    .then((superiorNum) => {
       res.json({
         error: null,
-        rank: myRank,
+        rank: superiorNum + 1,
       });
     })
     .catch((error) => {
