@@ -1,42 +1,28 @@
-// 残り時間の管理と描画
+// timeStepから残り時間を管理するクラス
 export class Timer {
-  // 現在時刻と残り時間数をinit
-  constructor(limitTime) {
-    this.initLimitTime = (limitTime) * 1000;
-    this.limitTime = (limitTime) * 1000;
-    this.previousTime = new Date().getTime();
-    this.isRunning = false;
+  constructor(limitTime, fps = 60) {
+    this.limitTime = limitTime;
+    this.fps = fps;
+    this.remTimeStep = 0;
   }
 
-  stop() {
-    this.isRunning = false;
-    this.updateLimitTime();
+  step(timeStep) {
+    if (timeStep != 0 && (timeStep + this.remTimeStep) % this.fps == 0) {
+      this.limitTime = this.limitTime - 1;
+    }
   }
 
-  start() {
-    this.isRunning = true;
-    this.previousTime = new Date().getTime();
+  //take over the previous time step.
+  resetMatch(timeStep) {
+    this.remTimeStep = timeStep % this.fps;
   }
 
   getRemTime() {
-    return Math.ceil(this.limitTime / 1000);
-  }
-
-  updateLimitTime() {
-    let currentTime = new Date().getTime();
-    this.limitTime = Math.max(
-      this.limitTime - (currentTime - this.previousTime),
-      0
-    );
-    this.previousTime = currentTime;
+    return this.limitTime;
   }
 
   // 現在の残り時間を描画
   draw() {
-    if (this.isRunning) {
-      this.updateLimitTime();
-    }
-
-    $(".time").text(Math.ceil(this.limitTime / 1000).toString());
+    $(".time").text(this.limitTime.toString());
   }
 }
