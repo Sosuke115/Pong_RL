@@ -153,7 +153,6 @@ async function main(rlId) {
   $(".loading-screen").fadeOut(50);
 
   let timeStep = 0;
-  let remTimeStep = 0;
   let interruptedFlag = false;
 
   gameScreen.draw(InitState);
