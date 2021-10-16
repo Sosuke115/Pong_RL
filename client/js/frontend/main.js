@@ -157,7 +157,6 @@ async function main(rlId) {
 
   gameScreen.draw(InitState);
   timer.draw();
-  timer.start();
   await sleepTimeScheduler.reset();
   while (true) {
     // monitor running flag
@@ -176,17 +175,17 @@ async function main(rlId) {
 
     gameScreen.draw(res.state);
     timer.draw();
+    timer.step(timeStep);
 
     if (res.done) {
       await sleepTimeScheduler.end();
-      timer.stop();
 
       state = env.reset();
       gameScreen.draw(state);
       scorer.stepAndDraw(res.state.winner);
       await sleepTimeScheduler.reset();
+      timer.resetMatch(timeStep);
       timeStep = 0;
-      timer.start();
     } else {
       await sleepTimeScheduler.step();
       state = res.state;
