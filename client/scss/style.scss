@@ -172,6 +172,10 @@ button {
   }
 }
 
+.japanese-username{
+  font-size: 0.8em  !important;
+}
+
 /* result screen */
 .result-screen {
   position: absolute;
@@ -211,7 +215,7 @@ button {
       display: inline-block;
       margin-left: 0;
       text-align: left;
-      width: 30%;
+      width: 40%;
     }
     .ranking-scores {
       display: inline-block;
