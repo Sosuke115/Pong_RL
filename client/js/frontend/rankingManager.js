@@ -37,11 +37,11 @@ export class RankingManager {
   }
 
   getMyRank(trainingStep) {
-    return this.myRankInfo[trainingStep]
+    return this.myRankInfo[trainingStep];
   }
 
   async updateUserInfo(myScore, trainingStep) {
-    this.myScoreInfo[trainingStep] = myScore;    
+    this.myScoreInfo[trainingStep] = myScore;
     const url = "/api/get_my_rank";
     try {
       const myRank = await $.ajax({
@@ -74,6 +74,26 @@ export class RankingManager {
     }
   }
 
+  isJapanese(userName) {
+    let isJapanese = false;
+    for (let i = 0; i < userName.length; i++) {
+      if (userName.charCodeAt(i) >= 256) {
+        isJapanese = true;
+        break;
+      }
+    }
+    return isJapanese;
+  }
+
+  truncateUsername(userName, isJapanese) {
+    if (isJapanese) {
+      userName = userName.slice(0, 10);
+    } else {
+      userName = userName.slice(0, 11);
+    }
+    return userName;
+  }
+
   // rl stepに対応するランキング表を描画
   draw(rlStep) {
     $(".result-subtitle-rlStep").text(String(rlStep).replace(/(.*)000/, "$1k"));
@@ -91,14 +111,27 @@ export class RankingManager {
 
     let rank = 0;
     let score = null;
+    let userName = null;
+    let isJapanese = false;
+
+    $(`.nicknames`).children().removeClass("japanese-username")
     for (let i = 0; i < rankingInfo.length; i++) {
       if (score === null || score > rankingInfo[i]["score"]) {
         rank++;
         score = rankingInfo[i]["score"];
       }
+
+      userName = rankingInfo[i]["userName"]
+      isJapanese = this.isJapanese(userName);
+      userName = this.truncateUsername(userName, isJapanese);
+    
       $(`#rank${i + 1}-rank`).text(rank);
       $(`#rank${i + 1}-score`).text(rankingInfo[i]["score"]);
-      $(`#rank${i + 1}-name`).text(rankingInfo[i]["userName"]);
+      $(`#rank${i + 1}-name`).text(userName);
+      if (isJapanese) {
+        console.log(userName);
+        $(`#rank${i + 1}-name`).addClass("japanese-username")
+      }
     }
 
     let average = this.rankingInfo["avg"][String(rlStep)];
@@ -114,8 +147,8 @@ export class RankingManager {
     // draw my info
     $(".your-score").text(myScore);
 
-    if (!(myRank == "No data")){
-      myRank = String(myRank) + "/" + this.rankingInfo["count"][rlStep]
+    if (!(myRank == "No data")) {
+      myRank = String(myRank) + "/" + this.rankingInfo["count"][rlStep];
     }
     $(".your-rank").text(myRank);
   }
