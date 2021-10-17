@@ -52,6 +52,9 @@ export class RankingManager {
           trainingStep: trainingStep,
         },
       });
+      if (myRank.error) {
+        throw "database error";
+      }
       this.myRankInfo[trainingStep] = myRank.rank;
     } catch (error) {
       console.error(error);
@@ -68,6 +71,9 @@ export class RankingManager {
           size: this.size,
         },
       });
+      if (rankingInfo.error) {
+        throw "database error";
+      }
       this.rankingInfo = rankingInfo;
     } catch (error) {
       console.error(error);
