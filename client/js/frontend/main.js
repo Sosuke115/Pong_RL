@@ -261,9 +261,9 @@ $("#start-button").on("click", async function () {
 
   if (!(myScore === null)) {
     const registerInfo = await registerGame(myScore, rlId, matchToken);
-    await rankingManager.updateUserInfo(myScore, rlId, matchToken);
+    await rankingManager.updateUserInfo(myScore, rlId);
     const myRank = rankingManager.getMyRank(rlId);
-    if (myRank <= 10) {
+    if (myRank <= rankingManager.size) {
       $(".popup").show();
       $(".input-nickname").focus();
     }
