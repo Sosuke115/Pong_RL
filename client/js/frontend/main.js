@@ -42,7 +42,11 @@ class RLController {
       origin: window.location.origin,
     });
     this.worker.onmessage = (m) => {
-      if ("config" in m.data) this.rlConfig = m.data.config;
+      if (m.data.error) {
+        console.log(m.data.error);
+      } else if ("config" in m.data) {
+        this.rlConfig = m.data.config;
+      }
       if ("action" in m.data) this.nextAction = m.data.action;
     };
   }
@@ -121,6 +125,9 @@ function registerGame(myScore, trainingStep, matchToken) {
         score: myScore,
       },
     });
+    if (response.error) {
+      throw "database error";
+    }
     return response;
   } catch (error) {
     console.error(error);
@@ -320,14 +327,17 @@ $(".register-button").on("click", async function () {
         userName: userName,
       },
     });
+    if (response.error) {
+      throw "database error";
+    }
+    // update ranking info
+    await rankingManager.updateRankingInfo();
+    // draw ranking score
+    rankingManager.draw(getRlId());
+    $(".popup").hide();
   } catch (error) {
     console.error(error);
   }
-  // update ranking info
-  await rankingManager.updateRankingInfo();
-  // draw ranking score
-  rankingManager.draw(getRlId());
-  $(".popup").hide();
 });
 
 // hide popup
