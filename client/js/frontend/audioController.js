@@ -5,24 +5,18 @@ export class AudioController {
     this.hitRl = $("#audio-hit-rl").get(0);
     this.hitHuman = $("#audio-hit-human").get(0);
   }
-  loadAudio() {
-    this.hitRl.load();
-    this.hitHuman.load();
-    this.goalHuman.load();
-    this.goalRl.load();
-  }
-  playGoalAudio(winner) {
+  playAudio(winner) {
     if (winner == "human") {
-      // this.goalHuman.play();
+      this.goalHuman.play();
     } else {
-      // this.goalRl.play();
+      this.goalRl.play();
     }
   }
   playHitAudio(hitter) {
     if (hitter == "human") {
-      // this.hitHuman.play();
+      this.hitHuman.play();
     } else if (hitter == "rl") {
-      // this.hitRl.play();
+      this.hitRl.play();
     }
   }
 }

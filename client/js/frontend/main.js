@@ -251,8 +251,6 @@ $("#start-button").on("click", async function () {
   $("#ranking-button").prop("disabled", false);
   $(".start-screen").fadeOut();
 
-  // audioController.loadAudio();
-
   const rlId = getRlId();
   matchToken = Math.random().toString(32).substring(2);
 
