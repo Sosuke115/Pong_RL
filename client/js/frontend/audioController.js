@@ -5,7 +5,7 @@ export class AudioController {
     this.hitRl = $("#audio-hit-rl").get(0);
     this.hitHuman = $("#audio-hit-human").get(0);
   }
-  playAudio(winner) {
+  playGoalAudio(winner) {
     if (winner == "human") {
       this.goalHuman.play();
     } else {
