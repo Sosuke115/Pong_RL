@@ -64,9 +64,14 @@ body {
   }
 }
 
+input {
+  background-color: $white;
+}
+
 button {
   font-family: "Quicksand", sans-serif;
   font-weight: medium;
+  background-color: $white;
 }
 
 .pressed-buttons-color {
