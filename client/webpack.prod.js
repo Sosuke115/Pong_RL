@@ -1,12 +1,14 @@
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // add scss compile rule
 common.module.rules.push({
     test: /\.scss/,
     use: [
-      // output to link tag
-      "style-loader",
+      {
+        loader: MiniCssExtractPlugin.loader,
+      },
       // bundle css
       {
         loader: "css-loader",
