@@ -318,25 +318,27 @@ $("#game-button, #ranking-button").on("click", function () {
 $(".register-button").on("click", async function () {
   const url = "/api/update_name";
   const userName = $(".input-nickname").val();
-  try {
-    const response = await $.ajax({
-      url: url,
-      type: "POST",
-      data: {
-        token: matchToken,
-        userName: userName,
-      },
-    });
-    if (response.error) {
-      throw "database error";
+  if (userName) {
+    try {
+      const response = await $.ajax({
+        url: url,
+        type: "POST",
+        data: {
+          token: matchToken,
+          userName: userName,
+        },
+      });
+      if (response.error) {
+        throw "database error";
+      }
+      // update ranking info
+      await rankingManager.updateRankingInfo();
+      // draw ranking score
+      rankingManager.draw(getRlId());
+      $(".popup").hide();
+    } catch (error) {
+      console.error(error);
     }
-    // update ranking info
-    await rankingManager.updateRankingInfo();
-    // draw ranking score
-    rankingManager.draw(getRlId());
-    $(".popup").hide();
-  } catch (error) {
-    console.error(error);
   }
 });
 
