@@ -2,6 +2,7 @@ const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const { merge, mergeWithRules } = require("webpack-merge");
 const common = require("./webpack.common.js");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 var assert = assert || require("assert");
 
@@ -9,8 +10,9 @@ var assert = assert || require("assert");
 common.module.rules.push({
   test: /\.scss/,
   use: [
-    // output to link tag
-    "style-loader",
+    {
+      loader: MiniCssExtractPlugin.loader,
+    },
     // bundle css
     {
       loader: "css-loader",
